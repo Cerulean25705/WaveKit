@@ -29,11 +29,15 @@
 }
 
 html {
+  max-width: 100%;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
   padding-bottom: 94px;
   color: var(--text);
   background:
@@ -97,7 +101,12 @@ textarea {
 .topbar {
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 30;
+  width: 100vw;
+  width: 100dvw;
+  max-width: 100dvw;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -204,7 +213,8 @@ textarea {
 }
 
 .account-bar {
-  min-width: min(100%, 230px);
+  min-width: 0;
+  max-width: min(230px, 28vw);
   display: grid;
   justify-items: end;
   gap: 6px;
@@ -212,12 +222,15 @@ textarea {
 
 .account-bar > span {
   max-width: 100%;
+  overflow: hidden;
   color: var(--gold);
   font-size: 0.68rem;
   font-weight: 840;
   letter-spacing: 0.04em;
   text-align: right;
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .account-actions {
@@ -231,6 +244,7 @@ textarea {
 }
 
 .account-menu summary {
+  max-width: 100%;
   list-style: none;
 }
 
