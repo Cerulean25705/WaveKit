@@ -2151,6 +2151,14 @@ h1 {
   font-size: 0.78rem;
   font-weight: 950;
   line-height: 1;
+  overflow: hidden;
+}
+
+.sonata-symbol img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
 }
 
 .cloud-sync {

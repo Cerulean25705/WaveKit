@@ -1428,18 +1428,57 @@ const sonataSymbols = {
   "Sound of True Name": "◍"
 };
 
+const sonataIcons = {
+  "Moonlit Clouds": "assets/sonatas/moonlit-clouds.png",
+  "Rejuvenating Glow": "assets/sonatas/rejuvenating-glow.png",
+  "Windward Pilgrimage": "assets/sonatas/windward-pilgrimage.png",
+  "Sierra Gale": "assets/sonatas/sierra-gale.png",
+  "Havoc Eclipse": "assets/sonatas/havoc-eclipse.png",
+  "Celestial Light": "assets/sonatas/celestial-light.png",
+  "Void Thunder": "assets/sonatas/void-thunder.png",
+  "Molten Rift": "assets/sonatas/molten-rift.png",
+  "Freezing Frost": "assets/sonatas/freezing-frost.png",
+  "Empyrean Anthem": "assets/sonatas/empyrean-anthem.png",
+  "Midnight Veil": "assets/sonatas/midnight-veil.png",
+  "Eternal Radiance": "assets/sonatas/eternal-radiance.png",
+  "Gusts of Welkin": "assets/sonatas/gusts-of-welkin.png",
+  "Frosty Resolve": "assets/sonatas/frosty-resolve.png",
+  "Crown of Valor": "assets/sonatas/crown-of-valor.png",
+  "Dream of the Lost": "assets/sonatas/dream-of-the-lost.png",
+  "Pact of Neonlight": "assets/sonatas/pact-of-neonlight.png",
+  "Pact of Neonlight Leap": "assets/sonatas/pact-of-neonlight-leap.png",
+  "Tidebreaking Courage": "assets/sonatas/tidebreaking-courage.png",
+  "Flaming Clawprint": "assets/sonatas/flaming-clawprint.png",
+  "Flamewing's Shadow": "assets/sonatas/flamewing-s-shadow.png",
+  "Law of Harmony": "assets/sonatas/law-of-harmony.png",
+  "Thread of Severed Fate": "assets/sonatas/thread-of-severed-fate.png",
+  "Shadow of Shattered Dreams": "assets/sonatas/shadow-of-shattered-dreams.png",
+  "Rite of Gilded Revelation": "assets/sonatas/rite-of-gilded-revelation.png",
+  "Chromatic Foam": "assets/sonatas/chromatic-foam.png",
+  "Trailblazing Star": "assets/sonatas/trailblazing-star.png",
+  "Halo of Starry Radiance": "assets/sonatas/halo-of-starry-radiance.png",
+  "Wishes of Quiet Snowfall": "assets/sonatas/wishes-of-quiet-snowfall.png",
+  "Sound of True Name": "assets/sonatas/sound-of-true-name.png"
+};
+
 function sonataDisplay(sonata) {
   const names = sonata.split(/\s*,\s*|\s+or\s+/i).map((name) => name.trim()).filter(Boolean);
   return `
     <span class="sonata-list">
       ${names.map((name) => `
         <span class="sonata-chip" title="${name}">
-          <span class="sonata-symbol" aria-hidden="true">${sonataSymbols[name] || "✧"}</span>
+          <span class="sonata-symbol" aria-hidden="true">${sonataIcon(name)}</span>
           <span>${name}</span>
         </span>
       `).join("")}
     </span>
   `;
+}
+
+function sonataIcon(name) {
+  const icon = sonataIcons[name];
+  if (!icon) return sonataSymbols[name] || "✧";
+  return `<img src="${icon}" alt="" loading="lazy">`;
 }
 
 function archetypeLabel(character) {
