@@ -2073,6 +2073,44 @@ h1 {
   color: var(--soft);
 }
 
+.sonata-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sonata-chip {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 8px 4px 5px;
+  border: 1px solid rgba(139, 232, 255, 0.17);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(120, 244, 255, 0.075), rgba(255, 215, 122, 0.045)),
+    rgba(3, 12, 19, 0.56);
+  color: var(--soft);
+}
+
+.sonata-symbol {
+  width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 215, 122, 0.24);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 30%, rgba(255, 255, 255, 0.34), transparent 32%),
+    linear-gradient(135deg, rgba(120, 244, 255, 0.28), rgba(255, 215, 122, 0.2)),
+    rgba(5, 16, 24, 0.86);
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
 .cloud-sync {
   display: grid;
   gap: 12px;

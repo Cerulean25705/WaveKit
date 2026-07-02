@@ -1356,6 +1356,53 @@ function buildReadiness(team) {
   return "Uses fallback weapon advice";
 }
 
+const sonataSymbols = {
+  "Moonlit Clouds": "☁",
+  "Rejuvenating Glow": "✦",
+  "Windward Pilgrimage": "↗",
+  "Sierra Gale": "≋",
+  "Havoc Eclipse": "◐",
+  "Celestial Light": "✧",
+  "Void Thunder": "ϟ",
+  "Molten Rift": "◆",
+  "Freezing Frost": "❄",
+  "Empyrean Anthem": "♪",
+  "Midnight Veil": "◒",
+  "Eternal Radiance": "☼",
+  "Gusts of Welkin": "⌁",
+  "Frosty Resolve": "✶",
+  "Crown of Valor": "♕",
+  "Dream of the Lost": "◌",
+  "Pact of Neonlight": "◇",
+  "Pact of Neonlight Leap": "◇",
+  "Tidebreaking Courage": "≈",
+  "Flaming Clawprint": "♨",
+  "Flamewing's Shadow": "翼",
+  "Law of Harmony": "⚖",
+  "Thread of Severed Fate": "⌘",
+  "Shadow of Shattered Dreams": "◈",
+  "Rite of Gilded Revelation": "⬡",
+  "Chromatic Foam": "✹",
+  "Trailblazing Star": "★",
+  "Halo of Starry Radiance": "✺",
+  "Wishes of Quiet Snowfall": "✢",
+  "Sound of True Name": "◍"
+};
+
+function sonataDisplay(sonata) {
+  const names = sonata.split(/\s*,\s*|\s+or\s+/i).map((name) => name.trim()).filter(Boolean);
+  return `
+    <span class="sonata-list">
+      ${names.map((name) => `
+        <span class="sonata-chip" title="${name}">
+          <span class="sonata-symbol" aria-hidden="true">${sonataSymbols[name] || "✧"}</span>
+          <span>${name}</span>
+        </span>
+      `).join("")}
+    </span>
+  `;
+}
+
 function archetypeLabel(character) {
   return teamArchetypes[character.slug]?.label || "Flexible team shell";
 }
@@ -1437,7 +1484,7 @@ function renderBuilds(teams) {
           <p>${character.note}</p>
           <dl class="build-quick">
             <div><dt>Weapon</dt><dd>${character.build.weapon}${ownedWeapon ? " · owned" : ""}</dd></div>
-            <div><dt>Sonata</dt><dd>${character.build.sonata}</dd></div>
+            <div><dt>Sonata</dt><dd>${sonataDisplay(character.build.sonata)}</dd></div>
             <div><dt>Echo cost</dt><dd>${costPattern(character)}</dd></div>
             <div><dt>Main Echo</dt><dd>${character.build.echo}</dd></div>
           </dl>
@@ -1949,6 +1996,19 @@ function setCloudStatus(message) {
   if (status) status.textContent = message;
 }
 
+function closeAccountMenu() {
+  const menu = $(".account-menu");
+  if (menu) menu.open = false;
+}
+
+function handleAccountMenuDismiss(event) {
+  const menu = $(".account-menu");
+  if (!menu?.open) return;
+  if (event.type === "keydown" && event.key !== "Escape") return;
+  if (event.type === "click" && menu.contains(event.target)) return;
+  closeAccountMenu();
+}
+
 function cloudCredentials() {
   return {
     email: $("#cloud-email").value.trim(),
@@ -2039,6 +2099,7 @@ async function runCloudAction(workingMessage, action, successMessage) {
   try {
     await action();
     setCloudStatus(successMessage);
+    closeAccountMenu();
   } catch (error) {
     setCloudStatus(cleanCloudError(error));
   } finally {
@@ -2098,6 +2159,8 @@ $("#cloud-reset-password").addEventListener("click", resetCloudPassword);
 $("#cloud-save").addEventListener("click", () => saveCloudProfiles("Cloud profile synced"));
 $("#cloud-load").addEventListener("click", loadCloudProfiles);
 $("#cloud-sign-out").addEventListener("click", signOutCloud);
+document.addEventListener("click", handleAccountMenuDismiss);
+document.addEventListener("keydown", handleAccountMenuDismiss);
 
 loadProfile();
 render();
