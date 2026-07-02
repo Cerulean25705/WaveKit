@@ -34,6 +34,7 @@ html {
 
 body {
   margin: 0;
+  padding-bottom: 94px;
   color: var(--text);
   background:
     radial-gradient(ellipse at 50% -24%, rgba(120, 244, 255, 0.23) 0, rgba(10, 41, 57, 0.18) 28%, transparent 62%),
@@ -354,6 +355,70 @@ h1 {
     0 0 0 1px rgba(255, 255, 255, 0.2),
     0 0 34px rgba(120, 244, 255, 0.3),
     0 18px 34px rgba(0, 0, 0, 0.34);
+}
+
+.flow-next {
+  position: fixed;
+  left: 50%;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 60;
+  width: min(720px, calc(100% - 28px));
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(139, 232, 255, 0.28);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(120, 244, 255, 0.18), transparent 38%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.095), rgba(255, 215, 122, 0.055) 54%, rgba(120, 244, 255, 0.085)),
+    rgba(5, 16, 25, 0.88);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 32px rgba(120, 244, 255, 0.16),
+    0 22px 62px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(22px) saturate(1.26);
+  transform: translateX(-50%);
+}
+
+.flow-next[hidden] {
+  display: none;
+}
+
+.flow-next-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.flow-next-copy span {
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 860;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.flow-next-copy strong {
+  color: var(--text);
+  font-size: clamp(0.98rem, 2.4vw, 1.14rem);
+}
+
+.flow-next-copy small {
+  color: var(--soft);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.flow-next .button {
+  min-width: 148px;
+  min-height: 48px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 0 30px rgba(120, 244, 255, 0.28),
+    0 12px 28px rgba(0, 0, 0, 0.34);
 }
 
 .profile-actions.compact {
@@ -2027,6 +2092,10 @@ h1 {
 }
 
 @media (max-width: 760px) {
+  body {
+    padding-bottom: 118px;
+  }
+
   .topbar,
   .section-heading.split,
   .toolbar {
@@ -2276,6 +2345,42 @@ h1 {
 }
 
 @media (max-width: 520px) {
+  body {
+    padding-bottom: 132px;
+  }
+
+  .flow-next {
+    width: calc(100% - 18px);
+    min-height: 98px;
+    grid-template-columns: 1fr auto;
+    gap: 9px;
+    padding: 9px;
+    border-radius: 12px;
+  }
+
+  .flow-next-copy span {
+    font-size: 0.62rem;
+  }
+
+  .flow-next-copy strong {
+    font-size: 0.86rem;
+  }
+
+  .flow-next-copy small {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.7rem;
+  }
+
+  .flow-next .button {
+    min-width: 104px;
+    min-height: 48px;
+    padding: 0 10px;
+    font-size: 0.76rem;
+  }
+
   .segmented button {
     width: 100%;
   }

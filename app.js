@@ -363,6 +363,7 @@ const state = {
   roverForm: "Aero",
   selectedTeamKey: "",
   showAllTeams: false,
+  flowVisitedResults: false,
   owned: {},
   focus: new Set(),
   weapons: new Set()
@@ -451,6 +452,11 @@ const buildResults = $("#build-results");
 const profileEditor = $("#profile-editor");
 const profileList = $("#profile-list");
 const profileSummary = $("#profile-summary");
+const flowNext = $("#flow-next");
+const flowNextStep = $("#flow-next-step");
+const flowNextTitle = $("#flow-next-title");
+const flowNextDetail = $("#flow-next-detail");
+const flowNextButton = $("#flow-next-button");
 const profileStorageKey = "wavekit-profiles-v1";
 const legacyProfileKey = "tacet-team-helper-profile";
 const legacyProfilesKey = "tacet-team-helper-profiles-v2";
@@ -594,6 +600,7 @@ function renderCharacters() {
       event.stopPropagation();
       state.roverForm = button.dataset.roverForm;
       state.selectedTeamKey = "";
+      state.flowVisitedResults = false;
       markUnsaved();
       render();
     });
@@ -656,6 +663,7 @@ function renderWeapons() {
     button.addEventListener("click", () => {
       const weapon = button.dataset.weapon;
       state.weapons.has(weapon) ? state.weapons.delete(weapon) : state.weapons.add(weapon);
+      state.flowVisitedResults = false;
       markUnsaved();
       render();
     });
@@ -744,6 +752,7 @@ function toggleCharacter(slug) {
     state.owned[slug] = { chain: 0 };
   }
   markUnsaved();
+  state.flowVisitedResults = false;
   updateCharacterCard(slug);
   refreshRosterSelection();
 }
@@ -753,6 +762,7 @@ function changeChain(slug, delta) {
   if (!state.owned[slug]) state.owned[slug] = { chain: 0 };
   state.owned[slug].chain = Math.max(0, Math.min(6, state.owned[slug].chain + delta));
   markUnsaved();
+  state.flowVisitedResults = false;
   updateCharacterCard(slug);
   refreshRosterSelection();
 }
@@ -778,6 +788,7 @@ function toggleFocus(slug) {
   if (!state.owned[slug]) state.owned[slug] = { chain: 0 };
   state.focus.has(slug) ? state.focus.delete(slug) : state.focus.add(slug);
   markUnsaved();
+  state.flowVisitedResults = false;
   updateCharacterCard(slug);
   refreshRosterSelection();
 }
@@ -974,6 +985,107 @@ function renderResults() {
   });
   renderBuilds(teams);
   renderFeedbackContext(teams);
+  renderFlowNext(teams);
+}
+
+function renderFlowNext(teams = generateTeams()) {
+  const ownedCount = Object.keys(state.owned).length;
+  const selectedTeam = teams.find((team) => teamKey(team) === state.selectedTeamKey);
+  const next = nextFlowAction({ ownedCount, selectedTeam, teams });
+  flowNext.hidden = false;
+  flowNext.dataset.target = next.target;
+  flowNextStep.textContent = next.step;
+  flowNextTitle.textContent = next.title;
+  flowNextDetail.textContent = next.detail;
+  flowNextButton.textContent = next.button;
+}
+
+function nextFlowAction({ ownedCount, selectedTeam, teams }) {
+  if (state.editMode || !state.activeProfileId) {
+    return {
+      step: "Step 1 of 4",
+      title: state.activeProfileId ? "Save profile changes" : "Create your profile",
+      detail: "This keeps your choices on this device, then you can choose your roster.",
+      button: state.activeProfileId ? "Save changes" : "Save profile",
+      target: "save"
+    };
+  }
+  if (ownedCount < 3) {
+    return {
+      step: "Step 2 of 4",
+      title: `${ownedCount}/3 Resonators selected`,
+      detail: "Tap the characters you own. Three is enough to start seeing team ideas.",
+      button: "Choose Resonators",
+      target: "roster"
+    };
+  }
+  if (!state.weapons.size) {
+    return {
+      step: "Step 3 of 4",
+      title: "Add weapons when ready",
+      detail: "This is optional, but owned weapons make build advice more accurate.",
+      button: "Add weapons",
+      target: "weapons"
+    };
+  }
+  if (!teams.length) {
+    return {
+      step: "Step 4 of 4",
+      title: "Choose a main damage dealer",
+      detail: "You have enough picks, but WaveKit needs a usable team shell to score.",
+      button: "Check Resonators",
+      target: "roster"
+    };
+  }
+  if (!state.flowVisitedResults || !selectedTeam) {
+    return {
+      step: "Step 4 of 4",
+      title: `${teams.length} team ideas ready`,
+      detail: "Open the suggestions and pick the team you want to build first.",
+      button: "View teams",
+      target: "results"
+    };
+  }
+  return {
+    step: "Ready",
+    title: `${selectedTeam.main.name} team selected`,
+    detail: "View focused build cards, then send feedback if anything looks off.",
+    button: "View builds",
+    target: "builds"
+  };
+}
+
+function handleFlowNext() {
+  const target = flowNext.dataset.target;
+  if (target === "save") {
+    saveProfile();
+    requestAnimationFrame(() => scrollToSection("#helper"));
+    return;
+  }
+  if (target === "roster") {
+    scrollToSection("#helper", ".roster-panel");
+    return;
+  }
+  if (target === "weapons") {
+    scrollToSection("#helper", ".weapon-panel");
+    return;
+  }
+  if (target === "results") {
+    state.flowVisitedResults = true;
+    renderFlowNext();
+    scrollToSection("#results");
+    return;
+  }
+  if (target === "builds") {
+    scrollToSection("#builds");
+    return;
+  }
+  scrollToSection("#helper");
+}
+
+function scrollToSection(primarySelector, preferredSelector = primarySelector) {
+  const target = document.querySelector(preferredSelector) || document.querySelector(primarySelector);
+  target?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function tierTeams(teams) {
@@ -1581,6 +1693,7 @@ function applyProfile(profile) {
   state.weapons = new Set(payload.weapons);
   state.selectedTeamKey = "";
   state.showAllTeams = false;
+  state.flowVisitedResults = false;
 }
 
 function clearWorkingProfile() {
@@ -1594,6 +1707,7 @@ function clearWorkingProfile() {
   state.roverForm = "Aero";
   state.selectedTeamKey = "";
   state.showAllTeams = false;
+  state.flowVisitedResults = false;
   state.owned = {};
   state.focus = new Set();
   state.weapons = new Set();
@@ -1783,6 +1897,7 @@ $("#profile-import-file").addEventListener("change", (event) => {
 });
 $("#copy-feedback-context").addEventListener("click", copyFeedbackContext);
 $("form[name='wavekit-feedback']").addEventListener("submit", handleFeedbackSubmit);
+flowNextButton.addEventListener("click", handleFlowNext);
 
 loadProfile();
 render();
