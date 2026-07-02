@@ -405,7 +405,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
-  cartethyia: archetype("Aero Erosion", [["ciaccona", "shorekeeper"], ["ciaccona", "verina"], ["ciaccona", "rover"]], "Cartethyia is strongest when the team supports Aero Erosion, but real healers are still the safer third slot."),
+  cartethyia: archetype("Aero Erosion", [["ciaccona", "shorekeeper"], ["ciaccona", "verina"], ["sanhua", "shorekeeper"], ["sanhua", "verina"], ["ciaccona", "rover"]], "Cartethyia is strongest when the team supports Aero Erosion, with Sanhua acting as a practical fallback helper when Ciaccona is missing."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
   camellya: archetype("Havoc Basic", [["roccia", "shorekeeper"], ["sanhua", "shorekeeper"], ["danjin", "verina"]], "Camellya values Basic Attack/Havoc setup and enough safety for her field time."),
@@ -466,7 +466,8 @@ const cloud = {
   api: null,
   configured: false,
   user: null,
-  busy: false
+  busy: false,
+  loadedForUid: ""
 };
 
 function c(slug, name, element, weaponType, roles, score, synergies, tags, note) {
@@ -840,16 +841,18 @@ function keepRoverVisible(teams) {
 
 function scoreCharacter(character) {
   const chain = state.owned[character.slug]?.chain || 0;
-  const weaponBonus = state.weapons.has(character.build.weapon) ? 7 : 0;
+  const weaponBonus = state.weapons.has(character.build.weapon) ? 14 : 0;
   const focusBonus = state.focus.has(character.slug) ? 24 : 0;
   return character.score + chain * 1.8 + weaponBonus + focusBonus;
 }
 
 function scoreTeam(main, sub, sustain) {
-  let score = scoreCharacter(main) + sub.score * 0.55 + sustain.score * 0.62;
+  let score = scoreCharacter(main) * 1.12 + sub.score * 0.55 + sustain.score * 0.62;
   score += synergyScore(main, sub) + synergyScore(main, sustain);
   score += preferredTeamScore(main, sub, sustain);
   score += archetypeTeamScore(main, sub, sustain);
+  if (main.score >= 90) score += 12;
+  if (main.score < 75) score -= 8;
   if (sustain.roles.includes("healer")) score += state.priority === "Comfort" || state.experience === "New" ? 16 : 9;
   if (sub.roles.includes("support")) score += 4;
   if (state.priority === "DPS" && sub.roles.includes("sub")) score += 7;
@@ -1978,8 +1981,15 @@ async function initCloudSync() {
     }
     cloud.api.initCloudSync((user) => {
       cloud.user = user;
-      setCloudStatus(user ? "Signed in. Sync when ready." : "Signed out. Local profiles still work.");
+      if (!user) {
+        cloud.loadedForUid = "";
+        setCloudStatus("Signed out. Local profiles still work.");
+        renderCloudSync();
+        return;
+      }
+      setCloudStatus("Signed in. Loading cloud profile...");
       renderCloudSync();
+      autoLoadCloudProfiles();
     });
   } catch {
     setCloudStatus("Cloud sync could not load.");
@@ -2045,7 +2055,7 @@ async function signInCloud() {
     setCloudStatus("Enter an email and password first.");
     return;
   }
-  await runCloudAction("Signing in...", () => cloud.api.signInWithEmail(email, password), "Signed in. Use Sync now or Load cloud profile.");
+  await runCloudAction("Signing in...", () => cloud.api.signInWithEmail(email, password), "Signed in. Loading cloud profile...");
 }
 
 async function createCloudAccount() {
@@ -2056,12 +2066,12 @@ async function createCloudAccount() {
   }
   await runCloudAction("Creating account...", async () => {
     cloud.user = await cloud.api.createAccountWithEmail(email, password);
-    if (state.profiles.length) await cloud.api.saveCloudProfiles(cloudPayload());
-  }, state.profiles.length ? "Account created. Profile synced." : "Account created. Save a profile to sync it.");
+    if (hasProfileProgress()) await cloud.api.saveCloudProfiles(cloudPayload());
+  }, hasProfileProgress() ? "Account created. Profile synced." : "Account created. Add resonators or weapons, then sync.");
 }
 
 async function signInGoogleCloud() {
-  await runCloudAction("Opening Google sign in...", () => cloud.api.signInWithGoogle(), "Signed in. Use Sync now or Load cloud profile.");
+  await runCloudAction("Opening Google sign in...", () => cloud.api.signInWithGoogle(), "Signed in. Loading cloud profile...");
 }
 
 async function resetCloudPassword() {
@@ -2079,10 +2089,6 @@ async function signOutCloud() {
 
 async function saveCloudProfiles(successMessage = "Cloud profile synced") {
   if (!cloud.configured || !cloud.user || !cloud.api) return;
-  if (!state.profiles.length) {
-    setCloudStatus("Save or create a profile before syncing.");
-    return;
-  }
   await runCloudAction("Syncing profile...", () => cloud.api.saveCloudProfiles(cloudPayload()), successMessage);
 }
 
@@ -2093,22 +2099,67 @@ async function loadCloudProfiles() {
     if (!cloudData?.profiles?.length) {
       throw new Error("no-cloud-profile");
     }
-    state.profiles = cloudData.profiles.map((profile) => ({ ...normaliseProfile(profile), id: profile.id || `profile-${Date.now()}`, updatedAt: profile.updatedAt || new Date().toISOString() }));
-    state.activeProfileId = cloudData.activeProfileId || state.profiles[0]?.id || "";
-    applyProfile(state.profiles.find((profile) => profile.id === state.activeProfileId) || state.profiles[0]);
-    state.editMode = false;
-    persistProfiles();
-    $("#save-status").textContent = "Loaded cloud profile";
-    render();
+    applyCloudProfiles(cloudData);
   }, "Cloud profile loaded.");
 }
 
+async function autoLoadCloudProfiles() {
+  if (!cloud.configured || !cloud.user || !cloud.api) return;
+  const userKey = cloud.user.uid || cloud.user.email || cloud.user.displayName || "user";
+  if (cloud.loadedForUid === userKey) return;
+  cloud.loadedForUid = userKey;
+  cloud.busy = true;
+  renderCloudSync();
+  try {
+    const cloudData = await cloud.api.loadCloudProfiles();
+    if (cloudData?.profiles?.length) {
+      applyCloudProfiles(cloudData);
+      setCloudStatus("Cloud profile loaded.");
+    } else {
+      setCloudStatus("Signed in. Sync when ready.");
+    }
+  } catch (error) {
+    setCloudStatus(error?.message === "no-cloud-profile" ? "Signed in. Sync when ready." : cleanCloudError(error));
+  } finally {
+    cloud.busy = false;
+    renderCloudSync();
+  }
+}
+
+function applyCloudProfiles(cloudData) {
+  state.profiles = cloudData.profiles.map((profile) => ({ ...normaliseProfile(profile), id: profile.id || `profile-${Date.now()}`, updatedAt: profile.updatedAt || new Date().toISOString() }));
+  state.activeProfileId = cloudData.activeProfileId || state.profiles[0]?.id || "";
+  applyProfile(state.profiles.find((profile) => profile.id === state.activeProfileId) || state.profiles[0]);
+  state.editMode = false;
+  persistProfiles();
+  $("#save-status").textContent = "Loaded cloud profile";
+  render();
+}
+
 function cloudPayload() {
+  const activeId = state.activeProfileId || `profile-${Date.now()}`;
+  const workingProfile = {
+    id: activeId,
+    updatedAt: new Date().toISOString(),
+    ...profilePayload(),
+    profileName: state.profileName || "WaveKit profile"
+  };
+  const profiles = state.profiles.length
+    ? state.profiles.map((profile) => (profile.id === activeId ? workingProfile : profile))
+    : [workingProfile];
+  if (!profiles.some((profile) => profile.id === activeId)) profiles.push(workingProfile);
+  state.profiles = profiles;
+  state.activeProfileId = activeId;
+  persistProfiles();
   return {
-    profiles: state.profiles,
+    profiles,
     activeProfileId: state.activeProfileId,
     savedAt: new Date().toISOString()
   };
+}
+
+function hasProfileProgress() {
+  return Boolean(state.profileName || Object.keys(state.owned).length || state.focus.size || state.weapons.size || state.profiles.length);
 }
 
 async function runCloudAction(workingMessage, action, successMessage) {
