@@ -364,6 +364,7 @@ const state = {
   selectedTeamKey: "",
   showAllTeams: false,
   flowVisitedResults: false,
+  flowBuildsOpened: false,
   owned: {},
   focus: new Set(),
   weapons: new Set()
@@ -609,7 +610,7 @@ function renderCharacters() {
       event.stopPropagation();
       state.roverForm = button.dataset.roverForm;
       state.selectedTeamKey = "";
-      state.flowVisitedResults = false;
+      resetFlowGuide();
       markUnsaved();
       render();
     });
@@ -672,7 +673,7 @@ function renderWeapons() {
     button.addEventListener("click", () => {
       const weapon = button.dataset.weapon;
       state.weapons.has(weapon) ? state.weapons.delete(weapon) : state.weapons.add(weapon);
-      state.flowVisitedResults = false;
+      resetFlowGuide();
       markUnsaved();
       render();
     });
@@ -761,7 +762,7 @@ function toggleCharacter(slug) {
     state.owned[slug] = { chain: 0 };
   }
   markUnsaved();
-  state.flowVisitedResults = false;
+  resetFlowGuide();
   updateCharacterCard(slug);
   refreshRosterSelection();
 }
@@ -771,7 +772,7 @@ function changeChain(slug, delta) {
   if (!state.owned[slug]) state.owned[slug] = { chain: 0 };
   state.owned[slug].chain = Math.max(0, Math.min(6, state.owned[slug].chain + delta));
   markUnsaved();
-  state.flowVisitedResults = false;
+  resetFlowGuide();
   updateCharacterCard(slug);
   refreshRosterSelection();
 }
@@ -797,7 +798,7 @@ function toggleFocus(slug) {
   if (!state.owned[slug]) state.owned[slug] = { chain: 0 };
   state.focus.has(slug) ? state.focus.delete(slug) : state.focus.add(slug);
   markUnsaved();
-  state.flowVisitedResults = false;
+  resetFlowGuide();
   updateCharacterCard(slug);
   refreshRosterSelection();
 }
@@ -805,6 +806,11 @@ function toggleFocus(slug) {
 function refreshRosterSelection() {
   renderProfileSummary();
   renderResults();
+}
+
+function resetFlowGuide() {
+  state.flowVisitedResults = false;
+  state.flowBuildsOpened = false;
 }
 
 function generateTeams() {
@@ -1003,6 +1009,10 @@ function renderFlowNext(teams = generateTeams()) {
   const ownedCount = Object.keys(state.owned).length;
   const selectedTeam = teams.find((team) => teamKey(team) === state.selectedTeamKey);
   const next = nextFlowAction({ ownedCount, selectedTeam, teams });
+  if (next.target === "builds" && state.flowBuildsOpened) {
+    flowNext.hidden = true;
+    return;
+  }
   flowNext.hidden = false;
   flowNext.dataset.target = next.target;
   flowNextStep.textContent = next.step;
@@ -1101,6 +1111,8 @@ function handleFlowNext() {
     return;
   }
   if (target === "builds") {
+    state.flowBuildsOpened = true;
+    renderFlowNext();
     scrollToSection("#builds");
     return;
   }
@@ -1192,8 +1204,9 @@ function teamKey(team) {
 
 function selectTeam(key, jumpToBuilds) {
   state.selectedTeamKey = key;
+  state.flowBuildsOpened = Boolean(jumpToBuilds);
   renderResults();
-  if (jumpToBuilds) document.querySelector("#builds").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (jumpToBuilds) scrollToSection("#builds");
 }
 
 function teamRevealButton(hiddenCount) {
@@ -1786,7 +1799,7 @@ function applyProfile(profile) {
   state.weapons = new Set(payload.weapons);
   state.selectedTeamKey = "";
   state.showAllTeams = false;
-  state.flowVisitedResults = false;
+  resetFlowGuide();
 }
 
 function clearWorkingProfile() {
@@ -1800,7 +1813,7 @@ function clearWorkingProfile() {
   state.roverForm = "Aero";
   state.selectedTeamKey = "";
   state.showAllTeams = false;
-  state.flowVisitedResults = false;
+  resetFlowGuide();
   state.owned = {};
   state.focus = new Set();
   state.weapons = new Set();
@@ -1950,9 +1963,9 @@ function render() {
   $("#profile-name").value = state.profileName;
   renderProfileManager();
   renderCloudSync();
-  renderSegmented("#experience-options", experienceOptions, state.experience, (value) => { state.experience = value; markUnsaved(); render(); });
-  renderSegmented("#priority-options", priorityOptions, state.priority, (value) => { state.priority = value; markUnsaved(); render(); });
-  renderSegmented("#goal-options", goalOptions, state.goal, (value) => { state.goal = value; markUnsaved(); render(); });
+  renderSegmented("#experience-options", experienceOptions, state.experience, (value) => { state.experience = value; resetFlowGuide(); markUnsaved(); render(); });
+  renderSegmented("#priority-options", priorityOptions, state.priority, (value) => { state.priority = value; resetFlowGuide(); markUnsaved(); render(); });
+  renderSegmented("#goal-options", goalOptions, state.goal, (value) => { state.goal = value; resetFlowGuide(); markUnsaved(); render(); });
   renderRoleFilters();
   renderCharacters();
   renderWeaponTypeFilters();
