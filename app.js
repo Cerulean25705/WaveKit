@@ -460,6 +460,12 @@ const flowNextButton = $("#flow-next-button");
 const profileStorageKey = "wavekit-profiles-v1";
 const legacyProfileKey = "tacet-team-helper-profile";
 const legacyProfilesKey = "tacet-team-helper-profiles-v2";
+const cloud = {
+  api: null,
+  configured: false,
+  user: null,
+  busy: false
+};
 
 function c(slug, name, element, weaponType, roles, score, synergies, tags, note) {
   const build = builds[slug] || genericBuild(element, weaponType, roles);
@@ -1615,6 +1621,7 @@ function saveProfile() {
   try {
     persistProfiles();
     $("#save-status").textContent = "Profile saved";
+    saveCloudProfiles("Cloud profile synced");
   } catch {
     $("#save-status").textContent = "Save blocked";
   }
@@ -1803,6 +1810,7 @@ function importProfileFile(file) {
       applyProfile(profile);
       state.editMode = false;
       persistProfiles();
+      saveCloudProfiles("Imported profile synced");
       $("#save-status").textContent = "Profile imported";
       render();
     } catch {
@@ -1868,6 +1876,7 @@ function render() {
   document.body.classList.toggle("is-profile-view", !state.editMode);
   $("#profile-name").value = state.profileName;
   renderProfileManager();
+  renderCloudSync();
   renderSegmented("#experience-options", experienceOptions, state.experience, (value) => { state.experience = value; markUnsaved(); render(); });
   renderSegmented("#priority-options", priorityOptions, state.priority, (value) => { state.priority = value; markUnsaved(); render(); });
   renderSegmented("#goal-options", goalOptions, state.goal, (value) => { state.goal = value; markUnsaved(); render(); });
@@ -1880,6 +1889,177 @@ function render() {
 
 function markUnsaved() {
   if (state.activeProfileId) $("#save-status").textContent = "Unsaved changes";
+}
+
+async function initCloudSync() {
+  try {
+    const config = await import("./assets/firebase-config.js");
+    if (!config.firebaseEnabled) {
+      setCloudStatus("Cloud sync needs Firebase setup.");
+      renderCloudSync();
+      return;
+    }
+    cloud.api = await import("./assets/firebase-sync.js");
+    cloud.configured = cloud.api.isCloudConfigured();
+    if (!cloud.configured) {
+      setCloudStatus("Cloud sync needs Firebase setup.");
+      renderCloudSync();
+      return;
+    }
+    cloud.api.initCloudSync((user) => {
+      cloud.user = user;
+      setCloudStatus(user ? "Signed in. Sync when ready." : "Signed out. Local profiles still work.");
+      renderCloudSync();
+    });
+  } catch {
+    setCloudStatus("Cloud sync could not load.");
+  }
+}
+
+function renderCloudSync() {
+  const signedOut = $("#cloud-signed-out");
+  const signedIn = $("#cloud-signed-in");
+  const userLabel = $("#cloud-user-label");
+  const status = $("#cloud-sync-status");
+  if (!signedOut || !signedIn || !status) return;
+  signedOut.hidden = Boolean(cloud.user);
+  signedIn.hidden = !cloud.user;
+  if (userLabel && cloud.user) {
+    userLabel.textContent = `Signed in as ${cloud.user.email || cloud.user.displayName || "WaveKit user"}`;
+  }
+  if (!cloud.configured) {
+    status.textContent = "Cloud sync needs Firebase setup.";
+  }
+  [
+    "#cloud-sign-in",
+    "#cloud-create-account",
+    "#cloud-google",
+    "#cloud-reset-password",
+    "#cloud-save",
+    "#cloud-load",
+    "#cloud-sign-out"
+  ].forEach((selector) => {
+    const button = $(selector);
+    if (button) button.disabled = cloud.busy || !cloud.configured;
+  });
+}
+
+function setCloudStatus(message) {
+  const status = $("#cloud-sync-status");
+  if (status) status.textContent = message;
+}
+
+function cloudCredentials() {
+  return {
+    email: $("#cloud-email").value.trim(),
+    password: $("#cloud-password").value
+  };
+}
+
+async function signInCloud() {
+  const { email, password } = cloudCredentials();
+  if (!email || !password) {
+    setCloudStatus("Enter an email and password first.");
+    return;
+  }
+  await runCloudAction("Signing in...", () => cloud.api.signInWithEmail(email, password), "Signed in. Use Sync now or Load cloud profile.");
+}
+
+async function createCloudAccount() {
+  const { email, password } = cloudCredentials();
+  if (!email || password.length < 6) {
+    setCloudStatus("Use an email and a password with at least 6 characters.");
+    return;
+  }
+  await runCloudAction("Creating account...", async () => {
+    cloud.user = await cloud.api.createAccountWithEmail(email, password);
+    if (state.profiles.length) await cloud.api.saveCloudProfiles(cloudPayload());
+  }, state.profiles.length ? "Account created. Profile synced." : "Account created. Save a profile to sync it.");
+}
+
+async function signInGoogleCloud() {
+  await runCloudAction("Opening Google sign in...", () => cloud.api.signInWithGoogle(), "Signed in. Use Sync now or Load cloud profile.");
+}
+
+async function resetCloudPassword() {
+  const { email } = cloudCredentials();
+  if (!email) {
+    setCloudStatus("Enter your email first.");
+    return;
+  }
+  await runCloudAction("Sending reset email...", () => cloud.api.resetCloudPassword(email), "Password reset email sent.");
+}
+
+async function signOutCloud() {
+  await runCloudAction("Signing out...", () => cloud.api.signOutCloud(), "Signed out. Local profiles still work.");
+}
+
+async function saveCloudProfiles(successMessage = "Cloud profile synced") {
+  if (!cloud.configured || !cloud.user || !cloud.api) return;
+  if (!state.profiles.length) {
+    setCloudStatus("Save or create a profile before syncing.");
+    return;
+  }
+  await runCloudAction("Syncing profile...", () => cloud.api.saveCloudProfiles(cloudPayload()), successMessage);
+}
+
+async function loadCloudProfiles() {
+  if (!cloud.configured || !cloud.user || !cloud.api) return;
+  await runCloudAction("Loading cloud profile...", async () => {
+    const cloudData = await cloud.api.loadCloudProfiles();
+    if (!cloudData?.profiles?.length) {
+      throw new Error("no-cloud-profile");
+    }
+    state.profiles = cloudData.profiles.map((profile) => ({ ...normaliseProfile(profile), id: profile.id || `profile-${Date.now()}`, updatedAt: profile.updatedAt || new Date().toISOString() }));
+    state.activeProfileId = cloudData.activeProfileId || state.profiles[0]?.id || "";
+    applyProfile(state.profiles.find((profile) => profile.id === state.activeProfileId) || state.profiles[0]);
+    state.editMode = false;
+    persistProfiles();
+    $("#save-status").textContent = "Loaded cloud profile";
+    render();
+  }, "Cloud profile loaded.");
+}
+
+function cloudPayload() {
+  return {
+    profiles: state.profiles,
+    activeProfileId: state.activeProfileId,
+    savedAt: new Date().toISOString()
+  };
+}
+
+async function runCloudAction(workingMessage, action, successMessage) {
+  if (!cloud.configured || !cloud.api) {
+    setCloudStatus("Cloud sync needs Firebase setup.");
+    return;
+  }
+  cloud.busy = true;
+  setCloudStatus(workingMessage);
+  renderCloudSync();
+  try {
+    await action();
+    setCloudStatus(successMessage);
+  } catch (error) {
+    setCloudStatus(cleanCloudError(error));
+  } finally {
+    cloud.busy = false;
+    renderCloudSync();
+  }
+}
+
+function cleanCloudError(error) {
+  const code = error?.code || error?.message;
+  const messages = {
+    "auth/invalid-email": "Please enter a valid email address.",
+    "auth/invalid-credential": "Invalid email or password.",
+    "auth/email-already-in-use": "An account already exists with that email.",
+    "auth/popup-closed-by-user": "Google sign in was closed before finishing.",
+    "auth/weak-password": "Password should be at least 6 characters.",
+    "cloud-sync-not-configured": "Cloud sync needs Firebase setup.",
+    "not-signed-in": "Sign in before syncing.",
+    "no-cloud-profile": "No cloud profile found yet. Use Sync now first."
+  };
+  return messages[code] || "Cloud sync failed. Check Firebase setup and try again.";
 }
 
 $("#profile-name").addEventListener("input", (event) => {
@@ -1911,6 +2091,14 @@ $("#profile-import-file").addEventListener("change", (event) => {
 $("#copy-feedback-context").addEventListener("click", copyFeedbackContext);
 $("form[name='wavekit-feedback']").addEventListener("submit", handleFeedbackSubmit);
 flowNextButton.addEventListener("click", handleFlowNext);
+$("#cloud-sign-in").addEventListener("click", signInCloud);
+$("#cloud-create-account").addEventListener("click", createCloudAccount);
+$("#cloud-google").addEventListener("click", signInGoogleCloud);
+$("#cloud-reset-password").addEventListener("click", resetCloudPassword);
+$("#cloud-save").addEventListener("click", () => saveCloudProfiles("Cloud profile synced"));
+$("#cloud-load").addEventListener("click", loadCloudProfiles);
+$("#cloud-sign-out").addEventListener("click", signOutCloud);
 
 loadProfile();
 render();
+initCloudSync();

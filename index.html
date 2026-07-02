@@ -127,6 +127,39 @@
             </div>
             <div id="profile-list" class="profile-list" aria-label="Saved profiles"></div>
             <div id="profile-summary" class="profile-summary" aria-live="polite"></div>
+            <div class="cloud-sync" aria-live="polite">
+              <div class="cloud-sync-heading">
+                <div>
+                  <span>Optional account sync</span>
+                  <strong>Sign in to keep profiles across devices.</strong>
+                </div>
+                <small id="cloud-sync-status">Cloud sync not connected yet.</small>
+              </div>
+              <div id="cloud-signed-out" class="cloud-auth">
+                <label class="field compact-field">
+                  <span>Email</span>
+                  <input id="cloud-email" type="email" autocomplete="email" placeholder="you@example.com">
+                </label>
+                <label class="field compact-field">
+                  <span>Password</span>
+                  <input id="cloud-password" type="password" autocomplete="current-password" placeholder="At least 6 characters">
+                </label>
+                <div class="profile-actions compact">
+                  <button id="cloud-sign-in" class="button primary" type="button">Sign in</button>
+                  <button id="cloud-create-account" class="button ghost" type="button">Create account</button>
+                  <button id="cloud-google" class="button ghost" type="button">Google</button>
+                  <button id="cloud-reset-password" class="button ghost" type="button">Reset password</button>
+                </div>
+              </div>
+              <div id="cloud-signed-in" class="cloud-session" hidden>
+                <span id="cloud-user-label">Signed in</span>
+                <div class="profile-actions compact">
+                  <button id="cloud-save" class="button primary" type="button">Sync now</button>
+                  <button id="cloud-load" class="button ghost" type="button">Load cloud profile</button>
+                  <button id="cloud-sign-out" class="button ghost" type="button">Sign out</button>
+                </div>
+              </div>
+            </div>
             <div class="profile-actions compact">
               <button id="new-profile" class="button ghost" type="button">New profile</button>
               <button id="edit-profile" class="button ghost" type="button">Edit profile</button>

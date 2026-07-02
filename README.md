@@ -20,6 +20,26 @@ Use these Netlify settings:
 
 The feedback form uses Netlify Forms. Local preview submissions are redirected to the thank-you page without sending a real report.
 
+## Optional Firebase Profile Sync
+
+WaveKit works without an account. Firebase is only used if you want optional cross-device profile sync.
+
+To enable it:
+
+- Create a Firebase project.
+- Add a Web app in Firebase project settings.
+- Enable Authentication providers, such as Email/Password and Google.
+- Create a Firestore database.
+- Paste your Firebase Web app config into `assets/firebase-config.js`.
+- Change `firebaseEnabled` in `assets/firebase-config.js` to `true`.
+- Add the rules from `firestore.rules` to Firestore Rules.
+
+The Firestore profile document is stored at:
+
+`users/{firebaseUserId}/profiles/wavekit`
+
+Only the signed-in user should be able to read or write their own profile document.
+
 ## Fan Project Notice
 
 WaveKit is an unofficial fan-made tool. Wuthering Waves, its characters, names, art, icons, and related assets belong to Kuro Games. WaveKit is not affiliated with, endorsed by, or sponsored by Kuro Games.

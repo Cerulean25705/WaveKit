@@ -357,6 +357,15 @@ h1 {
     0 18px 34px rgba(0, 0, 0, 0.34);
 }
 
+.button:disabled,
+.filter:disabled,
+.segmented button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+  box-shadow: none;
+}
+
 .flow-next {
   position: fixed;
   left: 50%;
@@ -1973,6 +1982,69 @@ h1 {
 .build-card dd {
   margin: 0;
   color: var(--soft);
+}
+
+.cloud-sync {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 13px;
+  border: 1px solid rgba(255, 215, 122, 0.18);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 215, 122, 0.11), transparent 42%),
+    linear-gradient(135deg, rgba(120, 244, 255, 0.05), transparent 58%),
+    rgba(5, 15, 23, 0.64);
+}
+
+.cloud-sync-heading {
+  display: grid;
+  gap: 8px;
+}
+
+.cloud-sync-heading span {
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cloud-sync-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.cloud-sync-heading small,
+.cloud-session > span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.cloud-auth {
+  display: grid;
+  gap: 8px;
+}
+
+.compact-field {
+  margin-top: 0;
+}
+
+.compact-field input {
+  min-height: 40px;
+}
+
+.cloud-session {
+  display: grid;
+  gap: 10px;
+}
+
+.cloud-session[hidden],
+.cloud-auth[hidden] {
+  display: none;
 }
 
 .build-more {
