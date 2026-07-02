@@ -457,6 +457,8 @@ const flowNextStep = $("#flow-next-step");
 const flowNextTitle = $("#flow-next-title");
 const flowNextDetail = $("#flow-next-detail");
 const flowNextButton = $("#flow-next-button");
+const navLinks = [...document.querySelectorAll(".topnav a[href^='#']")];
+const navSections = navLinks.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
 const profileStorageKey = "wavekit-profiles-v1";
 const legacyProfileKey = "tacet-team-helper-profile";
 const legacyProfilesKey = "tacet-team-helper-profiles-v2";
@@ -1104,7 +1106,28 @@ function handleFlowNext() {
 
 function scrollToSection(primarySelector, preferredSelector = primarySelector) {
   const target = document.querySelector(preferredSelector) || document.querySelector(primarySelector);
+  if (primarySelector.startsWith("#")) setActiveNav(primarySelector);
   target?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function setActiveNav(hash) {
+  navLinks.forEach((link) => {
+    const isActive = link.getAttribute("href") === hash;
+    link.classList.toggle("is-active", isActive);
+    if (isActive) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+}
+
+function updateActiveNav() {
+  const topbarHeight = $(".topbar")?.getBoundingClientRect().height || 0;
+  let currentHash = "";
+  navSections.forEach((section) => {
+    if (section.getBoundingClientRect().top <= topbarHeight + 92) {
+      currentHash = `#${section.id}`;
+    }
+  });
+  setActiveNav(currentHash);
 }
 
 function tierTeams(teams) {
@@ -2161,7 +2184,10 @@ $("#cloud-load").addEventListener("click", loadCloudProfiles);
 $("#cloud-sign-out").addEventListener("click", signOutCloud);
 document.addEventListener("click", handleAccountMenuDismiss);
 document.addEventListener("keydown", handleAccountMenuDismiss);
+window.addEventListener("scroll", updateActiveNav, { passive: true });
+window.addEventListener("hashchange", () => setActiveNav(location.hash || ""));
 
 loadProfile();
 render();
+updateActiveNav();
 initCloudSync();
