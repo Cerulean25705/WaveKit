@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Weapon image pending">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="18" x2="142" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#273437"/>
+      <stop offset=".55" stop-color="#0b1418"/>
+      <stop offset="1" stop-color="#303124"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="34" fill="url(#bg)"/>
+  <path d="M80 35c21 0 38 15 38 34 0 15-10 25-25 32l-4 16H71l5-27c16-5 24-11 24-21 0-9-8-15-20-15-11 0-19 5-27 14L41 55c10-13 23-20 39-20Z" fill="#7ef4dc"/>
+  <circle cx="80" cy="132" r="10" fill="#f3c56d"/>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">WaveKit mark</title>
+  <desc id="desc">A minimal wave-shaped W mark for WaveKit.</desc>
+  <defs>
+    <linearGradient id="tile" x1="16" y1="14" x2="112" y2="116" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#172b31"/>
+      <stop offset="1" stop-color="#071014"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="24" y1="78" x2="105" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7ef4dc"/>
+      <stop offset=".52" stop-color="#a8dcff"/>
+      <stop offset="1" stop-color="#f3c56d"/>
+    </linearGradient>
+  </defs>
+  <rect x="9" y="9" width="110" height="110" rx="28" fill="url(#tile)" stroke="#ffffff" stroke-opacity=".13" stroke-width="3"/>
+  <path d="M26 72c9-19 18-19 27 0s18 19 27 0 18-19 27 0" fill="none" stroke="url(#wave)" stroke-linecap="round" stroke-width="11"/>
+  <path d="M30 52c10 24 18 36 26 36 8 0 13-14 18-36" fill="none" stroke="#f3f9f6" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+  <path d="M74 52c5 22 11 36 19 36 7 0 13-10 22-30" fill="none" stroke="#f3f9f6" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+  <circle cx="101" cy="39" r="5" fill="#f3c56d"/>
+</svg>

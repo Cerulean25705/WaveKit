@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Sword weapon">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="18" x2="142" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#193334"/>
+      <stop offset=".52" stop-color="#0b1418"/>
+      <stop offset="1" stop-color="#24351f"/>
+    </linearGradient>
+    <linearGradient id="blade" x1="40" y1="125" x2="121" y2="23" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dffefa"/>
+      <stop offset=".48" stop-color="#7ef4dc"/>
+      <stop offset="1" stop-color="#f3c56d"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="34" fill="url(#bg)"/>
+  <path d="M26 134c18-13 38-30 58-52 17-19 33-40 50-63 4-5 11 2 7 7-18 23-36 46-54 66-20 22-39 40-57 54-5 4-10-8-4-12Z" fill="url(#blade)"/>
+  <path d="M63 112 49 98l35-35 15 14-36 35Z" fill="#101719" opacity=".92"/>
+  <path d="m47 95 18 18-11 11-18-18 11-11Z" fill="#f3c56d"/>
+  <path d="m30 126 11 11-16 10c-6 3-12-5-7-10l12-11Z" fill="#dffefa"/>
+  <path d="M98 61 138 19l-24 52-16-10Z" fill="#fff" opacity=".42"/>
+</svg>

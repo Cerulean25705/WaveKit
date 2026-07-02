@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Pistols weapon">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="18" x2="142" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#203d43"/>
+      <stop offset=".55" stop-color="#0b1418"/>
+      <stop offset="1" stop-color="#3d2835"/>
+    </linearGradient>
+    <linearGradient id="gun" x1="29" y1="92" x2="132" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f2f7f4"/>
+      <stop offset=".48" stop-color="#7ef4dc"/>
+      <stop offset="1" stop-color="#f3c56d"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="34" fill="url(#bg)"/>
+  <path d="M31 76c23-14 51-21 85-22 14 0 22 18 11 27-17 13-40 19-69 20l-10 26c-4 10-18 8-19-3l-2-28c-1-8 0-15 4-20Z" fill="url(#gun)"/>
+  <path d="M54 99h28l-13 33c-3 8-15 8-18 0L43 112l11-13Z" fill="#101719" opacity=".82"/>
+  <path d="M34 77c28-7 58-12 92-11" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".4"/>
+  <path d="M98 54c6 9 7 18 2 28l21-7c8-3 7-15-2-17l-21-4Z" fill="#fa8d78" opacity=".74"/>
+</svg>

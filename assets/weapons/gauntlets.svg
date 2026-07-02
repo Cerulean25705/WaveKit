@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Gauntlets weapon">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="18" x2="142" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#24314d"/>
+      <stop offset=".56" stop-color="#0b1418"/>
+      <stop offset="1" stop-color="#2b3621"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="32" y1="116" x2="128" y2="39" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dffefa"/>
+      <stop offset=".5" stop-color="#87cfff"/>
+      <stop offset="1" stop-color="#b7a4ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="34" fill="url(#bg)"/>
+  <path d="M45 86c-7-13-3-28 9-35 10-6 21-3 30 6l18-15c10-8 24 2 19 15l-9 26c13 5 16 23 5 32l-28 23c-9 8-23 4-28-7L45 86Z" fill="url(#metal)"/>
+  <path d="M51 85c8 3 18 12 24 24l11-9c-6-13-15-22-28-28l-7 13Z" fill="#101719" opacity=".72"/>
+  <path d="M80 64c10 6 18 15 23 27l11-33-9-5-25 11Z" fill="#fff" opacity=".28"/>
+  <path d="m59 119 19 19-9 8c-7 5-18 2-21-6l-6-18 17-3Z" fill="#f3c56d"/>
+</svg>

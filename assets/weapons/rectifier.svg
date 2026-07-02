@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Rectifier weapon">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+      <stop stop-color="#24383b"/>
+      <stop offset=".55" stop-color="#0b1418"/>
+      <stop offset="1" stop-color="#29253b"/>
+    </radialGradient>
+    <linearGradient id="core" x1="43" y1="122" x2="117" y2="38" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f2f7f4"/>
+      <stop offset=".42" stop-color="#7ef4dc"/>
+      <stop offset="1" stop-color="#b7a4ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="34" fill="url(#bg)"/>
+  <circle cx="80" cy="80" r="42" fill="none" stroke="url(#core)" stroke-width="13"/>
+  <circle cx="80" cy="80" r="19" fill="url(#core)"/>
+  <path d="M80 20 94 52H66L80 20ZM80 140l-14-32h28l-14 32ZM20 80l32-14v28L20 80Zm120 0-32 14V66l32 14Z" fill="#f3c56d"/>
+  <path d="M80 43c21 0 37 16 37 37" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".32"/>
+</svg>

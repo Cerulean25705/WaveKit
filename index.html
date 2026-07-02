@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WaveKit</title>
+    <meta name="description" content="WaveKit is a fan-made Wuthering Waves team helper that suggests practical teams and builds from the Resonators and weapons you own.">
+    <meta property="og:title" content="WaveKit">
+    <meta property="og:description" content="Build Wuthering Waves teams from what you actually own.">
+    <meta property="og:image" content="assets/wavekit-mark.png">
+    <meta name="theme-color" content="#061827">
+    <link rel="icon" href="assets/wavekit-mark.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="WaveKit">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="styles.css?v=public-polish-1">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="WaveKit home">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="assets/wavekit-mark.png" alt="">
+        </span>
+        <span>WaveKit</span>
+      </a>
+      <nav class="topnav" aria-label="Page sections">
+        <a href="#how">How it works</a>
+        <a href="#helper">Helper</a>
+        <a href="#results">Teams</a>
+        <a href="#builds">Builds</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#trust">Trust</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="hero" aria-labelledby="hero-title">
+        <img class="hero-image" src="assets/wavekit-hero-v2.png" alt="">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="kicker">Wuthering Waves team helper</p>
+          <h1 id="hero-title">Build teams from what you actually own.</h1>
+          <p class="hero-copy">
+            WaveKit helps you mark your Resonators and weapons, then turns your account into clear team paths:
+            strongest archetypes first, sensible backups included, and build notes that explain why each slot works.
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href="#helper">Start team helper</a>
+            <a class="button" href="#results">View suggestions</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="how" class="section how-section" aria-labelledby="how-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">How WaveKit works</p>
+            <h2 id="how-title">Suggestions with context, not pressure.</h2>
+            <p>
+              WaveKit looks at the Resonators and weapons you mark as owned, then builds teams around known
+              archetypes, role coverage, safety, and realistic substitutions.
+            </p>
+          </div>
+          <div class="save-card trust-card">
+            <strong>Local</strong>
+            <span>Your profiles stay in this browser.</span>
+          </div>
+        </div>
+        <div class="trust-grid">
+          <article class="trust-panel">
+            <span>01</span>
+            <h3>Account-aware</h3>
+            <p>Suggestions come from what you actually own, not a perfect account that expects every premium unit.</p>
+          </article>
+          <article class="trust-panel">
+            <span>02</span>
+            <h3>Archetype-first</h3>
+            <p>Teams are weighted by mechanics like Aero Erosion, Spectro Frazzle, Echo Skill, Heavy Attack, and Tune shells.</p>
+          </article>
+          <article class="trust-panel">
+            <span>03</span>
+            <h3>Comfort-aware</h3>
+            <p>Real healers and defensive picks are treated differently from utility supports, so risky teams are easier to spot.</p>
+          </article>
+          <article class="trust-panel">
+            <span>04</span>
+            <h3>Honest data</h3>
+            <p>Newer or less-confirmed character data is marked for review instead of being presented as absolute truth.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="helper" class="section helper-shell" aria-labelledby="helper-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Team helper</p>
+            <h2 id="helper-title">A calmer setup flow.</h2>
+            <p>
+              Save a local profile, choose your roster, then let the helper build teams around your strongest
+              damage dealers without pretending there is only one perfect answer.
+            </p>
+          </div>
+          <div class="save-card" aria-live="polite">
+            <strong id="save-status">Not saved yet</strong>
+            <span>Profiles stay on this device.</span>
+          </div>
+        </div>
+
+        <div class="flow-guide" aria-label="Setup steps">
+          <span><strong>1</strong> Save or edit profile</span>
+          <span><strong>2</strong> Tap owned Resonators</span>
+          <span><strong>3</strong> Tap owned weapons</span>
+          <span><strong>4</strong> Pick a team to build</span>
+        </div>
+
+        <div class="starter-note">
+          <strong>Start simple</strong>
+          <p>Tap the Resonators you own first. Use the star on characters you want WaveKit to prioritise, then add weapons when you want more accurate build readiness.</p>
+        </div>
+
+        <div class="helper-grid">
+          <section class="panel profile-panel" aria-labelledby="profile-title">
+            <div class="panel-heading">
+              <span>Step 1</span>
+              <h3 id="profile-title">Player profile</h3>
+            </div>
+            <div id="profile-list" class="profile-list" aria-label="Saved profiles"></div>
+            <div id="profile-summary" class="profile-summary" aria-live="polite"></div>
+            <div class="profile-actions compact">
+              <button id="new-profile" class="button ghost" type="button">New profile</button>
+              <button id="edit-profile" class="button ghost" type="button">Edit profile</button>
+              <button id="export-profile" class="button ghost" type="button">Export</button>
+              <button id="import-profile" class="button ghost" type="button">Import</button>
+              <button id="delete-profile" class="button ghost danger" type="button">Delete</button>
+            </div>
+            <input id="profile-import-file" class="visually-hidden" type="file" accept="application/json,.json">
+            <div id="profile-editor" class="profile-editor">
+              <label class="field">
+                <span>Profile name</span>
+                <input id="profile-name" type="text" placeholder="Optional">
+              </label>
+              <div class="field">
+                <span>How familiar are you?</span>
+                <div id="experience-options" class="segmented" aria-label="Experience level"></div>
+              </div>
+              <div class="field">
+                <span>What should suggestions prioritise?</span>
+                <div id="priority-options" class="segmented" aria-label="Team priority"></div>
+              </div>
+              <div class="field">
+                <span>Main goal</span>
+                <div id="goal-options" class="segmented" aria-label="Main goal"></div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button id="save-profile" class="button primary" type="button">Save changes</button>
+              <button id="reset-profile" class="button ghost" type="button">Clear edits</button>
+            </div>
+          </section>
+
+          <section class="panel roster-panel" aria-labelledby="roster-title">
+            <div class="panel-heading">
+              <span>Step 2</span>
+              <h3 id="roster-title">Owned Resonators</h3>
+            </div>
+            <div class="toolbar">
+              <label class="search-box">
+                <span>Search</span>
+                <input id="character-search" type="search" placeholder="Name, element, role">
+              </label>
+              <div id="role-filters" class="filters" aria-label="Role filters"></div>
+            </div>
+            <div id="character-grid" class="character-grid" aria-label="Selectable characters"></div>
+          </section>
+
+          <section class="panel weapon-panel" aria-labelledby="weapon-title">
+            <div class="panel-heading">
+              <span>Step 3</span>
+              <h3 id="weapon-title">Weapons you own</h3>
+            </div>
+            <p>
+              Mark signature or strong weapons you own. If you skip this, teams still work; the helper will use
+              safer generic build advice.
+            </p>
+            <label class="search-box weapon-search">
+              <span>Search weapons</span>
+              <input id="weapon-search" type="search" placeholder="Weapon or character name">
+            </label>
+            <div id="weapon-type-filters" class="filters weapon-type-filters" aria-label="Weapon type filters"></div>
+            <div id="weapon-grid" class="weapon-grid" aria-label="Selectable weapons"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="results" class="section results-section" aria-labelledby="results-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Suggestions</p>
+            <h2 id="results-title">Best teams from your current roster.</h2>
+            <p>
+              The helper ranks teams by role coverage, known archetype synergy, third-slot safety, and whether
+              your owned weapons make the main DPS easier to build.
+            </p>
+          </div>
+          <div class="save-card">
+            <strong id="team-count">0</strong>
+            <span id="team-count-label">team ideas ready</span>
+          </div>
+        </div>
+        <div id="empty-results" class="empty-state">
+          Select at least one main damage character and two helpers or sustain characters to generate teams.
+        </div>
+        <div id="team-results" class="team-results"></div>
+      </section>
+
+      <section id="builds" class="section build-section" aria-labelledby="builds-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Build cards</p>
+            <h2 id="builds-title">Build the team you pick.</h2>
+            <p id="build-subtitle">
+              Select a team card above to focus the build cards on those three characters, with weapon options,
+              Sonata/Echo cost, main Echo, stats, and kit-specific play notes.
+            </p>
+          </div>
+          <div class="save-card">
+            <strong id="build-count">0</strong>
+            <span id="build-count-label">selected team</span>
+          </div>
+        </div>
+        <div id="build-results" class="build-results"></div>
+      </section>
+
+      <section id="sources" class="section sources" aria-labelledby="sources-title">
+        <div class="section-heading">
+          <p class="kicker">Source notes</p>
+          <h2 id="sources-title">Built to be honest about certainty.</h2>
+          <p>
+            This prototype uses released-character and build data checked against public guide sources. Team
+            scoring is conservative: it prefers proven shells and sensible alternatives over risky guesses.
+          </p>
+        </div>
+        <div class="source-list">
+          <a href="https://game8.co/games/Wuthering-Waves/archives/452489">Game8 character list</a>
+          <a href="https://game8.co/games/Wuthering-Waves/archives/457465">Game8 all character builds</a>
+          <a href="https://game8.co/games/Wuthering-Waves/archives/454728">Game8 team comps</a>
+          <a href="https://www.pcgamer.com/games/rpg/wuthering-waves-banner-next-current/">Current banner notes</a>
+        </div>
+      </section>
+
+      <section id="feedback" class="section feedback-section" aria-labelledby="feedback-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Player feedback</p>
+            <h2 id="feedback-title">Help make suggestions smarter.</h2>
+            <p>
+              If a team looks wrong, a weapon is missing, or a build note feels confusing, send it through.
+              WaveKit is meant to improve with real player testing.
+            </p>
+          </div>
+          <div class="save-card trust-card">
+            <strong>Reports</strong>
+            <span>Team context is included automatically.</span>
+          </div>
+        </div>
+        <form name="wavekit-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="thanks/" class="feedback-form">
+          <input type="hidden" name="form-name" value="wavekit-feedback">
+          <label class="visually-hidden">Leave this empty <input name="bot-field"></label>
+          <input id="feedback-context" type="hidden" name="context" value="">
+          <label class="field">
+            <span>What should we look at?</span>
+            <select id="feedback-type" name="type">
+              <option>Team suggestion seems wrong</option>
+              <option>Missing Resonator or weapon</option>
+              <option>Build info needs checking</option>
+              <option>Something is confusing</option>
+              <option>Visual or mobile issue</option>
+              <option>Other feedback</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Feedback</span>
+            <textarea id="feedback-message" name="message" rows="5" placeholder="Example: Cartethyia suggested this team, but I expected Sanhua because..."></textarea>
+          </label>
+          <label class="field">
+            <span>Contact, optional</span>
+            <input name="contact" type="text" placeholder="Discord, email, Reddit, or leave blank">
+          </label>
+          <div class="feedback-preview">
+            <strong>Included context</strong>
+            <p id="feedback-context-preview">No team selected yet.</p>
+          </div>
+          <div class="feedback-actions">
+            <button class="button primary" type="submit">Send feedback</button>
+            <button id="copy-feedback-context" class="button ghost" type="button">Copy report details</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="trust" class="section trust-section" aria-labelledby="trust-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Public-readiness notes</p>
+            <h2 id="trust-title">What players should know.</h2>
+            <p>
+              WaveKit is a fan-made helper. It is designed to give useful, readable team paths, not to replace
+              patch-by-patch theorycrafting or pretend every recommendation is final.
+            </p>
+          </div>
+          <div class="save-card trust-card">
+            <strong>v0.3</strong>
+            <span>Public polish pass.</span>
+          </div>
+        </div>
+        <div class="status-grid">
+          <article class="status-panel verified">
+            <span>Verified guide data</span>
+            <p>Core released-character build/team info checked against public guide pages.</p>
+          </article>
+          <article class="status-panel review">
+            <span>Needs patch review</span>
+            <p>Newer characters and collab units are included cautiously until their kits and teams are fully confirmed.</p>
+          </article>
+          <article class="status-panel local">
+            <span>Privacy</span>
+            <p>Profiles are stored locally in your browser. There is no real account backend yet.</p>
+          </article>
+          <article class="status-panel fan">
+            <span>Fan project</span>
+            <p>Wuthering Waves belongs to Kuro Games. WaveKit is an unofficial companion tool.</p>
+          </article>
+        </div>
+        <div class="changelog-panel">
+          <div class="panel-heading">
+            <span>Changelog</span>
+            <h3>Latest WaveKit updates</h3>
+          </div>
+          <ol class="changelog-list">
+            <li><strong>v0.3</strong><span>Added Netlify feedback reports, clearer button states, selected-team context, and expanded team meta notes.</span></li>
+            <li><strong>v0.2</strong><span>Added profile saving, weapon selection, mobile build-card improvements, and WaveKit branding.</span></li>
+            <li><strong>v0.1</strong><span>Started the account-aware team helper prototype with Resonator and weapon data.</span></li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Fan-made prototype. Wuthering Waves belongs to Kuro Games. Saved profiles are local to this browser
+        until a real account backend is added.
+      </p>
+    </footer>
+
+    <script src="assets/weapon-images.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

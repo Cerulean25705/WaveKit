@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Broadblade weapon">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="18" x2="142" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34201d"/>
+      <stop offset=".5" stop-color="#0b1418"/>
+      <stop offset="1" stop-color="#384022"/>
+    </linearGradient>
+    <linearGradient id="blade" x1="35" y1="128" x2="118" y2="24" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff5d8"/>
+      <stop offset=".38" stop-color="#f3c56d"/>
+      <stop offset="1" stop-color="#fa8d78"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="34" fill="url(#bg)"/>
+  <path d="M65 128 39 103 96 34c9-11 24-16 39-15-1 15-6 30-17 40l-53 69Z" fill="url(#blade)"/>
+  <path d="m72 113-25-24 22-24 27 25-24 23Z" fill="#101719" opacity=".88"/>
+  <path d="m42 99 25 25-12 13-26-25 13-13Z" fill="#f3c56d"/>
+  <path d="m27 117 16 16-19 11c-7 4-14-5-8-11l11-16Z" fill="#fff5d8"/>
+  <path d="M100 42c10-7 20-10 30-10-2 10-6 19-14 27l-47 60 31-77Z" fill="#fff" opacity=".26"/>
+</svg>
