@@ -32,6 +32,28 @@
         <a href="#feedback">Feedback</a>
         <a href="#trust">Trust</a>
       </nav>
+      <div class="account-bar" aria-live="polite">
+        <span id="cloud-sync-status">Cloud sync connecting...</span>
+        <details class="account-menu">
+          <summary class="button primary compact-button">Account / Sync</summary>
+          <div class="account-menu-panel">
+            <div id="cloud-signed-out" class="account-actions">
+              <input id="cloud-email" type="email" autocomplete="email" placeholder="Email">
+              <input id="cloud-password" type="password" autocomplete="current-password" placeholder="Password">
+              <button id="cloud-sign-in" class="button primary compact-button" type="button">Sign in</button>
+              <button id="cloud-create-account" class="button ghost compact-button" type="button">Create</button>
+              <button id="cloud-google" class="button ghost compact-button" type="button">Google</button>
+              <button id="cloud-reset-password" class="button ghost compact-button" type="button">Reset</button>
+            </div>
+            <div id="cloud-signed-in" class="account-actions" hidden>
+              <strong id="cloud-user-label">Signed in</strong>
+              <button id="cloud-save" class="button primary compact-button" type="button">Sync now</button>
+              <button id="cloud-load" class="button ghost compact-button" type="button">Load</button>
+              <button id="cloud-sign-out" class="button ghost compact-button" type="button">Sign out</button>
+            </div>
+          </div>
+        </details>
+      </div>
     </header>
 
     <main>
@@ -131,33 +153,9 @@
               <div class="cloud-sync-heading">
                 <div>
                   <span>Optional account sync</span>
-                  <strong>Sign in to keep profiles across devices.</strong>
+                  <strong>Use the account controls at the top to sync profiles across devices.</strong>
                 </div>
-                <small id="cloud-sync-status">Cloud sync not connected yet.</small>
-              </div>
-              <div id="cloud-signed-out" class="cloud-auth">
-                <label class="field compact-field">
-                  <span>Email</span>
-                  <input id="cloud-email" type="email" autocomplete="email" placeholder="you@example.com">
-                </label>
-                <label class="field compact-field">
-                  <span>Password</span>
-                  <input id="cloud-password" type="password" autocomplete="current-password" placeholder="At least 6 characters">
-                </label>
-                <div class="profile-actions compact">
-                  <button id="cloud-sign-in" class="button primary" type="button">Sign in</button>
-                  <button id="cloud-create-account" class="button ghost" type="button">Create account</button>
-                  <button id="cloud-google" class="button ghost" type="button">Google</button>
-                  <button id="cloud-reset-password" class="button ghost" type="button">Reset password</button>
-                </div>
-              </div>
-              <div id="cloud-signed-in" class="cloud-session" hidden>
-                <span id="cloud-user-label">Signed in</span>
-                <div class="profile-actions compact">
-                  <button id="cloud-save" class="button primary" type="button">Sync now</button>
-                  <button id="cloud-load" class="button ghost" type="button">Load cloud profile</button>
-                  <button id="cloud-sign-out" class="button ghost" type="button">Sign out</button>
-                </div>
+                <small>Local profiles still work without signing in.</small>
               </div>
             </div>
             <div class="profile-actions compact">

@@ -98,9 +98,10 @@ textarea {
   position: sticky;
   top: 0;
   z-index: 30;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
+  gap: clamp(12px, 2vw, 22px);
   min-height: 68px;
   padding: 12px clamp(16px, 4vw, 48px);
   background:
@@ -113,6 +114,7 @@ textarea {
 
 .brand,
 .topnav,
+.account-actions,
 .hero-actions,
 .filters,
 .profile-actions,
@@ -155,6 +157,7 @@ textarea {
 }
 
 .topnav {
+  justify-content: center;
   gap: clamp(9px, 1.4vw, 16px);
 }
 
@@ -173,6 +176,92 @@ textarea {
 .topnav a:hover,
 .topnav a:focus-visible {
   color: var(--text);
+}
+
+.account-bar {
+  min-width: min(100%, 230px);
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+.account-bar > span {
+  max-width: 100%;
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 840;
+  letter-spacing: 0.04em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.account-actions {
+  justify-content: end;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  list-style: none;
+}
+
+.account-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.account-menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 75;
+  width: min(360px, calc(100vw - 24px));
+  padding: 12px;
+  border: 1px solid rgba(139, 232, 255, 0.25);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 215, 122, 0.12), transparent 38%),
+    linear-gradient(135deg, rgba(120, 244, 255, 0.08), transparent 58%),
+    rgba(5, 16, 25, 0.96);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 18px 44px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+
+.account-menu:not([open]) .account-menu-panel {
+  display: none;
+}
+
+.account-actions[hidden] {
+  display: none;
+}
+
+.account-actions input {
+  width: 118px;
+  min-height: 34px;
+  padding: 0 9px;
+  color: var(--text);
+  border: 1px solid rgba(139, 232, 255, 0.18);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+    rgba(3, 12, 19, 0.82);
+}
+
+.account-actions strong {
+  max-width: 170px;
+  color: var(--soft);
+  font-size: 0.78rem;
+}
+
+.compact-button {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 0.76rem;
 }
 
 .hero {
@@ -2175,9 +2264,42 @@ h1 {
     grid-template-columns: 1fr;
   }
 
+  .topbar {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+
   .topnav {
+    grid-column: 1 / -1;
     justify-content: start;
     flex-wrap: wrap;
+  }
+
+  .account-bar {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    justify-items: end;
+  }
+
+  .account-bar > span {
+    text-align: right;
+  }
+
+  .account-actions {
+    justify-content: start;
+  }
+
+  .account-actions input {
+    width: calc(50% - 4px);
+  }
+
+  .account-menu-panel {
+    position: fixed;
+    top: 78px;
+    left: 16px;
+    right: 16px;
+    width: auto;
   }
 
   .hero {
@@ -2419,6 +2541,21 @@ h1 {
 @media (max-width: 520px) {
   body {
     padding-bottom: 132px;
+  }
+
+  .account-bar > span {
+    max-width: 168px;
+    font-size: 0.58rem;
+  }
+
+  .account-actions input {
+    width: calc(50% - 4px);
+  }
+
+  .compact-button {
+    min-height: 32px;
+    padding: 0 8px;
+    font-size: 0.68rem;
   }
 
   .flow-next {
