@@ -370,6 +370,10 @@ const state = {
   weapons: new Set()
 };
 
+let autoSaveTimer = null;
+let autoSyncRetryTimer = null;
+let autoSyncing = false;
+
 const experienceOptions = ["New", "Comfortable", "Endgame"];
 const priorityOptions = ["Balanced", "Comfort", "DPS"];
 const goalOptions = ["General play", "Story & bosses", "Tower"];
@@ -1732,16 +1736,7 @@ function roleSort(character) {
 }
 
 function saveProfile() {
-  state.profileName = $("#profile-name").value.trim();
-  const id = state.activeProfileId || `profile-${Date.now()}`;
-  const nextProfile = { id, updatedAt: new Date().toISOString(), ...profilePayload() };
-  const existingIndex = state.profiles.findIndex((profile) => profile.id === id);
-  if (existingIndex >= 0) {
-    state.profiles[existingIndex] = nextProfile;
-  } else {
-    state.profiles.push(nextProfile);
-  }
-  state.activeProfileId = id;
+  upsertWorkingProfile();
   state.editMode = false;
   try {
     persistProfiles();
@@ -1751,6 +1746,27 @@ function saveProfile() {
     $("#save-status").textContent = "Save blocked";
   }
   render();
+}
+
+function upsertWorkingProfile() {
+  const nameInput = $("#profile-name");
+  if (nameInput) state.profileName = nameInput.value.trim();
+  const id = state.activeProfileId || `profile-${Date.now()}`;
+  const nextProfile = {
+    id,
+    updatedAt: new Date().toISOString(),
+    ...profilePayload(),
+    profileName: state.profileName || "WaveKit profile"
+  };
+  const existingIndex = state.profiles.findIndex((profile) => profile.id === id);
+  if (existingIndex >= 0) {
+    state.profiles[existingIndex] = nextProfile;
+  } else {
+    state.profiles.push(nextProfile);
+  }
+  state.activeProfileId = id;
+  state.profileName = nextProfile.profileName;
+  return nextProfile;
 }
 
 function profilePayload() {
@@ -2014,6 +2030,44 @@ function render() {
 
 function markUnsaved() {
   if (state.activeProfileId) $("#save-status").textContent = "Unsaved changes";
+  scheduleAutoSave();
+}
+
+function scheduleAutoSave(delay = 750) {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(autoSaveProfile, delay);
+}
+
+async function autoSaveProfile() {
+  if (!hasProfileProgress()) return;
+  try {
+    upsertWorkingProfile();
+    persistProfiles();
+    $("#save-status").textContent = cloud.user ? "Autosaved locally. Syncing..." : "Autosaved locally";
+    await silentCloudSync();
+  } catch {
+    $("#save-status").textContent = "Autosave blocked";
+  }
+}
+
+async function silentCloudSync() {
+  if (!cloud.configured || !cloud.user || !cloud.api) return;
+  if (cloud.busy || autoSyncing) {
+    clearTimeout(autoSyncRetryTimer);
+    autoSyncRetryTimer = setTimeout(() => silentCloudSync(), 2200);
+    return;
+  }
+  autoSyncing = true;
+  try {
+    await cloud.api.saveCloudProfiles(cloudPayload());
+    setCloudStatus("Cloud profile synced.");
+    $("#save-status").textContent = "Autosaved and synced";
+  } catch (error) {
+    setCloudStatus(cleanCloudError(error));
+    $("#save-status").textContent = "Autosaved locally";
+  } finally {
+    autoSyncing = false;
+  }
 }
 
 async function initCloudSync() {
@@ -2189,22 +2243,10 @@ function applyCloudProfiles(cloudData) {
 }
 
 function cloudPayload() {
-  const activeId = state.activeProfileId || `profile-${Date.now()}`;
-  const workingProfile = {
-    id: activeId,
-    updatedAt: new Date().toISOString(),
-    ...profilePayload(),
-    profileName: state.profileName || "WaveKit profile"
-  };
-  const profiles = state.profiles.length
-    ? state.profiles.map((profile) => (profile.id === activeId ? workingProfile : profile))
-    : [workingProfile];
-  if (!profiles.some((profile) => profile.id === activeId)) profiles.push(workingProfile);
-  state.profiles = profiles;
-  state.activeProfileId = activeId;
+  upsertWorkingProfile();
   persistProfiles();
   return {
-    profiles,
+    profiles: state.profiles,
     activeProfileId: state.activeProfileId,
     savedAt: new Date().toISOString()
   };
