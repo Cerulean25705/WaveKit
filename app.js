@@ -1001,12 +1001,21 @@ function renderFlowNext(teams = generateTeams()) {
 }
 
 function nextFlowAction({ ownedCount, selectedTeam, teams }) {
-  if (state.editMode || !state.activeProfileId) {
+  if (state.editMode && !state.activeProfileId) {
     return {
       step: "Step 1 of 4",
-      title: state.activeProfileId ? "Save profile changes" : "Create your profile",
+      title: "Start setup",
+      detail: "Begin with the player profile section, then choose your roster.",
+      button: "Start",
+      target: "profile"
+    };
+  }
+  if (state.editMode) {
+    return {
+      step: "Step 1 of 4",
+      title: "Save profile changes",
       detail: "This keeps your choices on this device, then you can choose your roster.",
-      button: state.activeProfileId ? "Save changes" : "Save profile",
+      button: "Save changes",
       target: "save"
     };
   }
@@ -1060,6 +1069,10 @@ function handleFlowNext() {
   if (target === "save") {
     saveProfile();
     requestAnimationFrame(() => scrollToSection("#helper"));
+    return;
+  }
+  if (target === "profile") {
+    scrollToSection("#helper", ".profile-panel");
     return;
   }
   if (target === "roster") {
