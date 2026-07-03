@@ -401,8 +401,8 @@ const teamPreferences = {
   hiyuki: pref(["zhezhi", "sanhua", "lucilla"], ["youhu", "baizhi", "jianxin"], ["shorekeeper", "verina", "baizhi", "youhu"]),
   sigrika: pref(["qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "verina", "baizhi"]),
   galbrena: pref(["qiuyuan", "lupa", "changli"], ["brant", "denia", "mortefi"], ["shorekeeper", "verina", "baizhi"]),
-  lucy: pref(["lynae", "phoebe", "zhezhi"], ["sanhua", "mornye", "yangyang"], ["shorekeeper", "verina", "mornye", "baizhi"]),
-  "luuk-herssen": pref(["lynae", "mornye", "sanhua"], ["phoebe", "zhezhi", "shorekeeper"], ["mornye", "shorekeeper", "verina", "baizhi"]),
+  lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua", "mornye"], ["shorekeeper", "verina", "mornye", "baizhi"]),
+  "luuk-herssen": pref(["denia", "lynae", "mornye"], ["sanhua", "phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   brant: pref(["lupa", "changli", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   phoebe: pref(["zani", "lynae", "rover"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "mornye", "baizhi"]),
   rover: pref(["ciaccona", "shorekeeper", "verina", "sanhua"], ["yangyang", "mortefi", "baizhi"], ["shorekeeper", "verina", "baizhi"])
@@ -429,8 +429,8 @@ const teamArchetypes = {
   hiyuki: archetype("Glacio Chafe", [["zhezhi", "shorekeeper"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Hiyuki's current-patch details need review, so keep recommendations conservative."),
   sigrika: archetype("Aero Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["ciaccona", "shorekeeper"]], "Sigrika is an Echo Skill carry; Qiuyuan is a priority helper if owned."),
   galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["changli", "verina"]], "Galbrena is an Echo Skill carry, so Qiuyuan matters more than generic Fusion matching."),
-  lucy: archetype("Spectro Heavy", [["lynae", "shorekeeper"], ["phoebe", "verina"], ["sanhua", "mornye"]], "Lucy needs current-patch review; show suggestions as provisional."),
-  "luuk-herssen": archetype("Tune Strain", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["sanhua", "mornye"]], "Luuk Herssen is a Tune Strain carry; Lynae and Mornye define the shell."),
+  lucy: archetype("Hack-Shifting Heavy", [["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "mornye"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem."),
+  "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["denia", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell, with Denia + Mornye treated as the current best target when both are owned."),
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
   phoebe: archetype("Spectro Frazzle", [["zani", "shorekeeper"], ["zani", "verina"], ["rover", "shorekeeper"]], "Phoebe is a premium Spectro Frazzle piece, especially for Zani.")
 };
@@ -438,10 +438,10 @@ const teamArchetypes = {
 const dataConfidence = {
   aemeath: ["review", "Needs current patch review"],
   hiyuki: ["review", "Needs current patch review"],
-  denia: ["review", "Needs current patch review"],
+  denia: ["checked", "Guide checked"],
   lucilla: ["review", "Needs current patch review"],
-  lucy: ["review", "Needs current patch review"],
-  rebecca: ["review", "Needs current patch review"],
+  lucy: ["checked", "Guide checked"],
+  rebecca: ["checked", "Guide checked"],
   buling: ["review", "Needs current patch review"],
   sigrika: ["checked", "Guide checked"],
   galbrena: ["checked", "Guide checked"],
@@ -1554,7 +1554,8 @@ function renderBuilds(teams) {
   buildResults.innerHTML = `
     ${selectedTeamSummary(selected)}
     ${entries.map((character) => {
-    const ownedWeapon = state.weapons.has(character.build.weapon);
+    const build = buildForTeam(character, selected);
+    const ownedWeapon = state.weapons.has(build.weapon);
     const alts = alternateWeapons(character);
     return `
       <article class="build-card element-${firstElement(character.element).toLowerCase()}">
@@ -1565,16 +1566,16 @@ function renderBuilds(teams) {
           <span class="data-badge ${confidenceFor(character)[0]}">${confidenceFor(character)[1]}</span>
           <p>${character.note}</p>
           <dl class="build-quick">
-            <div><dt>Weapon</dt><dd>${character.build.weapon}${ownedWeapon ? " · owned" : ""}</dd></div>
-            <div><dt>Sonata</dt><dd>${sonataDisplay(character.build.sonata)}</dd></div>
+            <div><dt>Weapon</dt><dd>${build.weapon}${ownedWeapon ? " · owned" : ""}</dd></div>
+            <div><dt>Sonata</dt><dd>${sonataDisplay(build.sonata)}</dd></div>
             <div><dt>Echo cost</dt><dd>${costPattern(character)}</dd></div>
-            <div><dt>Main Echo</dt><dd>${character.build.echo}</dd></div>
+            <div><dt>Main Echo</dt><dd>${build.echo}</dd></div>
           </dl>
           <details class="build-more">
             <summary>More build details</summary>
             <dl>
               <div><dt>Alternates</dt><dd>${alts.join(" · ")}</dd></div>
-              <div><dt>Main stats</dt><dd>${character.build.stats}</dd></div>
+              <div><dt>Main stats</dt><dd>${build.stats}</dd></div>
             </dl>
           </details>
           <p class="build-note">${useNote(character, selected)}</p>
@@ -1583,6 +1584,19 @@ function renderBuilds(teams) {
     `;
   }).join("")}
   `;
+}
+
+function buildForTeam(character, team) {
+  if (character.slug === "qiuyuan" && team.main.slug === "sigrika") {
+    return {
+      ...character.build,
+      build: "Moonlit Support Build",
+      sonata: "Moonlit Clouds",
+      echo: "Impermanence Heron",
+      stats: "Energy Regen or CRIT / Aero DMG or Energy Regen / ATK%"
+    };
+  }
+  return character.build;
 }
 
 function selectedTeamSummary(team) {
@@ -1709,7 +1723,9 @@ function useNote(character, team) {
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
     "zhezhi": "Zhezhi works best as a prepared helper. Build Energy Regen if her key support window feels late, then swap cleanly back to the carry.",
-    "qiuyuan": "Qiuyuan supports Aero-leaning teams well. Treat him as a setup piece: enable the Aero plan, then give field time back to the carry.",
+    "qiuyuan": team.main.slug === "sigrika"
+      ? "Qiuyuan is supporting Sigrika here. Moonlit Clouds is preferred for this team so his setup can funnel more attack support into Sigrika's hypercarry window."
+      : "Qiuyuan supports Aero-leaning teams well. Treat him as a setup piece: enable the Aero plan, then give field time back to the carry.",
     "ciaccona": "Ciaccona is useful when the team wants Aero/Erosion pressure. Keep her setup short and let the main DPS benefit from the groundwork.",
     "camellya": "Camellya wants committed field time. Keep sustain ready before her damage window so her higher-pressure playstyle feels less punishing.",
     "cartethyia": "Cartethyia rewards teams that support her Aero/Erosion plan. Set up helpers first, then let her carry the focused damage window.",
@@ -1718,7 +1734,9 @@ function useNote(character, team) {
     "phoebe": "Phoebe is strongest when her Spectro/Frazzle setup has a clear purpose. Use her before Zani or other Spectro damage windows.",
     "galbrena": "Galbrena is an Echo Skill carry. If Qiuyuan is in the team, treat him as the key setup piece rather than a generic Aero helper.",
     "sigrika": "Sigrika wants Echo Skill support. Set up Qiuyuan or another Echo Skill helper first, then spend Sigrika's damage window cleanly.",
-    "luuk-herssen": "Luuk Herssen wants a Tune Strain shell. Lynae and Mornye are not random supports here; they are the parts that make the team logic work.",
+    "luuk-herssen": "Luuk Herssen wants a Tune Strain shell. Denia + Mornye is prioritised when owned, with Lynae treated as a strong alternate rather than the default best pair.",
+    "lucy": "Lucy wants Hack-Shifting support when available. Rebecca is prioritised as her intended partner, then the healer keeps the damage window stable.",
+    "rebecca": "Rebecca is not just generic heavy support here. In Lucy teams, use her Hack-Shifting setup first so Lucy benefits from the paired mechanics before taking field time.",
     "aemeath": "Aemeath is mode-based. Keep Tune Rupture and Fusion Burst advice separate so the build does not become muddled."
   };
   if (kitNotes[character.slug]) return kitNotes[character.slug];
