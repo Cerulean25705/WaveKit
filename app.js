@@ -94,8 +94,7 @@ const weaponFallbacks = {
   Rectifier: ["Stringmaster", "Cosmic Ripples", "Augment", "Jinzhou Keeper"],
   Broadblade: ["Verdant Summit", "Lustrous Razor", "Autumntrace", "Helios Cleaver"],
   Gauntlets: ["Abyss Surges", "Verity's Handle", "Stonard", "Marcato"],
-  Pistols: ["Static Mist", "The Last Dance", "Thunderbolt", "Cadenza"],
-  Unknown: ["Use the listed signature first", "Match the kit's scaling stat", "Use Crit or Energy Regen options", "Hold rare upgrades until verified"]
+  Pistols: ["Static Mist", "The Last Dance", "Thunderbolt", "Cadenza"]
 };
 
 const roleWeaponFallbacks = {
@@ -135,9 +134,12 @@ const characterWeaponAlternates = {
 
 const weaponCatalog = new Map([
   ["Abyss Surges", "Gauntlets"],
+  ["Ages of Harvest", "Broadblade"],
   ["Amity Accord", "Gauntlets"],
   ["Augment", "Rectifier"],
   ["Autumntrace", "Broadblade"],
+  ["Blazing Brilliance", "Sword"],
+  ["Blazing Justice", "Gauntlets"],
   ["Broadblade of Night", "Broadblade"],
   ["Broadblade of Voyager", "Broadblade"],
   ["Broadblade#41", "Broadblade"],
@@ -145,9 +147,15 @@ const weaponCatalog = new Map([
   ["Comet Flare", "Rectifier"],
   ["Commando of Conviction", "Sword"],
   ["Cosmic Ripples", "Rectifier"],
+  ["Daybreaker's Spine", "Gauntlets"],
   ["Dauntless Evernight", "Broadblade"],
+  ["Defier's Thorn", "Sword"],
   ["Discord", "Broadblade"],
+  ["Emerald Sentence", "Sword"],
   ["Emerald of Genesis", "Sword"],
+  ["Everbright Polestar", "Sword"],
+  ["Forged Dwarf Star", "Rectifier"],
+  ["Frostburn", "Sword"],
   ["Gauntlets of Night", "Gauntlets"],
   ["Gauntlets of Voyager", "Gauntlets"],
   ["Gauntlets#21D", "Gauntlets"],
@@ -159,10 +167,13 @@ const weaponCatalog = new Map([
   ["Helios Cleaver", "Broadblade"],
   ["Hollow Mirage", "Gauntlets"],
   ["Jinzhou Keeper", "Rectifier"],
+  ["Kumokiri", "Broadblade"],
+  ["Lethean Elegy", "Rectifier"],
   ["Lumingloss", "Sword"],
   ["Lunar Cutter", "Sword"],
   ["Lustrous Razor", "Broadblade"],
   ["Marcato", "Gauntlets"],
+  ["Moongazer's Sigil", "Gauntlets"],
   ["Novaburst", "Pistols"],
   ["Originite: Type I", "Broadblade"],
   ["Originite: Type II", "Sword"],
@@ -176,6 +187,11 @@ const weaponCatalog = new Map([
   ["Rectifier of Voyager", "Rectifier"],
   ["Rectifier#25", "Rectifier"],
   ["Scale: Slasher", "Sword"],
+  ["Skull Thrasher", "Pistols"],
+  ["Solsworn Ciphers", "Gauntlets"],
+  ["Spectral Trigger", "Pistols"],
+  ["Spectrum Blaster", "Pistols"],
+  ["Starfield Calibrator", "Rectifier"],
   ["Static Mist", "Pistols"],
   ["Stonard", "Gauntlets"],
   ["Stringmaster", "Rectifier"],
@@ -183,6 +199,7 @@ const weaponCatalog = new Map([
   ["Sword of Voyager", "Sword"],
   ["Sword#18", "Sword"],
   ["Thunderbolt", "Pistols"],
+  ["Thunderflare Dominion", "Broadblade"],
   ["Training Broadblade", "Broadblade"],
   ["Training Gauntlets", "Gauntlets"],
   ["Training Pistols", "Pistols"],
@@ -194,8 +211,12 @@ const weaponCatalog = new Map([
   ["Tyro Rectifier", "Rectifier"],
   ["Tyro Sword", "Sword"],
   ["Undying Flame", "Pistols"],
+  ["Unflickering Valor", "Sword"],
   ["Variation", "Rectifier"],
-  ["Verdant Summit", "Broadblade"]
+  ["Verdant Summit", "Broadblade"],
+  ["Whispers of Sirens", "Rectifier"],
+  ["Wildfire Mark", "Broadblade"],
+  ["Woodland Aria", "Pistols"]
 ]);
 
 const roverForms = {
@@ -253,11 +274,11 @@ const knownWeaponTypes = {
   "Moongazer's Sigil": "Gauntlets",
   "Spectrum Blaster": "Pistols",
   "Starfield Calibrator": "Rectifier",
-  "Everbright Polestar": "Unknown",
-  "Daybreaker's Spine": "Unknown",
-  "Solsworn Ciphers": "Unknown",
-  "Frostburn": "Unknown",
-  "Forged Dwarf Star": "Unknown",
+  "Everbright Polestar": "Sword",
+  "Daybreaker's Spine": "Gauntlets",
+  "Solsworn Ciphers": "Gauntlets",
+  "Frostburn": "Sword",
+  "Forged Dwarf Star": "Rectifier",
   "Defier's Thorn": "Sword",
   "Red Spring": "Sword",
   "Ages of Harvest": "Broadblade",
@@ -266,8 +287,9 @@ const knownWeaponTypes = {
   "Woodland Aria": "Pistols",
   "Rime-Draped Sprouts": "Rectifier",
   "Emerald Sentence": "Sword",
-  "Skull Thrasher": "Unknown",
-  "Spectral Trigger": "Unknown",
+  "Kumokiri": "Broadblade",
+  "Skull Thrasher": "Pistols",
+  "Spectral Trigger": "Pistols",
   "Static Mist": "Pistols",
   "Emerald of Genesis": "Sword",
   "Abyss Surges": "Gauntlets",
@@ -313,12 +335,12 @@ const characters = [
   c("danjin", "Danjin", "Havoc", "Sword", ["main"], 76, ["havoc"], ["havoc"], "Risky but rewarding Havoc carry. Needs safety notes."),
   c("lingyang", "Lingyang", "Glacio", "Gauntlets", ["main"], 72, ["glacio"], ["glacio"], "Aerial Glacio carry. Fun but less relaxed."),
   c("chixia", "Chixia", "Fusion", "Pistols", ["main"], 68, ["fusion"], ["ranged"], "Simple ranged carry for early accounts."),
-  c("aemeath", "Aemeath", "Fusion", "Unknown", ["main"], 94, ["fusion"], ["rupture"], "Newer Fusion damage entry with sourced build basics."),
-  c("hiyuki", "Hiyuki", "Glacio", "Unknown", ["main"], 94, ["glacio"], ["chafe"], "Newer Glacio damage entry. Keep recommendations conservative."),
-  c("sigrika", "Sigrika", "Aero", "Unknown", ["main"], 94, ["aero"], ["echo-skill"], "Newer Aero damage entry with sourced build basics."),
+  c("aemeath", "Aemeath", "Fusion", "Sword", ["main"], 94, ["fusion"], ["rupture"], "Newer Fusion damage entry with sourced build basics."),
+  c("hiyuki", "Hiyuki", "Glacio", "Sword", ["main"], 94, ["glacio"], ["chafe"], "Newer Glacio damage entry. Keep recommendations conservative."),
+  c("sigrika", "Sigrika", "Aero", "Gauntlets", ["main"], 94, ["aero"], ["echo-skill"], "Newer Aero damage entry with sourced build basics."),
   c("galbrena", "Galbrena", "Fusion", "Pistols", ["main"], 88, ["fusion"], ["echo-skill"], "Fusion Echo Skill damage entry."),
-  c("lucy", "Lucy", "Spectro", "Unknown", ["main"], 86, ["spectro"], ["heavy"], "New collab damage character. Keep long-term assumptions cautious."),
-  c("luuk-herssen", "Luuk Herssen", "Spectro", "Unknown", ["main"], 85, ["spectro"], ["basic"], "Spectro basic-attack damage entry."),
+  c("lucy", "Lucy", "Spectro", "Pistols", ["main"], 86, ["spectro"], ["heavy"], "New collab damage character. Keep long-term assumptions cautious."),
+  c("luuk-herssen", "Luuk Herssen", "Spectro", "Gauntlets", ["main"], 85, ["spectro"], ["basic"], "Spectro basic-attack damage entry."),
   c("cantarella", "Cantarella", "Havoc", "Rectifier", ["sub", "support"], 94, ["havoc"], ["havoc", "utility"], "Havoc helper for damage and utility."),
   c("qiuyuan", "Qiuyuan", "Aero", "Sword", ["sub"], 91, ["aero"], ["echo"], "Aero sub-DPS with full Echo support direction."),
   c("ciaccona", "Ciaccona", "Aero", "Pistols", ["sub"], 90, ["aero"], ["erosion"], "Aero Erosion sub-DPS."),
@@ -333,13 +355,13 @@ const characters = [
   c("aalto", "Aalto", "Aero", "Pistols", ["sub"], 64, ["aero"], ["aero"], "Aero ranged helper with movement tools."),
   c("lumi", "Lumi", "Electro", "Broadblade", ["sub"], 64, ["electro"], ["skill"], "Electro quick-swap helper."),
   c("iuno", "Iuno", "Aero", "Gauntlets", ["sub", "support"], 93, ["aero"], ["utility"], "Newer Aero support/sub-DPS."),
-  c("lynae", "Lynae", "Spectro", "Unknown", ["sub"], 92, ["spectro"], ["spectro"], "Newer Spectro sub-DPS."),
-  c("denia", "Denia", "Fusion", "Unknown", ["sub"], 90, ["fusion"], ["burst"], "Fusion Burst sub-DPS."),
-  c("rebecca", "Rebecca", "Electro", "Unknown", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
+  c("lynae", "Lynae", "Spectro", "Pistols", ["sub"], 92, ["spectro"], ["spectro"], "Newer Spectro sub-DPS."),
+  c("denia", "Denia", "Fusion", "Rectifier", ["sub"], 90, ["fusion"], ["burst"], "Fusion Burst sub-DPS."),
+  c("rebecca", "Rebecca", "Electro", "Pistols", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
   c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 82, ["glacio"], ["glacio"], "Glacio helper with source-check needed."),
   c("phoebe", "Phoebe", "Spectro", "Rectifier", ["main", "sub", "support"], 88, ["spectro"], ["frazzle"], "Flexible Spectro/Frazzle damage or support direction."),
   c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
-  c("chisa", "Chisa", "Havoc", "Unknown", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
+  c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
   c("mornye", "Mornye", "Spectro", "Rectifier", ["healer", "support"], 92, ["any"], ["sustain", "def", "tune"], "DEF-based healer support for Tune shells and safer rotations."),
   c("baizhi", "Baizhi", "Glacio", "Rectifier", ["healer", "support"], 74, ["any"], ["sustain"], "Accessible healer for early accounts."),
   c("youhu", "Youhu", "Glacio", "Gauntlets", ["healer", "support"], 70, ["any"], ["sustain"], "Support healer with more specific kit management."),
@@ -387,7 +409,7 @@ const teamPreferences = {
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   camellya: pref(["cantarella", "roccia", "sanhua"], ["taoqi", "danjin", "chisa"], ["shorekeeper", "verina", "chisa", "baizhi"]),
-  augusta: pref(["iuno", "rebecca", "yinlin"], ["yuanwu", "lumi", "jianxin"], ["shorekeeper", "verina", "mornye", "baizhi"]),
+  augusta: pref(["iuno", "rebecca", "yinlin"], ["yuanwu", "lumi", "jianxin"], ["shorekeeper", "verina", "buling", "mornye", "baizhi"]),
   carlotta: pref(["zhezhi", "taoqi", "lumi", "lucilla"], ["sanhua", "youhu", "baizhi"], ["shorekeeper", "verina", "baizhi", "youhu"]),
   jiyan: pref(["mortefi", "qiuyuan", "iuno"], ["yangyang", "ciaccona", "jianxin"], ["shorekeeper", "verina", "baizhi"]),
   "xiangli-yao": pref(["yinlin", "mornye", "lynae", "yuanwu"], ["lumi", "rebecca", "mortefi"], ["shorekeeper", "verina", "baizhi"]),
@@ -398,11 +420,11 @@ const teamPreferences = {
   danjin: pref(["roccia", "cantarella", "taoqi"], ["chisa", "sanhua", "yangyang"], ["shorekeeper", "verina", "chisa", "baizhi"]),
   lingyang: pref(["zhezhi", "sanhua", "lucilla"], ["youhu", "baizhi", "jianxin"], ["shorekeeper", "verina", "baizhi", "youhu"]),
   chixia: pref(["changli", "brant", "lupa"], ["mortefi", "denia", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
-  aemeath: pref(["lynae", "mornye", "denia"], ["brant", "lupa", "changli"], ["mornye", "shorekeeper", "verina", "baizhi"]),
-  hiyuki: pref(["zhezhi", "sanhua", "lucilla"], ["youhu", "baizhi", "jianxin"], ["shorekeeper", "verina", "baizhi", "youhu"]),
-  sigrika: pref(["qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "verina", "baizhi"]),
-  galbrena: pref(["qiuyuan", "lupa", "changli"], ["brant", "denia", "mortefi"], ["shorekeeper", "verina", "baizhi"]),
-  lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua", "mornye"], ["shorekeeper", "verina", "mornye", "baizhi"]),
+  aemeath: pref(["lynae", "mornye", "denia"], ["brant", "lupa", "changli"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
+  hiyuki: pref(["lucilla", "chisa", "zhezhi"], ["sanhua", "youhu", "baizhi", "jianxin"], ["chisa", "shorekeeper", "verina", "buling", "baizhi", "youhu"]),
+  sigrika: pref(["qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "verina", "buling", "baizhi"]),
+  galbrena: pref(["qiuyuan", "lupa", "changli"], ["brant", "denia", "mortefi"], ["shorekeeper", "verina", "buling", "baizhi"]),
+  lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua", "mornye"], ["shorekeeper", "verina", "buling", "mornye", "baizhi"]),
   "luuk-herssen": pref(["denia", "lynae", "mornye"], ["sanhua", "phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   brant: pref(["lupa", "changli", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   phoebe: pref(["zani", "lynae", "rover"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "mornye", "baizhi"]),
@@ -415,7 +437,7 @@ const teamArchetypes = {
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
   camellya: archetype("Havoc Basic", [["roccia", "shorekeeper"], ["sanhua", "shorekeeper"], ["danjin", "verina"]], "Camellya values Basic Attack/Havoc setup and enough safety for her field time."),
-  augusta: archetype("Heavy Attack Carry", [["iuno", "shorekeeper"], ["iuno", "verina"], ["rebecca", "shorekeeper"]], "Augusta wants Heavy Attack/all-attribute support before generic Electro pairing."),
+  augusta: archetype("Heavy Attack Carry", [["iuno", "shorekeeper"], ["iuno", "verina"], ["iuno", "buling"], ["rebecca", "shorekeeper"]], "Augusta wants Heavy Attack/all-attribute support before generic Electro pairing."),
   carlotta: archetype("Glacio Skill", [["zhezhi", "shorekeeper"], ["taoqi", "shorekeeper"], ["lumi", "verina"]], "Carlotta wants Skill-focused support; Taoqi and Lumi are valid fallbacks because the buff type matters."),
   jiyan: archetype("Aero Heavy", [["mortefi", "shorekeeper"], ["mortefi", "verina"], ["yangyang", "shorekeeper"]], "Jiyan wants Heavy Attack/coordinated support, with Yangyang as an energy comfort fallback."),
   "xiangli-yao": archetype("Electro Liberation", [["yinlin", "shorekeeper"], ["lynae", "mornye"], ["yuanwu", "verina"]], "Xiangli Yao likes Electro/Liberation support or the newer Tune shell if those pieces are owned."),
@@ -426,11 +448,11 @@ const teamArchetypes = {
   danjin: archetype("High-risk Havoc", [["roccia", "shorekeeper"], ["cantarella", "verina"], ["taoqi", "baizhi"]], "Danjin needs the site to protect players from stress: damage is high, safety matters."),
   lingyang: archetype("Glacio Basic", [["zhezhi", "shorekeeper"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Lingyang likes Glacio or Basic Attack helpers, but comfort support should stay visible."),
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
-  aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["denia", "mornye"], ["brant", "shorekeeper"]], "Aemeath is mode-based, so Tune Rupture teams should be labeled clearly."),
-  hiyuki: archetype("Glacio Chafe", [["zhezhi", "shorekeeper"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Hiyuki's current-patch details need review, so keep recommendations conservative."),
-  sigrika: archetype("Aero Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["ciaccona", "shorekeeper"]], "Sigrika is an Echo Skill carry; Qiuyuan is a priority helper if owned."),
-  galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["changli", "verina"]], "Galbrena is an Echo Skill carry, so Qiuyuan matters more than generic Fusion matching."),
-  lucy: archetype("Hack-Shifting Heavy", [["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "mornye"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem."),
+  aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["denia", "mornye"], ["lynae", "shorekeeper"], ["brant", "shorekeeper"]], "Aemeath is mode-based, so Tune Rupture teams should be labeled clearly."),
+  hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"], ["sanhua", "verina"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla + Chisa treated as the premium current-patch target."),
+  sigrika: archetype("Aero Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["ciaccona", "shorekeeper"]], "Sigrika is an Echo Skill carry; Qiuyuan is a priority helper if owned."),
+  galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "lupa"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["changli", "verina"]], "Galbrena is an Echo Skill carry, so Qiuyuan matters more than generic Fusion matching."),
+  lucy: archetype("Hack-Shifting Heavy", [["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["rebecca", "mornye"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem."),
   "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["denia", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell, with Denia + Mornye treated as the current best target when both are owned."),
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
   phoebe: archetype("Spectro Frazzle", [["zani", "shorekeeper"], ["zani", "verina"], ["rover", "shorekeeper"]], "Phoebe is a premium Spectro Frazzle piece, especially for Zani.")
@@ -665,7 +687,7 @@ function renderWeapons() {
   const weapons = [...new Set([
     ...weaponCatalog.keys(),
     ...activeCharacters().flatMap((character) => [character.build.weapon, ...alternateWeapons(character)]).filter(Boolean)
-  ])].sort()
+  ])].filter(isSelectableWeapon).sort()
     .filter((weapon) => {
       const type = weaponTypeFor(weapon);
       const typeMatch = state.weaponTypeFilter === "All" || type === state.weaponTypeFilter;
@@ -718,6 +740,10 @@ function weaponHint(weapon) {
   return matches.length ? matches.join(", ") : "Flexible option";
 }
 
+function isSelectableWeapon(weapon) {
+  return weaponCatalog.has(weapon) || Boolean(window.weaponImageMap?.[weapon]) || weaponTypeFor(weapon) !== "Unknown";
+}
+
 function weaponTypeFor(weapon) {
   if (knownWeaponTypes[weapon]) return knownWeaponTypes[weapon];
   if (weaponCatalog.has(weapon)) return weaponCatalog.get(weapon);
@@ -735,7 +761,7 @@ function alternateWeapons(character) {
   const options = characterWeaponAlternates[character.slug]
     || roleWeaponFallbacks[mode]?.[type]
     || weaponFallbacks[type]
-    || weaponFallbacks.Unknown;
+    || [];
   return options.filter((weapon) => weapon !== character.build.weapon).slice(0, 3);
 }
 
@@ -872,6 +898,8 @@ function scoreTeam(main, sub, sustain) {
   score += synergyScore(main, sub) + synergyScore(main, sustain);
   score += preferredTeamScore(main, sub, sustain);
   score += archetypeTeamScore(main, sub, sustain);
+  score += premiumOwnedShellScore(main, sub, sustain);
+  score += teamSpecificAdjustment(main, sub, sustain);
   if (main.score >= 90) score += 12;
   if (main.score < 75) score -= 8;
   if (sustain.roles.includes("healer")) score += state.priority === "Comfort" || state.experience === "New" ? 16 : 9;
@@ -896,7 +924,7 @@ function helperCandidate(main, character) {
 
 function preferredTeamScore(main, sub, sustain) {
   let score = preferredRank(main, sub, "sub") + preferredRank(main, sustain, "sustain");
-  if (teamPreferences[main.slug]?.core.includes(sub.slug) && teamPreferences[main.slug]?.sustain.includes(sustain.slug)) score += 8;
+  if (teamPreferences[main.slug]?.core.includes(sub.slug) && teamPreferences[main.slug]?.sustain.includes(sustain.slug)) score += 14;
   if (sub.tags.some((tag) => main.tags.includes(tag))) score += 5;
   if (main.tags.includes("erosion") && sub.tags.includes("erosion")) score += 18;
   if (main.tags.includes("frazzle") && sub.tags.includes("frazzle")) score += 18;
@@ -911,9 +939,28 @@ function archetypeTeamScore(main, sub, sustain) {
   if (!archetype) return 0;
   const pair = [sub.slug, sustain.slug];
   const idealIndex = archetype.ideal.findIndex((ideal) => ideal.every((slug) => pair.includes(slug)));
-  if (idealIndex >= 0) return 34 - idealIndex * 6;
-  if (archetype.ideal.some((ideal) => ideal.includes(sub.slug))) return 12;
-  if (archetype.ideal.some((ideal) => ideal.includes(sustain.slug))) return 8;
+  if (idealIndex >= 0) return 56 - idealIndex * 7;
+  if (archetype.ideal.some((ideal) => ideal.includes(sub.slug))) return 16;
+  if (archetype.ideal.some((ideal) => ideal.includes(sustain.slug))) return 10;
+  return 0;
+}
+
+function premiumOwnedShellScore(main, sub, sustain) {
+  const archetype = teamArchetypes[main.slug];
+  if (!archetype) return 0;
+  const pair = [sub.slug, sustain.slug];
+  const idealIndex = archetype.ideal.findIndex((ideal) => ideal.every((slug) => pair.includes(slug)));
+  if (idealIndex < 0) return 0;
+  const premiumSupport = sustain.score >= 80 || sustain.roles.includes("healer");
+  const premiumHelper = sub.score >= 82 || teamPreferences[main.slug]?.core.includes(sub.slug);
+  if (!premiumSupport || !premiumHelper) return 0;
+  if (idealIndex === 0) return 38;
+  return Math.max(10, 24 - idealIndex * 4);
+}
+
+function teamSpecificAdjustment(main, sub, sustain) {
+  if (main.slug === "luuk-herssen" && sub.slug === "sanhua" && sustain.slug === "mornye") return -34;
+  if (main.slug === "luuk-herssen" && sub.slug === "sanhua") return -18;
   return 0;
 }
 
