@@ -361,6 +361,7 @@ const state = {
   weaponSearch: "",
   weaponTypeFilter: "All",
   roverForm: "Aero",
+  roverForms: new Set(["Aero"]),
   selectedTeamKey: "",
   showAllTeams: false,
   flowVisitedResults: false,
@@ -612,8 +613,7 @@ function renderCharacters() {
   characterGrid.querySelectorAll("[data-rover-form]").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
-      state.roverForm = button.dataset.roverForm;
-      state.selectedTeamKey = "";
+      selectRoverForm(button.dataset.roverForm);
       resetFlowGuide();
       markUnsaved();
       render();
@@ -639,11 +639,22 @@ function renderCharacters() {
   });
 }
 
+function selectRoverForm(form) {
+  if (!roverForms[form]) return;
+  if (!state.owned.rover) state.owned.rover = { chain: 0 };
+  state.roverForms.add(form);
+  state.roverForm = form;
+  state.selectedTeamKey = "";
+}
+
 function roverFormPicker() {
   return `
     <div class="rover-form-row" aria-label="Rover form">
       ${Object.keys(roverForms).map((form) => `
-        <button class="${state.roverForm === form ? "is-active" : ""}" type="button" data-rover-form="${form}">${form}</button>
+        <button class="${state.roverForms.has(form) ? "is-owned" : ""} ${state.roverForm === form ? "is-active" : ""}" type="button" data-rover-form="${form}" aria-pressed="${state.roverForms.has(form)}">
+          <span>${form}</span>
+          ${state.roverForm === form ? "<small>active</small>" : ""}
+        </button>
       `).join("")}
     </div>
   `;
@@ -1654,8 +1665,9 @@ function renderFeedbackContext(teams) {
 function feedbackContext(team) {
   const ownedCount = Object.keys(state.owned).length;
   const weaponCount = state.weapons.size;
+  const roverText = `${state.roverForm} active; owned ${([...state.roverForms].sort()).join(", ")}`;
   if (!team) {
-    return `No team selected. Profile: ${state.experience}, ${state.priority}, ${state.goal}. Owned Resonators: ${ownedCount}. Owned weapons: ${weaponCount}. Rover: ${state.roverForm}.`;
+    return `No team selected. Profile: ${state.experience}, ${state.priority}, ${state.goal}. Owned Resonators: ${ownedCount}. Owned weapons: ${weaponCount}. Rover: ${roverText}.`;
   }
   return [
     `Selected team: ${team.members.map((member) => member.name).join(" / ")}`,
@@ -1666,7 +1678,7 @@ function feedbackContext(team) {
     `Profile: ${state.experience}, ${state.priority}, ${state.goal}`,
     `Owned Resonators: ${ownedCount}`,
     `Owned weapons: ${weaponCount}`,
-    `Rover: ${state.roverForm}`
+    `Rover: ${roverText}`
   ].join("\n");
 }
 
@@ -1794,6 +1806,7 @@ function profilePayload() {
     priority: state.priority,
     goal: state.goal,
     roverForm: state.roverForm,
+    roverForms: [...state.roverForms],
     owned: state.owned,
     focus: [...state.focus],
     weapons: [...state.weapons]
@@ -1853,10 +1866,18 @@ function normaliseProfile(payload) {
     priority: payload.priority === "Power" ? "DPS" : payload.priority || "Balanced",
     goal: payload.goal || "General play",
     roverForm: roverForms[payload.roverForm] ? payload.roverForm : "Aero",
+    roverForms: normaliseRoverForms(payload.roverForms, payload.roverForm),
     owned: payload.owned || {},
     focus: payload.focus || payload.favorites || [],
     weapons: payload.weapons || []
   };
+}
+
+function normaliseRoverForms(forms, activeForm) {
+  const selected = Array.isArray(forms) ? forms.filter((form) => roverForms[form]) : [];
+  const active = roverForms[activeForm] ? activeForm : "Aero";
+  if (!selected.includes(active)) selected.push(active);
+  return selected.length ? selected : ["Aero"];
 }
 
 function applyProfile(profile) {
@@ -1867,6 +1888,7 @@ function applyProfile(profile) {
   state.priority = payload.priority;
   state.goal = payload.goal;
   state.roverForm = payload.roverForm;
+  state.roverForms = new Set(payload.roverForms);
   state.owned = payload.owned;
   state.focus = new Set(payload.focus.filter((slug) => state.owned[slug]));
   state.weapons = new Set(payload.weapons);
@@ -1884,6 +1906,7 @@ function clearWorkingProfile() {
   state.search = "";
   state.weaponSearch = "";
   state.roverForm = "Aero";
+  state.roverForms = new Set(["Aero"]);
   state.selectedTeamKey = "";
   state.showAllTeams = false;
   resetFlowGuide();
@@ -2024,7 +2047,7 @@ function renderProfileSummary() {
     <div class="summary-stats">
       <span>${Object.keys(state.owned).length} resonators</span>
       <span>${state.weapons.size} weapons</span>
-      <span>Rover: ${state.roverForm}</span>
+      <span>Rover: ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}</span>
       <span>${state.focus.size} focus</span>
     </div>
     <p>${ownedNames.length ? ownedNames.join(", ") : "No resonators selected yet."}</p>
