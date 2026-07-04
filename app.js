@@ -402,6 +402,33 @@ const suggestionStyleOptions = ["Best Teams", "Ready Now", "Build Priority"];
 const roleFilters = ["All", "Main DPS", "Sub DPS", "Support", "Healer", "Defense"];
 const weaponTypeFilters = ["All", "Sword", "Broadblade", "Gauntlets", "Pistols", "Rectifier"];
 
+const carryCeilingScores = {
+  cartethyia: 100,
+  phrolova: 100,
+  augusta: 99,
+  sigrika: 98,
+  aemeath: 97,
+  hiyuki: 97,
+  galbrena: 95,
+  jiyan: 92,
+  jinhsi: 92,
+  changli: 91,
+  camellya: 91,
+  carlotta: 91,
+  phoebe: 90,
+  zani: 90,
+  lupa: 89,
+  "xiangli-yao": 88,
+  brant: 87,
+  lucy: 85,
+  "luuk-herssen": 85,
+  encore: 82,
+  calcharo: 78,
+  danjin: 76,
+  lingyang: 72,
+  chixia: 68
+};
+
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
   cartethyia: pref(["ciaccona", "qiuyuan", "chisa", "iuno"], ["sanhua", "yangyang", "jianxin"], ["shorekeeper", "verina", "mornye", "baizhi", "rover"]),
@@ -888,9 +915,27 @@ function keepRoverVisible(teams) {
 
 function scoreCharacter(character) {
   const chain = state.owned[character.slug]?.chain || 0;
-  const weaponBonus = state.weapons.has(character.build.weapon) ? 14 : 0;
+  const weaponBonus = state.weapons.has(character.build.weapon) ? weaponInvestmentValue(character) : 0;
   const focusBonus = state.focus.has(character.slug) ? 24 : 0;
-  return character.score + chain * 1.8 + weaponBonus + focusBonus;
+  return character.score + carryCeilingBonus(character) + chain * chainInvestmentValue(character) + weaponBonus + focusBonus;
+}
+
+function carryCeilingBonus(character) {
+  if (!character.roles.includes("main")) return 0;
+  const ceiling = carryCeilingScores[character.slug] ?? character.score;
+  return Math.round((ceiling - 86) * 0.9);
+}
+
+function chainInvestmentValue(character) {
+  if (!character.roles.includes("main")) return 1.8;
+  const ceiling = carryCeilingScores[character.slug] ?? character.score;
+  return ceiling >= 94 ? 4.2 : 3.2;
+}
+
+function weaponInvestmentValue(character) {
+  if (!character.roles.includes("main")) return 10;
+  const ceiling = carryCeilingScores[character.slug] ?? character.score;
+  return ceiling >= 94 ? 22 : 16;
 }
 
 function scoreTeam(main, sub, sustain) {
