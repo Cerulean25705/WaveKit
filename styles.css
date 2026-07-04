@@ -1766,6 +1766,43 @@ h1 {
   font-weight: 850;
 }
 
+.team-bis-strip {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 215, 122, 0.2);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(255, 215, 122, 0.08), rgba(120, 244, 255, 0.035)),
+    rgba(3, 12, 19, 0.44);
+}
+
+.team-bis-strip span,
+.team-bis-strip strong,
+.team-bis-strip p {
+  display: block;
+}
+
+.team-bis-strip span {
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.team-bis-strip strong {
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.team-bis-strip p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.38;
+}
+
 .team-details {
   margin-top: 10px;
   border: 1px solid rgba(139, 232, 255, 0.13);

@@ -1289,6 +1289,7 @@ function teamCard(team, group, index) {
         <span>${safetyLabel(team)}</span>
         <span>${teamConfidence(team).label}</span>
       </div>
+      ${bestShellStrip(team)}
       <div class="team-plan" aria-label="Team slots">
         <strong>Team slots</strong>
         ${teamSlot(team.members[0], "Slot 1", "Main field time")}
@@ -1301,10 +1302,8 @@ function teamCard(team, group, index) {
         <div class="detail-grid">
           ${teamInsight("Fit", teamFitLabel(team), teamFitDetail(team))}
           ${teamInsight("Safety", safetyLabel(team), safetyDetail(team))}
-          ${teamInsight("Best-in-slot target", bestShellStatus(team), bestShellDetail(team))}
-          ${teamInsight("Owned roster logic", "Why this version", rosterLogicDetail(team))}
-          ${teamInsight("Rotation", "Beginner flow", rotationText(team))}
-          ${teamInsight("Confidence", teamConfidence(team).label, teamConfidence(team).detail)}
+          ${teamInsight("How to play", "Simple flow", rotationText(team))}
+          ${teamConfidence(team).label === "Needs review" ? teamInsight("Data note", teamConfidence(team).label, teamConfidence(team).detail) : ""}
         </div>
       </details>
     </article>
@@ -1488,6 +1487,24 @@ function bestShellDetail(team) {
     return `${shellText} is WaveKit's current target shell for this DPS. It can appear as a real suggestion because you own every listed character.`;
   }
   return `${shellText} is shown as reference only because you do not own ${missing.join(" and ")}. This card uses your closest owned version: ${currentText}.`;
+}
+
+function bestShellStrip(team) {
+  const shell = bestShellSlugs(team);
+  if (!shell.length) return "";
+  const shellText = shell.map(characterName).join(" + ");
+  const missing = shell.filter((slug) => !state.owned[slug]).map(characterName);
+  const currentHelpers = team.members.slice(1).map((member) => member.name).join(" + ");
+  const note = missing.length
+    ? `Missing ${missing.join(" and ")}. Using ${currentHelpers} from your roster.`
+    : "You own the current target shell for this DPS.";
+  return `
+    <div class="team-bis-strip">
+      <span>Best target</span>
+      <strong>${shellText}</strong>
+      <p>${note}</p>
+    </div>
+  `;
 }
 
 function rosterLogicDetail(team) {
