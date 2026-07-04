@@ -137,13 +137,21 @@ const weaponCatalog = new Map([
   ["Ages of Harvest", "Broadblade"],
   ["Amity Accord", "Gauntlets"],
   ["Augment", "Rectifier"],
+  ["Aether Strike", "Gauntlets"],
   ["Autumntrace", "Broadblade"],
+  ["Aureate Zenith", "Broadblade"],
+  ["Azure Oath", "Sword"],
+  ["Beguiling Melody", "Broadblade"],
   ["Blazing Brilliance", "Sword"],
   ["Blazing Justice", "Gauntlets"],
+  ["Bloodpact's Pledge", "Sword"],
+  ["Boson Astrolabe", "Rectifier"],
   ["Broadblade of Night", "Broadblade"],
   ["Broadblade of Voyager", "Broadblade"],
   ["Broadblade#41", "Broadblade"],
   ["Cadenza", "Pistols"],
+  ["Call of the Abyss", "Rectifier"],
+  ["Celestial Spiral", "Gauntlets"],
   ["Comet Flare", "Rectifier"],
   ["Commando of Conviction", "Sword"],
   ["Cosmic Ripples", "Rectifier"],
@@ -153,9 +161,15 @@ const weaponCatalog = new Map([
   ["Discord", "Broadblade"],
   ["Emerald Sentence", "Sword"],
   ["Emerald of Genesis", "Sword"],
+  ["Endless Collapse", "Sword"],
   ["Everbright Polestar", "Sword"],
+  ["Fables of Wisdom", "Sword"],
+  ["Feather Edge", "Sword"],
+  ["Firstlight's Herald", "Rectifier"],
   ["Forged Dwarf Star", "Rectifier"],
+  ["Freeze Frame", "Rectifier"],
   ["Frostburn", "Sword"],
+  ["Fusion Accretion", "Rectifier"],
   ["Gauntlets of Night", "Gauntlets"],
   ["Gauntlets of Voyager", "Gauntlets"],
   ["Gauntlets#21D", "Gauntlets"],
@@ -168,38 +182,58 @@ const weaponCatalog = new Map([
   ["Hollow Mirage", "Gauntlets"],
   ["Jinzhou Keeper", "Rectifier"],
   ["Kumokiri", "Broadblade"],
+  ["Laser Shearer", "Sword"],
+  ["Legend of Drunken Hero", "Gauntlets"],
   ["Lethean Elegy", "Rectifier"],
+  ["Luminous Hymn", "Rectifier"],
+  ["Lux & Umbra", "Pistols"],
   ["Lumingloss", "Sword"],
   ["Lunar Cutter", "Sword"],
   ["Lustrous Razor", "Broadblade"],
   ["Marcato", "Gauntlets"],
+  ["Meditations on Mercy", "Broadblade"],
   ["Moongazer's Sigil", "Gauntlets"],
   ["Novaburst", "Pistols"],
+  ["Ocean's Gift", "Rectifier"],
   ["Originite: Type I", "Broadblade"],
   ["Originite: Type II", "Sword"],
   ["Originite: Type III", "Pistols"],
   ["Originite: Type IV", "Gauntlets"],
   ["Originite: Type V", "Rectifier"],
+  ["Overture", "Sword"],
+  ["Phasic Homogenizer", "Pistols"],
   ["Pistols of Night", "Pistols"],
   ["Pistols of Voyager", "Pistols"],
   ["Pistols#26", "Pistols"],
+  ["Pulsation Bracer", "Gauntlets"],
+  ["Radiance Cleaver", "Broadblade"],
+  ["Radiant Dawn", "Rectifier"],
   ["Rectifier of Night", "Rectifier"],
   ["Rectifier of Voyager", "Rectifier"],
   ["Rectifier#25", "Rectifier"],
+  ["Red Spring", "Sword"],
+  ["Relativistic Jet", "Pistols"],
+  ["Rime-Draped Sprouts", "Rectifier"],
+  ["Romance in Farewell", "Pistols"],
   ["Scale: Slasher", "Sword"],
   ["Skull Thrasher", "Pistols"],
+  ["Solar Flame", "Pistols"],
   ["Solsworn Ciphers", "Gauntlets"],
+  ["Somnoire Anchor", "Sword"],
   ["Spectral Trigger", "Pistols"],
   ["Spectrum Blaster", "Pistols"],
   ["Starfield Calibrator", "Rectifier"],
   ["Static Mist", "Pistols"],
+  ["Stellar Symphony", "Rectifier"],
   ["Stonard", "Gauntlets"],
   ["Stringmaster", "Rectifier"],
   ["Sword of Night", "Sword"],
   ["Sword of Voyager", "Sword"],
   ["Sword#18", "Sword"],
+  ["The Last Dance", "Pistols"],
   ["Thunderbolt", "Pistols"],
   ["Thunderflare Dominion", "Broadblade"],
+  ["Tragicomedy", "Gauntlets"],
   ["Training Broadblade", "Broadblade"],
   ["Training Gauntlets", "Gauntlets"],
   ["Training Pistols", "Pistols"],
@@ -214,6 +248,9 @@ const weaponCatalog = new Map([
   ["Unflickering Valor", "Sword"],
   ["Variation", "Rectifier"],
   ["Verdant Summit", "Broadblade"],
+  ["Verity's Handle", "Gauntlets"],
+  ["Waltz in Masquerade", "Rectifier"],
+  ["Waning Redshift", "Broadblade"],
   ["Whispers of Sirens", "Rectifier"],
   ["Wildfire Mark", "Broadblade"],
   ["Woodland Aria", "Pistols"]
@@ -1069,8 +1106,9 @@ function dedupeTeams(teams) {
 
 function renderResults() {
   const teams = generateTeams();
-  const grouped = tierTeams(teams);
-  const visibleGroups = state.showAllTeams ? grouped : grouped.filter((group) => group.tier !== "t3");
+  const selected = teams.find((team) => teamKey(team) === state.selectedTeamKey) || teams[0];
+  const grouped = groupTeamsByMain(teams);
+  const visibleGroups = state.showAllTeams ? grouped : grouped.slice(0, 4);
   const visibleCount = visibleGroups.reduce((count, group) => count + group.teams.length, 0);
   const hiddenCount = teams.length - visibleCount;
   $("#team-count").textContent = visibleCount;
@@ -1080,17 +1118,16 @@ function renderResults() {
     state.selectedTeamKey = teamKey(teams[0]);
   }
   if (!teams.length) state.selectedTeamKey = "";
-  teamResults.innerHTML = visibleGroups.map((group) => `
-    <section class="team-tier ${group.tier}">
-      <div class="tier-heading">
-        <span>${group.label}</span>
-        <strong>${group.teams.length}</strong>
+  teamResults.innerHTML = teams.length ? `
+    ${bestTeamPanel(teams[0])}
+    <section class="team-results-layout" aria-label="Grouped team suggestions">
+      <div class="team-group-list">
+        ${visibleGroups.map((group) => teamMainGroup(group, teams)).join("")}
       </div>
-      <div class="team-tier-grid">
-        ${group.teams.map((team, index) => teamCard(team, group, index)).join("")}
-      </div>
+      ${selectedTeamPreview(selected)}
     </section>
-  `).join("") + teamRevealButton(hiddenCount);
+    ${teamRevealButton(hiddenCount)}
+  ` : "";
   const reveal = $("#show-more-teams");
   if (reveal) {
     reveal.addEventListener("click", () => {
@@ -1101,7 +1138,7 @@ function renderResults() {
   teamResults.querySelectorAll("[data-team-key]").forEach((card) => {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".team-details")) return;
-      selectTeam(card.dataset.teamKey, false);
+      selectTeam(card.dataset.teamKey, Boolean(event.target.closest(".row-action")));
     });
   });
   teamResults.querySelectorAll(".team-details").forEach((details) => {
@@ -1116,6 +1153,171 @@ function renderResults() {
   renderBuilds(teams);
   renderFeedbackContext(teams);
   renderFlowNext(teams);
+}
+
+function groupTeamsByMain(teams) {
+  const groups = [];
+  teams.forEach((team, index) => {
+    let group = groups.find((item) => item.main.slug === team.main.slug);
+    if (!group) {
+      group = { main: team.main, startRank: index + 1, teams: [] };
+      groups.push(group);
+    }
+    group.teams.push(team);
+  });
+  return groups.sort((a, b) => scoreCharacter(b.main) - scoreCharacter(a.main) || b.teams[0].score - a.teams[0].score);
+}
+
+function bestTeamPanel(team) {
+  const key = teamKey(team);
+  return `
+    <article class="best-team-panel element-${firstElement(team.main.element).toLowerCase()} ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
+      <div class="best-team-copy">
+        <span class="best-label">Best from your roster</span>
+        <h3>${team.members.map((member) => member.name).join(" / ")}</h3>
+        <p>${bestTeamSummary(team)}</p>
+        <div class="reason-strip">
+          ${reasonPill("Damage", damageLabel(team))}
+          ${reasonPill("Safety", safetyLabel(team))}
+          ${reasonPill("Builds", buildReadiness(team))}
+        </div>
+        <button class="button primary team-build-button" type="button" data-view-builds="${key}">View builds</button>
+      </div>
+      <div class="best-team-visual">
+        <div class="portrait-trio" aria-label="Featured team portraits">
+          ${team.members.map((member, index) => portraitCard(member, index === 0)).join("")}
+        </div>
+        ${bestShellStrip(team)}
+      </div>
+    </article>
+  `;
+}
+
+function bestTeamSummary(team) {
+  const investment = state.owned[team.main.slug]?.chain ? `R${state.owned[team.main.slug].chain} ` : "";
+  const weapon = state.weapons.has(team.main.build.weapon) ? ` with ${team.main.build.weapon}` : "";
+  return `${investment}${team.main.name}${weapon} is the strongest carry path WaveKit sees from your selected roster. ${team.members[1].name} supports the plan, while ${team.members[2].name} covers the third slot.`;
+}
+
+function damageLabel(team) {
+  if (state.owned[team.main.slug]?.chain >= 2 && state.weapons.has(team.main.build.weapon)) return "High invested carry";
+  if (team.main.score >= 90) return "Premium carry";
+  return "Usable carry";
+}
+
+function reasonPill(label, value) {
+  return `<span><small>${label}</small><strong>${value}</strong></span>`;
+}
+
+function portraitCard(character, isMain = false) {
+  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  return `
+    <span class="portrait-card ${isMain ? "main" : ""}" style="--chip-focus: ${chipFocus(character)};">
+      <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
+      <b>${character.name}</b>
+    </span>
+  `;
+}
+
+function teamMainGroup(group, teams) {
+  return `
+    <article class="team-main-group element-${firstElement(group.main.element).toLowerCase()}">
+      <div class="group-head">
+        <div>
+          <h3>${group.main.name} teams</h3>
+          <p>${mainGroupNote(group)}</p>
+        </div>
+        <strong>${groupLabel(group, teams)}</strong>
+      </div>
+      <div class="compact-team-list">
+        ${group.teams.map((team) => teamRow(team, teams.indexOf(team) + 1)).join("")}
+      </div>
+    </article>
+  `;
+}
+
+function mainGroupNote(group) {
+  if (group.startRank === 1) return "Highest priority DPS path on this account.";
+  if (group.main.score >= 90) return "Strong carry option from your roster.";
+  return "Usable team options when you want variety or backups.";
+}
+
+function groupLabel(group, teams) {
+  if (group.startRank === 1) return "Best DPS";
+  if (group.startRank <= 4) return "Strong option";
+  return `Rank ${group.startRank}`;
+}
+
+function teamRow(team, rank) {
+  const key = teamKey(team);
+  return `
+    <button class="team-row ${state.selectedTeamKey === key ? "is-selected" : ""}" type="button" data-team-key="${key}">
+      <span class="rank">${rank}</span>
+      <span>
+        <small>${rank === 1 ? "Recommended" : teamFitLabel(team)}</small>
+        <span class="team-title-line">
+          ${miniTeamIcons(team)}
+          <strong>${team.members.map((member) => member.name).join(" / ")}</strong>
+        </span>
+        <span class="chips">
+          ${teamChips(team)}
+        </span>
+      </span>
+      <span class="row-action">View builds</span>
+    </button>
+  `;
+}
+
+function miniTeamIcons(team) {
+  return `
+    <span class="mini-team" aria-hidden="true">
+      ${team.members.map((member) => {
+        const file = wallpapers.get(member.slug) || wallpapers.get("rover");
+        return `<img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">`;
+      }).join("")}
+    </span>
+  `;
+}
+
+function teamChips(team) {
+  const chips = [];
+  const chain = state.owned[team.main.slug]?.chain || 0;
+  if (chain) chips.push(`<span class="chip good">R${chain} carry</span>`);
+  if (state.weapons.has(team.main.build.weapon)) chips.push(`<span class="chip good">Weapon owned</span>`);
+  if (team.members[2].roles.includes("healer")) chips.push(`<span class="chip good">Healer</span>`);
+  if (teamFitLabel(team) === "Archetype fit") chips.push(`<span class="chip good">Target shell</span>`);
+  const missing = missingBestShellNames(team);
+  if (missing.length) chips.push(`<span class="chip missing">Missing ${missing[0]}</span>`);
+  if (!chips.length) chips.push(`<span class="chip">${safetyLabel(team)}</span>`);
+  return chips.slice(0, 4).join("");
+}
+
+function selectedTeamPreview(team) {
+  if (!team) return "";
+  return `
+    <aside class="selected-team-preview" aria-label="Selected team build preview">
+      <p class="kicker">Selected team</p>
+      <h3>${team.members.map((member) => member.name).join(" / ")}</h3>
+      <div class="build-mini">
+        ${team.members.map((member) => selectedBuildMini(member, team)).join("")}
+      </div>
+      <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
+    </aside>
+  `;
+}
+
+function selectedBuildMini(character, team) {
+  const build = buildForTeam(character, team);
+  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  return `
+    <article>
+      <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
+      <div>
+        <strong>${character.name}</strong>
+        <span>${build.weapon} · ${build.sonata} · ${costPattern(character)}</span>
+      </div>
+    </article>
+  `;
 }
 
 function renderFlowNext(teams = generateTeams()) {
@@ -1475,6 +1677,10 @@ function bestShellStatus(team) {
   const missing = shell.filter((slug) => !state.owned[slug]).map(characterName);
   if (!missing.length) return "Owned target";
   return `Missing ${missing.join(" / ")}`;
+}
+
+function missingBestShellNames(team) {
+  return bestShellSlugs(team).filter((slug) => !state.owned[slug]).map(characterName);
 }
 
 function bestShellDetail(team) {
