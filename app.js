@@ -256,6 +256,94 @@ const weaponCatalog = new Map([
   ["Woodland Aria", "Pistols"]
 ]);
 
+const weaponPurposeHints = {
+  "Broadblade of Night": "Starter Broadblade DPS",
+  "Broadblade of Voyager": "Starter Broadblade DPS",
+  "Broadblade#41": "Budget Broadblade DPS",
+  "Training Broadblade": "Starter Broadblade",
+  "Tyro Broadblade": "Starter Broadblade",
+  "Guardian Broadblade": "Early Broadblade sustain",
+  "Originite: Type I": "Early Broadblade comfort",
+  "Dauntless Evernight": "Defensive Broadblade support",
+  "Discord": "Energy Broadblade support",
+  "Helios Cleaver": "Budget Broadblade DPS",
+  "Autumntrace": "Battle Pass Broadblade DPS",
+  "Beguiling Melody": "Broadblade healer/support",
+  "Meditations on Mercy": "Broadblade support option",
+  "Radiance Cleaver": "Broadblade ATK DPS",
+  "Waning Redshift": "Broadblade damage option",
+
+  "Sword of Night": "Starter Sword DPS",
+  "Sword of Voyager": "Starter Sword DPS",
+  "Sword#18": "Budget Sword DPS",
+  "Training Sword": "Starter Sword",
+  "Tyro Sword": "Starter Sword",
+  "Guardian Sword": "Early Sword comfort",
+  "Originite: Type II": "Early Sword comfort",
+  "Commando of Conviction": "Budget Sword DPS",
+  "Lunar Cutter": "Quick-swap Sword DPS",
+  "Lumingloss": "Skill Sword DPS",
+  "Scale: Slasher": "Budget Sword DPS",
+  "Overture": "Energy Sword support",
+  "Laser Shearer": "Sword DPS option",
+  "Feather Edge": "Sword DPS option",
+  "Endless Collapse": "Sword DPS option",
+  "Fables of Wisdom": "Sword support option",
+  "Bloodpact's Pledge": "Sword damage support",
+  "Somnoire Anchor": "Event Sword DPS",
+  "Azure Oath": "Sword DPS option",
+
+  "Pistols of Night": "Starter Pistols DPS",
+  "Pistols of Voyager": "Starter Pistols DPS",
+  "Pistols#26": "Budget Pistols support",
+  "Training Pistols": "Starter Pistols",
+  "Tyro Pistols": "Starter Pistols",
+  "Guardian Pistols": "Early Pistols comfort",
+  "Originite: Type III": "Early Pistols comfort",
+  "Cadenza": "Energy Pistols support",
+  "Thunderbolt": "Budget Pistols DPS",
+  "Novaburst": "Budget Pistols DPS",
+  "Undying Flame": "Fusion Pistols DPS",
+  "Relativistic Jet": "Energy Pistols support",
+  "Romance in Farewell": "Craftable Pistols DPS",
+  "Solar Flame": "Pistols DPS option",
+  "Phasic Homogenizer": "Pistols DPS option",
+
+  "Gauntlets of Night": "Starter Gauntlets DPS",
+  "Gauntlets of Voyager": "Starter Gauntlets DPS",
+  "Gauntlets#21D": "Budget Gauntlets support",
+  "Training Gauntlets": "Starter Gauntlets",
+  "Tyro Gauntlets": "Starter Gauntlets",
+  "Guardian Gauntlets": "Early Gauntlets comfort",
+  "Originite: Type IV": "Early Gauntlets comfort",
+  "Marcato": "Energy Gauntlets support",
+  "Stonard": "Battle Pass Gauntlets DPS",
+  "Hollow Mirage": "Gauntlets DPS option",
+  "Amity Accord": "Gauntlets support option",
+  "Pulsation Bracer": "Gauntlets DPS option",
+  "Celestial Spiral": "Gauntlets DPS option",
+  "Legend of Drunken Hero": "Gauntlets DPS option",
+  "Aether Strike": "Gauntlets DPS option",
+
+  "Rectifier of Night": "Starter Rectifier DPS",
+  "Rectifier of Voyager": "Starter Rectifier DPS",
+  "Rectifier#25": "Budget Rectifier support",
+  "Training Rectifier": "Starter Rectifier",
+  "Tyro Rectifier": "Starter Rectifier",
+  "Guardian Rectifier": "Early Rectifier comfort",
+  "Originite: Type V": "Early Rectifier comfort",
+  "Variation": "Energy Rectifier support",
+  "Comet Flare": "Healing Rectifier support",
+  "Jinzhou Keeper": "Budget Rectifier DPS",
+  "Augment": "Battle Pass Rectifier DPS",
+  "Fusion Accretion": "Rectifier DPS option",
+  "Freeze Frame": "Rectifier DPS option",
+  "Waltz in Masquerade": "Rectifier DPS option",
+  "Radiant Dawn": "Rectifier DPS option",
+  "Ocean's Gift": "Rectifier support option",
+  "Call of the Abyss": "Rectifier support option"
+};
+
 const roverForms = {
   Spectro: {
     element: "Spectro",
@@ -800,8 +888,30 @@ function weaponTypeSlug(type) {
 }
 
 function weaponHint(weapon) {
-  const matches = activeCharacters().filter((character) => character.build.weapon === weapon).slice(0, 2).map((character) => character.name);
-  return matches.length ? matches.join(", ") : "Flexible option";
+  const owners = activeCharacters().filter((character) => character.build.weapon === weapon).map((character) => character.name);
+  if (owners.length) return `Best for ${owners.slice(0, 2).join(", ")}`;
+  const alternates = activeCharacters().filter((character) => alternateWeapons(character).includes(weapon)).map((character) => character.name);
+  if (alternates.length) return `Good for ${alternates.slice(0, 2).join(", ")}`;
+  const inferred = inferredWeaponUsers(weapon);
+  if (inferred.length) return `Good for ${inferred.slice(0, 2).join(", ")}`;
+  return weaponPurposeHints[weapon] || `${weaponTypeFor(weapon)} flexible option`;
+}
+
+function inferredWeaponUsers(weapon) {
+  const type = weaponTypeFor(weapon);
+  const hint = weaponPurposeHints[weapon] || "";
+  const wantsSupport = /support|healing|energy|comfort|defensive/i.test(hint);
+  const wantsStarter = /starter|early/i.test(hint);
+  return activeCharacters()
+    .filter((character) => {
+      const characterType = character.weaponType === "Unknown" ? weaponTypeFor(character.build.weapon) : character.weaponType;
+      if (characterType !== type) return false;
+      if (wantsSupport) return character.roles.includes("healer") || character.roles.includes("support") || character.roles.includes("defense") || character.roles.includes("sub");
+      if (wantsStarter) return character.roles.includes("main") || character.roles.includes("sub");
+      return character.roles.includes("main") || character.roles.includes("sub");
+    })
+    .sort((a, b) => b.score - a.score)
+    .map((character) => character.name);
 }
 
 function isSelectableWeapon(weapon) {
