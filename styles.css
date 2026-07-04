@@ -884,7 +884,7 @@ h1 {
   margin: 0 auto 20px;
   padding: clamp(14px, 2vw, 18px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
   gap: 16px;
   align-items: center;
   border: 1px solid rgba(139, 232, 255, 0.18);
@@ -921,7 +921,13 @@ h1 {
 }
 
 .suggestion-style-options {
-  min-width: min(100%, 420px);
+  width: 100%;
+  min-width: 0;
+}
+
+.suggestion-style-options button {
+  padding: 0 8px;
+  font-size: 0.78rem;
 }
 
 .discord-callout {
