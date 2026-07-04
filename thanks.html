@@ -16,7 +16,9 @@
       .kicker { margin: 0; color: #ffd77a; font-size: .78rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
       h1 { margin: 0; font-size: clamp(2.5rem, 7vw, 4.7rem); line-height: .95; }
       p:not(.kicker) { margin: 0; color: #c8e7ee; font-size: 1.05rem; line-height: 1.6; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; }
       .button { min-height: 42px; width: fit-content; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; border-radius: 8px; color: #031018; background: linear-gradient(135deg, #bdfcff, #62edff 48%, #ffd77a); text-decoration: none; font-weight: 780; }
+      .button.secondary { color: #f3fbff; background: rgba(6,20,30,.78); border: 1px solid rgba(139,232,255,.28); }
     </style>
   </head>
   <body>
@@ -30,7 +32,13 @@
         <p>
           Your report has been sent. Player notes are what will make WaveKit smarter, calmer, and more useful over time.
         </p>
-        <a class="button primary" href="index.html#helper">Back to WaveKit</a>
+        <p>
+          For quick team discussion or follow-up notes, you can also join the WaveKit Discord.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="index.html#helper">Back to WaveKit</a>
+          <a class="button secondary" href="https://discord.gg/tkbhH5jU5y" target="_blank" rel="noopener">Join Discord</a>
+        </div>
       </section>
     </main>
   </body>

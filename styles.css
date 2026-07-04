@@ -879,6 +879,92 @@ h1 {
   background: var(--status, var(--teal));
 }
 
+.suggestion-style-panel {
+  width: min(100%, var(--content));
+  margin: 0 auto 20px;
+  padding: clamp(14px, 2vw, 18px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  border: 1px solid rgba(139, 232, 255, 0.18);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(120, 244, 255, 0.13), transparent 34%),
+    linear-gradient(135deg, rgba(255, 215, 122, 0.07), transparent 52%),
+    rgba(6, 20, 30, 0.86);
+  box-shadow: 0 18px 44px var(--shadow);
+}
+
+.suggestion-style-panel span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.suggestion-style-panel strong {
+  display: block;
+  color: var(--text);
+  font-size: 1.02rem;
+}
+
+.suggestion-style-panel p {
+  max-width: 760px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.suggestion-style-options {
+  min-width: min(100%, 420px);
+}
+
+.discord-callout {
+  width: min(100%, var(--content));
+  margin: 0 auto 18px;
+  padding: clamp(14px, 2vw, 18px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  border: 1px solid rgba(120, 244, 255, 0.2);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(120, 244, 255, 0.15), transparent 36%),
+    linear-gradient(135deg, rgba(98, 237, 255, 0.08), rgba(255, 215, 122, 0.045)),
+    rgba(6, 20, 30, 0.88);
+  box-shadow: 0 18px 44px var(--shadow);
+}
+
+.discord-callout span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.discord-callout strong {
+  display: block;
+  color: var(--text);
+  font-size: 1.04rem;
+}
+
+.discord-callout p {
+  max-width: 760px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 .feedback-form,
 .changelog-panel {
   position: relative;
@@ -2360,6 +2446,14 @@ h1 {
   }
 
   .starter-note {
+    grid-template-columns: 1fr;
+  }
+
+  .suggestion-style-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .discord-callout {
     grid-template-columns: 1fr;
   }
 }

@@ -31,6 +31,7 @@
         <a href="#builds">Builds</a>
         <a href="#feedback">Feedback</a>
         <a href="#trust">Trust</a>
+        <a href="https://discord.gg/tkbhH5jU5y" target="_blank" rel="noopener">Discord</a>
       </nav>
       <div class="account-bar" aria-live="polite">
         <span id="cloud-sync-status">Cloud sync connecting...</span>
@@ -130,7 +131,7 @@
         </div>
 
         <div class="flow-guide" aria-label="Setup steps">
-          <span><strong>1</strong> Save or edit profile</span>
+          <span><strong>1</strong> Name profile</span>
           <span><strong>2</strong> Tap owned Resonators</span>
           <span><strong>3</strong> Tap owned weapons</span>
           <span><strong>4</strong> Pick a team to build</span>
@@ -171,18 +172,6 @@
                 <span>Profile name</span>
                 <input id="profile-name" type="text" placeholder="Optional">
               </label>
-              <div class="field">
-                <span>How familiar are you?</span>
-                <div id="experience-options" class="segmented" aria-label="Experience level"></div>
-              </div>
-              <div class="field">
-                <span>What should suggestions prioritise?</span>
-                <div id="priority-options" class="segmented" aria-label="Team priority"></div>
-              </div>
-              <div class="field">
-                <span>Main goal</span>
-                <div id="goal-options" class="segmented" aria-label="Main goal"></div>
-              </div>
             </div>
             <div class="profile-actions">
               <button id="save-profile" class="button primary" type="button">Save changes</button>
@@ -242,6 +231,14 @@
         <div id="empty-results" class="empty-state">
           Select at least one main damage character and two helpers or sustain characters to generate teams.
         </div>
+        <div class="suggestion-style-panel" aria-label="Suggestion style">
+          <div>
+            <span>Suggestion style</span>
+            <strong>Choose how WaveKit sorts your owned teams.</strong>
+            <p>Best Teams favours premium archetypes, Ready Now favours safer comfortable teams, and Build Priority highlights the strongest accounts to invest into next.</p>
+          </div>
+          <div id="suggestion-style-options" class="segmented suggestion-style-options"></div>
+        </div>
         <div id="team-results" class="team-results"></div>
       </section>
 
@@ -294,6 +291,14 @@
             <strong>Reports</strong>
             <span>Team context is included automatically.</span>
           </div>
+        </div>
+        <div class="discord-callout">
+          <div>
+            <span>Community Discord</span>
+            <strong>Want to discuss teams or report something fast?</strong>
+            <p>Join the WaveKit Discord for quick feedback, tester notes, and team suggestion discussion.</p>
+          </div>
+          <a class="button primary" href="https://discord.gg/tkbhH5jU5y" target="_blank" rel="noopener">Join Discord</a>
         </div>
         <form name="wavekit-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="thanks/" class="feedback-form">
           <input type="hidden" name="form-name" value="wavekit-feedback">
@@ -355,7 +360,7 @@
           </article>
           <article class="status-panel local">
             <span>Privacy</span>
-            <p>Profiles are stored locally in your browser. There is no real account backend yet.</p>
+            <p>Profiles can stay local, or sync through optional Firebase login if you choose to sign in.</p>
           </article>
           <article class="status-panel fan">
             <span>Fan project</span>
@@ -368,6 +373,7 @@
             <h3>Latest WaveKit updates</h3>
           </div>
           <ol class="changelog-list">
+            <li><strong>v0.4</strong><span>Added WaveKit Discord links and simplified suggestion style controls.</span></li>
             <li><strong>v0.3</strong><span>Added Netlify feedback reports, clearer button states, selected-team context, and expanded team meta notes.</span></li>
             <li><strong>v0.2</strong><span>Added profile saving, weapon selection, mobile build-card improvements, and WaveKit branding.</span></li>
             <li><strong>v0.1</strong><span>Started the account-aware team helper prototype with Resonator and weapon data.</span></li>

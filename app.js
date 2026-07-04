@@ -378,6 +378,7 @@ const state = {
   experience: "New",
   priority: "Balanced",
   goal: "General play",
+  suggestionStyle: "Best Teams",
   roleFilter: "All",
   search: "",
   weaponSearch: "",
@@ -397,9 +398,7 @@ let autoSaveTimer = null;
 let autoSyncRetryTimer = null;
 let autoSyncing = false;
 
-const experienceOptions = ["New", "Comfortable", "Endgame"];
-const priorityOptions = ["Balanced", "Comfort", "DPS"];
-const goalOptions = ["General play", "Story & bosses", "Tower"];
+const suggestionStyleOptions = ["Best Teams", "Ready Now", "Build Priority"];
 const roleFilters = ["All", "Main DPS", "Sub DPS", "Support", "Healer", "Defense"];
 const weaponTypeFilters = ["All", "Sword", "Broadblade", "Gauntlets", "Pistols", "Rectifier"];
 
@@ -547,6 +546,7 @@ function activeRover() {
 
 function renderSegmented(containerId, values, selected, onSelect) {
   const container = $(containerId);
+  if (!container) return;
   container.innerHTML = values.map((value) => `
     <button class="${value === selected ? "is-active" : ""}" type="button" data-value="${value}">${value}</button>
   `).join("");
@@ -894,6 +894,7 @@ function scoreCharacter(character) {
 }
 
 function scoreTeam(main, sub, sustain) {
+  const style = state.suggestionStyle || "Best Teams";
   let score = scoreCharacter(main) * 1.12 + sub.score * 0.55 + sustain.score * 0.62;
   score += synergyScore(main, sub) + synergyScore(main, sustain);
   score += preferredTeamScore(main, sub, sustain);
@@ -902,14 +903,19 @@ function scoreTeam(main, sub, sustain) {
   score += teamSpecificAdjustment(main, sub, sustain);
   if (main.score >= 90) score += 12;
   if (main.score < 75) score -= 8;
-  if (sustain.roles.includes("healer")) score += state.priority === "Comfort" || state.experience === "New" ? 16 : 9;
+  if (sustain.roles.includes("healer")) score += style === "Ready Now" ? 16 : 9;
   if (sub.roles.includes("support")) score += 4;
-  if (state.priority === "DPS" && sub.roles.includes("sub")) score += 7;
-  if (state.priority === "Balanced" && sustain.roles.includes("healer") && sub.roles.includes("sub")) score += 5;
-  if (state.priority === "Comfort" && (sustain.roles.includes("healer") || sustain.roles.includes("defense"))) score += 8;
-  if (state.goal === "Tower" && !sustain.roles.includes("healer")) score -= 8;
-  if (state.priority !== "DPS" && !sustain.roles.includes("healer") && !sustain.roles.includes("defense")) score -= 10;
-  if (main.roles.includes("main") && sustain.roles.includes("defense") && state.experience === "New") score += 4;
+  if (style === "Best Teams" && sub.roles.includes("sub")) score += 7;
+  if (style === "Best Teams" && teamFitLabel({ main, members: [main, sub, sustain] }) === "Archetype fit") score += 8;
+  if (style === "Ready Now" && sustain.roles.includes("healer") && sub.roles.includes("sub")) score += 5;
+  if (style === "Ready Now" && (sustain.roles.includes("healer") || sustain.roles.includes("defense"))) score += 8;
+  if (style === "Ready Now" && state.weapons.has(main.build.weapon)) score += 7;
+  if (style === "Build Priority" && main.score >= 88) score += 10;
+  if (style === "Build Priority" && state.focus.has(main.slug)) score += 12;
+  if (style === "Build Priority" && teamFitLabel({ main, members: [main, sub, sustain] }) === "Archetype fit") score += 5;
+  if (style !== "Best Teams" && !sustain.roles.includes("healer") && !sustain.roles.includes("defense")) score -= 10;
+  if (style === "Ready Now" && !sustain.roles.includes("healer")) score -= 8;
+  if (main.roles.includes("main") && sustain.roles.includes("defense") && style === "Ready Now") score += 4;
   if (sub.roles.includes("healer") && sustain.roles.includes("healer")) score -= 34;
   if (sub.roles.includes("healer") && preferredRank(main, sub, "sub") < 18) score -= 12;
   if (sustain.roles.includes("support") && !sustain.roles.includes("healer") && preferredRank(main, sustain, "sustain") < 18) score -= 6;
@@ -1250,7 +1256,7 @@ function teamCard(team, group, index) {
         <div class="detail-grid">
           ${teamInsight("Fit", teamFitLabel(team), teamFitDetail(team))}
           ${teamInsight("Safety", safetyLabel(team), safetyDetail(team))}
-          ${teamInsight("Best partners", "Meta context", bestPartnerDetail(team))}
+          ${teamInsight("Best-in-slot target", bestShellStatus(team), bestShellDetail(team))}
           ${teamInsight("Owned roster logic", "Why this version", rosterLogicDetail(team))}
           ${teamInsight("Rotation", "Beginner flow", rotationText(team))}
           ${teamInsight("Confidence", teamConfidence(team).label, teamConfidence(team).detail)}
@@ -1369,9 +1375,9 @@ function teamPurpose(team) {
 }
 
 function bestFor(team) {
-  if (team.members[2].roles.includes("healer") && state.priority !== "DPS") return "Story, bosses, and learning rotations";
-  if (state.goal === "Tower") return "Tower attempts when you can play the rotation cleanly";
-  if (state.priority === "Comfort") return "Safer fights and lower-stress play";
+  if (state.suggestionStyle === "Ready Now") return "Story, bosses, and lower-stress learning";
+  if (state.suggestionStyle === "Build Priority") return "Characters worth investing into next";
+  if (team.members[2].roles.includes("healer")) return "General play and clean boss practice";
   return "General play and focused DPS practice";
 }
 
@@ -1412,6 +1418,31 @@ function bestPartnerDetail(team) {
   const sustain = pref?.sustain?.slice(0, 3).map(characterName).join(", ");
   if (bestShell) return `Common best-shell target: ${team.main.name} + ${bestShell}. Other useful helpers: ${core || "flexible utility"}. Safer sustain picks: ${sustain || "a real healer when available"}.`;
   return `WaveKit treats ${team.main.name} as flexible here. Preferred helpers: ${core || "role coverage first"}. Safer sustain picks: ${sustain || "a real healer when available"}.`;
+}
+
+function bestShellSlugs(team) {
+  const pair = teamArchetypes[team.main.slug]?.ideal?.[0] || [];
+  return pair.length ? [team.main.slug, ...pair] : [];
+}
+
+function bestShellStatus(team) {
+  const shell = bestShellSlugs(team);
+  if (!shell.length) return "Flexible";
+  const missing = shell.filter((slug) => !state.owned[slug]).map(characterName);
+  if (!missing.length) return "Owned target";
+  return `Missing ${missing.join(" / ")}`;
+}
+
+function bestShellDetail(team) {
+  const shell = bestShellSlugs(team);
+  if (!shell.length) return bestPartnerDetail(team);
+  const shellText = shell.map(characterName).join(" + ");
+  const currentText = team.members.map((member) => member.name).join(" + ");
+  const missing = shell.filter((slug) => !state.owned[slug]).map(characterName);
+  if (!missing.length) {
+    return `${shellText} is WaveKit's current target shell for this DPS. It can appear as a real suggestion because you own every listed character.`;
+  }
+  return `${shellText} is shown as reference only because you do not own ${missing.join(" and ")}. This card uses your closest owned version: ${currentText}.`;
 }
 
 function rosterLogicDetail(team) {
@@ -1714,7 +1745,7 @@ function feedbackContext(team) {
   const weaponCount = state.weapons.size;
   const roverText = `${state.roverForm} active; owned ${([...state.roverForms].sort()).join(", ")}`;
   if (!team) {
-    return `No team selected. Profile: ${state.experience}, ${state.priority}, ${state.goal}. Owned Resonators: ${ownedCount}. Owned weapons: ${weaponCount}. Rover: ${roverText}.`;
+    return `No team selected. Suggestion style: ${state.suggestionStyle}. Owned Resonators: ${ownedCount}. Owned weapons: ${weaponCount}. Rover: ${roverText}.`;
   }
   return [
     `Selected team: ${team.members.map((member) => member.name).join(" / ")}`,
@@ -1722,7 +1753,7 @@ function feedbackContext(team) {
     `Safety: ${safetyLabel(team)}`,
     `Confidence: ${teamConfidence(team).label}`,
     `Roster logic: ${missingAlternativeNote(team)}`,
-    `Profile: ${state.experience}, ${state.priority}, ${state.goal}`,
+    `Suggestion style: ${state.suggestionStyle}`,
     `Owned Resonators: ${ownedCount}`,
     `Owned weapons: ${weaponCount}`,
     `Rover: ${roverText}`
@@ -1852,6 +1883,7 @@ function profilePayload() {
     experience: state.experience,
     priority: state.priority,
     goal: state.goal,
+    suggestionStyle: state.suggestionStyle,
     roverForm: state.roverForm,
     roverForms: [...state.roverForms],
     owned: state.owned,
@@ -1912,12 +1944,20 @@ function normaliseProfile(payload) {
     experience: payload.experience || "New",
     priority: payload.priority === "Power" ? "DPS" : payload.priority || "Balanced",
     goal: payload.goal || "General play",
+    suggestionStyle: normaliseSuggestionStyle(payload),
     roverForm: roverForms[payload.roverForm] ? payload.roverForm : "Aero",
     roverForms: normaliseRoverForms(payload.roverForms, payload.roverForm),
     owned: payload.owned || {},
     focus: payload.focus || payload.favorites || [],
     weapons: payload.weapons || []
   };
+}
+
+function normaliseSuggestionStyle(payload) {
+  if (suggestionStyleOptions.includes(payload.suggestionStyle)) return payload.suggestionStyle;
+  if (payload.priority === "Comfort") return "Ready Now";
+  if (payload.priority === "DPS" || payload.priority === "Power") return "Best Teams";
+  return "Best Teams";
 }
 
 function normaliseRoverForms(forms, activeForm) {
@@ -1934,6 +1974,7 @@ function applyProfile(profile) {
   state.experience = payload.experience;
   state.priority = payload.priority;
   state.goal = payload.goal;
+  state.suggestionStyle = payload.suggestionStyle;
   state.roverForm = payload.roverForm;
   state.roverForms = new Set(payload.roverForms);
   state.owned = payload.owned;
@@ -1949,6 +1990,7 @@ function clearWorkingProfile() {
   state.experience = "New";
   state.priority = "Balanced";
   state.goal = "General play";
+  state.suggestionStyle = "Best Teams";
   state.roleFilter = "All";
   state.search = "";
   state.weaponSearch = "";
@@ -2089,7 +2131,7 @@ function renderProfileSummary() {
   profileSummary.innerHTML = `
     <div>
       <strong>${state.profileName || "Unsaved profile"}</strong>
-      <span>${state.experience} · ${state.priority} · ${state.goal}</span>
+      <span>${state.suggestionStyle} suggestions</span>
     </div>
     <div class="summary-stats">
       <span>${Object.keys(state.owned).length} resonators</span>
@@ -2101,14 +2143,23 @@ function renderProfileSummary() {
   `;
 }
 
+function renderSuggestionStyle() {
+  renderSegmented("#suggestion-style-options", suggestionStyleOptions, state.suggestionStyle, (value) => {
+    state.suggestionStyle = value;
+    resetFlowGuide();
+    markUnsaved();
+    renderProfileSummary();
+    renderSuggestionStyle();
+    renderResults();
+  });
+}
+
 function render() {
   document.body.classList.toggle("is-profile-view", !state.editMode);
   $("#profile-name").value = state.profileName;
   renderProfileManager();
   renderCloudSync();
-  renderSegmented("#experience-options", experienceOptions, state.experience, (value) => { state.experience = value; resetFlowGuide(); markUnsaved(); render(); });
-  renderSegmented("#priority-options", priorityOptions, state.priority, (value) => { state.priority = value; resetFlowGuide(); markUnsaved(); render(); });
-  renderSegmented("#goal-options", goalOptions, state.goal, (value) => { state.goal = value; resetFlowGuide(); markUnsaved(); render(); });
+  renderSuggestionStyle();
   renderRoleFilters();
   renderCharacters();
   renderWeaponTypeFilters();
