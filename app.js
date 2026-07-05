@@ -936,7 +936,10 @@ function alternateWeapons(character) {
     || roleWeaponFallbacks[mode]?.[type]
     || weaponFallbacks[type]
     || [];
-  return options.filter((weapon) => weapon !== character.build.weapon).slice(0, 3);
+  return options
+    .filter((weapon) => weapon !== character.build.weapon)
+    .filter((weapon) => weaponTypeFor(weapon) === type)
+    .slice(0, 3);
 }
 
 function costPattern(character) {
