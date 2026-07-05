@@ -2747,9 +2747,16 @@ async function silentCloudSync() {
 }
 
 async function initCloudSync() {
+  const timeout = setTimeout(() => {
+    if (!cloud.initializing) return;
+    cloud.initializing = false;
+    setCloudStatus("Cloud sync took too long to load. Refresh and try again.");
+    renderCloudSync();
+  }, 8000);
   try {
     const config = await import("./assets/firebase-config.js");
     if (!config.firebaseEnabled) {
+      clearTimeout(timeout);
       cloud.initializing = false;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
@@ -2758,11 +2765,13 @@ async function initCloudSync() {
     cloud.api = await import("./assets/firebase-sync.js");
     cloud.configured = cloud.api.isCloudConfigured();
     if (!cloud.configured) {
+      clearTimeout(timeout);
       cloud.initializing = false;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
       return;
     }
+    clearTimeout(timeout);
     cloud.initializing = false;
     setCloudStatus("Cloud sync ready. Sign in to sync profiles.");
     renderCloudSync();
@@ -2779,6 +2788,7 @@ async function initCloudSync() {
       autoLoadCloudProfiles();
     });
   } catch {
+    clearTimeout(timeout);
     cloud.initializing = false;
     setCloudStatus("Cloud sync could not load.");
     renderCloudSync();
