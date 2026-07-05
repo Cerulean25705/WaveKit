@@ -1188,13 +1188,30 @@ function isSuggestibleTeam(team) {
     idealAllowedForActiveForms(main, ideal) && (ideal.includes(sub.slug) || ideal.includes(third.slug))
   );
   const hasSharedPlan = helperSynergyReason(main, sub) || helperSynergyReason(main, third);
+  const hasOwnedPreferredHelper = ownedPreferredHelperAvailable(main);
+  const roleCompleteFallback = safeThird
+    && !sub.roles.includes("healer")
+    && (sub.roles.includes("sub") || sub.roles.includes("support") || hasSharedPlan);
 
   if (archetypeFit) return true;
   if (corePreferred && (sustainPreferred || safeThird || hasNamedPartner)) return true;
   if (flexiblePreferred && sustainPreferred && hasSharedPlan) return true;
   if (!hasArchetype && (corePreferred || hasSharedPlan) && safeThird) return true;
+  if (!hasOwnedPreferredHelper && roleCompleteFallback) return true;
 
   return false;
+}
+
+function ownedPreferredHelperAvailable(main) {
+  const pref = teamPreferences[main.slug];
+  if (!pref) return false;
+  const preferred = new Set([...(pref.core || []), ...(pref.good || []), ...(pref.flex || [])]);
+  return activeCharacters().some((character) =>
+    character.slug !== main.slug
+    && state.owned[character.slug]
+    && preferred.has(character.slug)
+    && !character.roles.includes("healer")
+  );
 }
 
 function helperSynergyReason(main, helper) {
