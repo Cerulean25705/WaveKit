@@ -571,11 +571,11 @@ const teamPreferences = {
   danjin: pref(["roccia", "cantarella", "taoqi"], ["chisa", "sanhua", "yangyang"], ["shorekeeper", "verina", "chisa", "baizhi"]),
   lingyang: pref(["zhezhi", "sanhua", "lucilla"], ["youhu", "baizhi", "jianxin"], ["shorekeeper", "verina", "baizhi", "youhu"]),
   chixia: pref(["changli", "brant", "lupa"], ["mortefi", "denia", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
-  aemeath: pref(["lynae", "lupa", "changli", "brant", "denia"], ["mornye", "shorekeeper", "verina"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
-  hiyuki: pref(["lucilla", "chisa", "zhezhi"], ["sanhua", "youhu", "baizhi", "jianxin"], ["chisa", "shorekeeper", "verina", "buling", "baizhi", "youhu"]),
-  sigrika: pref(["qiuyuan", "lucilla", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "verina", "buling", "baizhi"]),
-  galbrena: pref(["qiuyuan", "lupa", "brant", "iuno"], ["changli", "mortefi", "denia"], ["shorekeeper", "verina", "buling", "baizhi"]),
-  lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua", "mornye"], ["shorekeeper", "verina", "buling", "mornye", "baizhi"]),
+  aemeath: pref(["lynae", "lupa", "denia", "changli", "brant"], ["mornye", "chisa", "shorekeeper", "verina"], ["mornye", "chisa", "shorekeeper", "verina", "buling", "baizhi"]),
+  hiyuki: pref(["lucilla", "lynae", "chisa", "zhezhi"], ["sanhua", "youhu", "baizhi", "jianxin"], ["chisa", "mornye", "shorekeeper", "verina", "buling", "baizhi", "youhu"]),
+  sigrika: pref(["lucilla", "qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "mornye", "verina", "buling", "baizhi"]),
+  galbrena: pref(["lucilla", "qiuyuan", "lupa", "brant", "iuno"], ["changli", "mortefi", "denia"], ["shorekeeper", "lupa", "verina", "buling", "baizhi"]),
+  lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
   "luuk-herssen": pref(["lynae", "denia", "sanhua", "roccia"], ["phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   brant: pref(["lupa", "changli", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   phoebe: pref(["zani", "lynae", "rover"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "mornye", "baizhi"]),
@@ -599,11 +599,11 @@ const teamArchetypes = {
   danjin: archetype("High-risk Havoc", [["roccia", "shorekeeper"], ["cantarella", "verina"], ["taoqi", "baizhi"]], "Danjin needs the site to protect players from stress: damage is high, safety matters."),
   lingyang: archetype("Glacio Basic", [["zhezhi", "shorekeeper"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Lingyang likes Glacio or Basic Attack helpers, but comfort support should stay visible."),
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
-  aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["lupa", "mornye"], ["changli", "mornye"], ["brant", "mornye"], ["lynae", "shorekeeper"]], "Aemeath's premium Tune Rupture shell is Lynae plus Mornye. Fusion helpers can work, but Mornye should stay highly valued because of Tune Break and All DMG support."),
-  hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"], ["sanhua", "verina"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla + Chisa treated as the premium current-patch target."),
-  sigrika: archetype("Aero Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["lucilla", "buling"], ["ciaccona", "shorekeeper"]], "Sigrika is an Echo Skill carry; Qiuyuan is the priority helper if owned, with Lucilla treated as the practical backup path when Qiuyuan is missing."),
-  galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["iuno", "shorekeeper"]], "Galbrena is an Echo Skill carry, so Qiuyuan should surface before generic Fusion matching when owned."),
-  lucy: archetype("Hack-Shifting Heavy", [["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["rebecca", "mornye"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem."),
+  aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["lynae", "chisa"], ["lupa", "mornye"], ["denia", "chisa"], ["denia", "lupa"], ["changli", "mornye"], ["brant", "mornye"], ["lynae", "shorekeeper"]], "Aemeath's premium Tune Rupture shell is Lynae plus Mornye. Tethys also highlights Chisa and Denia/Lupa paths, so WaveKit keeps those visible when owned."),
+  hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "mornye"], ["lynae", "chisa"], ["lynae", "mornye"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla/Lynae plus Chisa or Mornye treated as current-patch targets."),
+  sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["qiuyuan", "mornye"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["lucilla", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Tethys highlights Lucilla hypercarry first, while Game8 highlights Qiuyuan; both should stay visible as valid premium routes."),
+  galbrena: archetype("Fusion Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["lucilla", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Galbrena is an Echo Skill carry, so Lucilla and Qiuyuan should surface before generic Fusion matching when owned."),
+  lucy: archetype("Hack-Shifting Heavy", [["rebecca", "mornye"], ["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem, with Mornye or Shorekeeper as the main comfort slots."),
   "luuk-herssen": archetype("Tune Strain", [["lynae", "mornye"], ["denia", "mornye"], ["sanhua", "mornye"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell first. Sanhua remains a fallback hypercarry helper, not the default if Lynae or Denia are owned."),
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
   phoebe: archetype("Spectro Frazzle", [["zani", "shorekeeper"], ["zani", "verina"], ["rover", "shorekeeper"]], "Phoebe is a premium Spectro Frazzle piece, especially for Zani.")
@@ -1191,28 +1191,51 @@ function teamSpecificAdjustment(main, sub, sustain) {
 
   if (main.slug === "aemeath") {
     if (pair.includes("lynae") && pair.includes("mornye")) score += 48;
+    if (pair.includes("lynae") && pair.includes("chisa")) score += 32;
     if (pair.includes("lupa") && pair.includes("mornye")) score += 28;
+    if (pair.includes("denia") && pair.includes("chisa")) score += 28;
+    if (pair.includes("denia") && pair.includes("lupa")) score += 24;
     if (pair.includes("changli") && pair.includes("mornye")) score += 22;
     if (pair.includes("brant") && pair.includes("mornye")) score += 18;
     if (pair.includes("lynae") && !pair.includes("mornye")) score += 8;
     if (pair.includes("mornye") && !pair.includes("lynae") && !pair.includes("lupa") && !pair.includes("changli") && !pair.includes("brant")) score += 6;
   }
 
+  if (main.slug === "hiyuki") {
+    if (pair.includes("lucilla") && pair.includes("chisa")) score += 42;
+    if (pair.includes("lucilla") && pair.includes("mornye")) score += 30;
+    if (pair.includes("lynae") && pair.includes("chisa")) score += 24;
+    if (pair.includes("lynae") && pair.includes("mornye")) score += 20;
+    if (!pair.includes("lucilla") && !pair.includes("lynae")) score -= 12;
+  }
+
   if (main.slug === "sigrika") {
+    if (pair.includes("lucilla") && pair.includes("shorekeeper")) score += 44;
     if (pair.includes("qiuyuan") && pair.includes("shorekeeper")) score += 42;
     if (pair.includes("qiuyuan") && pair.includes("ciaccona")) score += 34;
+    if (pair.includes("qiuyuan") && pair.includes("mornye")) score += 28;
     if (pair.includes("qiuyuan") && pair.includes("iuno")) score += 26;
     if (pair.includes("qiuyuan") && pair.includes("cantarella")) score += 22;
+    if (pair.includes("lynae") && pair.includes("mornye")) score += 16;
     if (!pair.includes("qiuyuan") && pair.includes("cantarella")) score += 12;
-    if (!pair.includes("qiuyuan") && pair.includes("lucilla")) score += 8;
+    if (!pair.includes("qiuyuan") && pair.includes("lucilla")) score += 18;
     if (!pair.includes("qiuyuan") && !pair.includes("cantarella") && !pair.includes("lucilla")) score -= 18;
   }
 
   if (main.slug === "galbrena") {
+    if (pair.includes("lucilla") && pair.includes("shorekeeper")) score += 44;
     if (pair.includes("qiuyuan") && pair.includes("shorekeeper")) score += 42;
     if (pair.includes("qiuyuan") && pair.includes("lupa")) score += 30;
+    if (pair.includes("lucilla") && pair.includes("lupa")) score += 28;
     if (pair.includes("brant") && pair.includes("lupa")) score += 24;
-    if (!pair.includes("qiuyuan") && !pair.includes("lupa")) score -= 14;
+    if (!pair.includes("qiuyuan") && !pair.includes("lucilla") && !pair.includes("lupa")) score -= 14;
+  }
+
+  if (main.slug === "lucy") {
+    if (pair.includes("rebecca") && pair.includes("mornye")) score += 38;
+    if (pair.includes("rebecca") && pair.includes("shorekeeper")) score += 34;
+    if (pair.includes("rebecca") && pair.includes("verina")) score += 22;
+    if (!pair.includes("rebecca")) score -= 22;
   }
 
   if (main.slug === "luuk-herssen") {
