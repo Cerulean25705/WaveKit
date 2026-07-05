@@ -644,6 +644,7 @@ const legacyProfilesKey = "tacet-team-helper-profiles-v2";
 const cloud = {
   api: null,
   configured: false,
+  initializing: true,
   user: null,
   busy: false,
   loadedForUid: ""
@@ -2749,6 +2750,7 @@ async function initCloudSync() {
   try {
     const config = await import("./assets/firebase-config.js");
     if (!config.firebaseEnabled) {
+      cloud.initializing = false;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
       return;
@@ -2756,10 +2758,14 @@ async function initCloudSync() {
     cloud.api = await import("./assets/firebase-sync.js");
     cloud.configured = cloud.api.isCloudConfigured();
     if (!cloud.configured) {
+      cloud.initializing = false;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
       return;
     }
+    cloud.initializing = false;
+    setCloudStatus("Cloud sync ready. Sign in to sync profiles.");
+    renderCloudSync();
     cloud.api.initCloudSync((user) => {
       cloud.user = user;
       if (!user) {
@@ -2773,7 +2779,9 @@ async function initCloudSync() {
       autoLoadCloudProfiles();
     });
   } catch {
+    cloud.initializing = false;
     setCloudStatus("Cloud sync could not load.");
+    renderCloudSync();
   }
 }
 
@@ -2788,7 +2796,9 @@ function renderCloudSync() {
   if (userLabel && cloud.user) {
     userLabel.textContent = `Signed in as ${cloud.user.email || cloud.user.displayName || "WaveKit user"}`;
   }
-  if (!cloud.configured) {
+  if (cloud.initializing) {
+    status.textContent = "Cloud sync connecting...";
+  } else if (!cloud.configured) {
     status.textContent = "Cloud sync needs Firebase setup.";
   }
   [
