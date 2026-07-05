@@ -29,6 +29,8 @@ To enable it:
 - Create a Firebase project.
 - Add a Web app in Firebase project settings.
 - Enable Authentication providers, such as Email/Password and Google.
+- In Authentication settings, add your live domains to Authorized domains:
+  `wavekit.net`, `www.wavekit.net`, and the Netlify `.netlify.app` domain.
 - Create a Firestore database.
 - Paste your Firebase Web app config into `assets/firebase-config.js`.
 - Change `firebaseEnabled` in `assets/firebase-config.js` to `true`.

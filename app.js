@@ -2962,13 +2962,21 @@ function cleanCloudError(error) {
     "auth/cancelled-popup-request": "Google sign in was interrupted. Try the Google button again.",
     "auth/operation-not-allowed": "Google sign in is not enabled in Firebase Authentication.",
     "auth/unauthorized-domain": "This domain is not authorised in Firebase Authentication.",
+    "auth/configuration-not-found": "Firebase Authentication is not fully set up for this project.",
+    "auth/network-request-failed": "Firebase could not be reached. Check your connection and try again.",
+    "auth/api-key-not-valid": "Firebase rejected the API key in the site config.",
+    "auth/app-not-authorized": "Firebase has not authorised this web app for the current domain.",
+    "auth/too-many-requests": "Firebase is temporarily blocking sign-in attempts. Wait a little, then try again.",
     "auth/account-exists-with-different-credential": "That email already uses a different sign-in method.",
     "auth/weak-password": "Password should be at least 6 characters.",
+    "permission-denied": "Firebase saved nothing because the Firestore rules rejected this account.",
+    "failed-precondition": "Firestore is not ready yet. Check that the database exists and rules are published.",
+    "unavailable": "Firestore is temporarily unavailable. Try syncing again in a moment.",
     "cloud-sync-not-configured": "Cloud sync needs Firebase setup.",
     "not-signed-in": "Sign in before syncing.",
     "no-cloud-profile": "No cloud profile found yet. Use Sync now first."
   };
-  return messages[code] || "Cloud sync failed. Check Firebase setup and try again.";
+  return messages[code] || `Cloud sync failed${code ? ` (${code})` : ""}. Check Firebase setup and try again.`;
 }
 
 $("#profile-name").addEventListener("input", (event) => {
