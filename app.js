@@ -2872,7 +2872,7 @@ async function createCloudAccount() {
 }
 
 async function signInGoogleCloud() {
-  await runCloudAction("Opening Google sign in...", () => cloud.api.signInWithGoogle(), "Signed in. Loading cloud profile...");
+  await runCloudAction("Sending you to Google...", () => cloud.api.signInWithGoogle(), "Returning from Google...");
 }
 
 async function resetCloudPassword() {

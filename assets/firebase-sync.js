@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
   signOut
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 import {
@@ -51,8 +51,8 @@ export async function createAccountWithEmail(email, password) {
 export async function signInWithGoogle() {
   ensureReady();
   const provider = new GoogleAuthProvider();
-  const credential = await signInWithPopup(auth, provider);
-  return serialiseUser(credential.user);
+  await signInWithRedirect(auth, provider);
+  return null;
 }
 
 export async function resetCloudPassword(email) {
