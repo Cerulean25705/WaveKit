@@ -2429,6 +2429,15 @@ function profilePayload() {
   };
 }
 
+function profileHasRosterData(profile) {
+  const payload = normaliseProfile(profile || {});
+  return Boolean(Object.keys(payload.owned).length || payload.focus.length || payload.weapons.length);
+}
+
+function workingProfileHasRosterData() {
+  return Boolean(Object.keys(state.owned).length || state.focus.size || state.weapons.size);
+}
+
 function loadProfile() {
   try {
     const stored = loadStoredProfiles();
@@ -2900,7 +2909,9 @@ async function loadCloudProfiles() {
     if (!cloudData?.profiles?.length) {
       throw new Error("no-cloud-profile");
     }
-    applyCloudProfiles(cloudData);
+    if (!applyCloudProfiles(cloudData)) {
+      throw new Error("no-cloud-profile");
+    }
   }, "Cloud profile loaded.");
 }
 
@@ -2914,8 +2925,11 @@ async function autoLoadCloudProfiles() {
   try {
     const cloudData = await cloud.api.loadCloudProfiles();
     if (cloudData?.profiles?.length) {
-      applyCloudProfiles(cloudData);
-      setCloudStatus("Cloud profile loaded.");
+      if (applyCloudProfiles(cloudData)) {
+        setCloudStatus("Cloud profile loaded.");
+      } else {
+        setCloudStatus("Signed in. No saved roster found yet.");
+      }
     } else {
       setCloudStatus("Signed in. Sync when ready.");
     }
@@ -2928,17 +2942,24 @@ async function autoLoadCloudProfiles() {
 }
 
 function applyCloudProfiles(cloudData) {
-  state.profiles = cloudData.profiles.map((profile) => ({ ...normaliseProfile(profile), id: profile.id || `profile-${Date.now()}`, updatedAt: profile.updatedAt || new Date().toISOString() }));
-  state.activeProfileId = cloudData.activeProfileId || state.profiles[0]?.id || "";
-  applyProfile(state.profiles.find((profile) => profile.id === state.activeProfileId) || state.profiles[0]);
+  const profiles = cloudData.profiles.map((profile) => ({ ...normaliseProfile(profile), id: profile.id || `profile-${Date.now()}`, updatedAt: profile.updatedAt || new Date().toISOString() }));
+  const preferredProfile = profiles.find((profile) => profile.id === cloudData.activeProfileId && profileHasRosterData(profile))
+    || profiles.find(profileHasRosterData);
+  if (!preferredProfile) return false;
+  state.profiles = profiles;
+  state.activeProfileId = preferredProfile.id;
+  applyProfile(preferredProfile);
   state.editMode = false;
   persistProfiles();
   $("#save-status").textContent = "Loaded cloud profile";
   render();
+  return true;
 }
 
 function cloudPayload() {
-  upsertWorkingProfile();
+  if (state.activeProfileId || workingProfileHasRosterData()) {
+    upsertWorkingProfile();
+  }
   persistProfiles();
   return {
     profiles: state.profiles,
@@ -2948,7 +2969,7 @@ function cloudPayload() {
 }
 
 function hasProfileProgress() {
-  return Boolean(state.profileName || Object.keys(state.owned).length || state.focus.size || state.weapons.size || state.profiles.length);
+  return Boolean(state.profileName || workingProfileHasRosterData() || state.profiles.some(profileHasRosterData));
 }
 
 async function runCloudAction(workingMessage, action, successMessage) {
