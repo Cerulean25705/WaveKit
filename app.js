@@ -445,11 +445,11 @@ const characters = [
   c("shorekeeper", "Shorekeeper", "Spectro", "Rectifier", ["healer", "support"], 99, ["any"], ["crit", "sustain"], "Premium sustain. Healing, Crit support, and low-stress team flow."),
   c("verina", "Verina", "Spectro", "Rectifier", ["healer", "support"], 96, ["any"], ["atk", "sustain"], "Very forgiving healer and universal support."),
   c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry. Likes Havoc helpers and stable sustain."),
-  c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 96, ["aero"], ["aero", "erosion"], "Aero carry with strong payoff when the team supports her mechanic."),
+  c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 98, ["aero"], ["aero", "erosion", "negative"], "Aero carry with strong payoff when the team supports her Erosion mechanic."),
   c("jinhsi", "Jinhsi", "Spectro", "Broadblade", ["main"], 92, ["spectro"], ["coordinated", "burst"], "Burst carry that wants helpers who enable her damage window."),
   c("zani", "Zani", "Spectro", "Gauntlets", ["main"], 92, ["spectro"], ["frazzle"], "Spectro damage dealer that appreciates Frazzle or Spectro support."),
   c("camellya", "Camellya", "Havoc", "Sword", ["main"], 90, ["havoc"], ["havoc"], "Strong Havoc carry, but asks for more comfort and timing."),
-  c("augusta", "Augusta", "Electro", "Broadblade", ["main"], 95, ["electro"], ["electro"], "Newer Electro carry. Strong, but mark as source-check before over-optimising."),
+  c("augusta", "Augusta", "Electro", "Broadblade", ["main"], 98, ["electro"], ["electro", "heavy"], "Premium Electro carry that wants Heavy Attack/all-attribute support."),
   c("carlotta", "Carlotta", "Glacio", "Pistols", ["main"], 91, ["glacio"], ["glacio"], "Glacio carry with precise damage windows."),
   c("jiyan", "Jiyan", "Aero", "Broadblade", ["main"], 89, ["aero"], ["heavy"], "Readable Aero carry, friendly for players who like clear burst windows."),
   c("xiangli-yao", "Xiangli Yao", "Electro", "Gauntlets", ["main"], 88, ["electro"], ["liberation"], "Electro carry with a clear core loop."),
@@ -460,15 +460,15 @@ const characters = [
   c("danjin", "Danjin", "Havoc", "Sword", ["main"], 76, ["havoc"], ["havoc"], "Risky but rewarding Havoc carry. Needs safety notes."),
   c("lingyang", "Lingyang", "Glacio", "Gauntlets", ["main"], 72, ["glacio"], ["glacio"], "Aerial Glacio carry. Fun but less relaxed."),
   c("chixia", "Chixia", "Fusion", "Pistols", ["main"], 68, ["fusion"], ["ranged"], "Simple ranged carry for early accounts."),
-  c("aemeath", "Aemeath", "Fusion", "Sword", ["main"], 94, ["fusion"], ["rupture"], "Newer Fusion damage entry with sourced build basics."),
-  c("hiyuki", "Hiyuki", "Glacio", "Sword", ["main"], 94, ["glacio"], ["chafe"], "Newer Glacio damage entry. Keep recommendations conservative."),
-  c("sigrika", "Sigrika", "Aero", "Gauntlets", ["main"], 94, ["aero"], ["echo-skill"], "Newer Aero damage entry with sourced build basics."),
-  c("galbrena", "Galbrena", "Fusion", "Pistols", ["main"], 88, ["fusion"], ["echo-skill"], "Fusion Echo Skill damage entry."),
+  c("aemeath", "Aemeath", "Fusion", "Sword", ["main"], 98, ["fusion", "tune"], ["rupture", "tune", "liberation"], "Premium Tune Rupture damage entry that heavily values Lynae and Mornye."),
+  c("hiyuki", "Hiyuki", "Glacio", "Sword", ["main"], 96, ["glacio"], ["chafe"], "Newer Glacio damage entry. Keep recommendations conservative."),
+  c("sigrika", "Sigrika", "Aero", "Gauntlets", ["main"], 98, ["aero", "echo-skill"], ["echo-skill"], "Premium Aero Echo Skill carry that strongly wants Qiuyuan-style support."),
+  c("galbrena", "Galbrena", "Fusion", "Pistols", ["main"], 97, ["fusion", "echo-skill"], ["echo-skill", "heavy"], "Premium Fusion Echo Skill carry."),
   c("lucy", "Lucy", "Spectro", "Pistols", ["main"], 86, ["spectro"], ["heavy"], "New collab damage character. Keep long-term assumptions cautious."),
   c("luuk-herssen", "Luuk Herssen", "Spectro", "Gauntlets", ["main"], 85, ["spectro"], ["basic"], "Spectro basic-attack damage entry."),
   c("cantarella", "Cantarella", "Havoc", "Rectifier", ["sub", "support"], 94, ["havoc"], ["havoc", "utility"], "Havoc helper for damage and utility."),
-  c("qiuyuan", "Qiuyuan", "Aero", "Sword", ["sub"], 91, ["aero"], ["echo"], "Aero sub-DPS with full Echo support direction."),
-  c("ciaccona", "Ciaccona", "Aero", "Pistols", ["sub"], 90, ["aero"], ["erosion"], "Aero Erosion sub-DPS."),
+  c("qiuyuan", "Qiuyuan", "Aero", "Sword", ["sub", "support"], 95, ["aero", "echo-skill"], ["echo", "echo-skill"], "Premium Echo Skill buffer/sub-DPS."),
+  c("ciaccona", "Ciaccona", "Aero", "Pistols", ["sub"], 95, ["aero"], ["erosion", "negative"], "Premium Aero Erosion sub-DPS."),
   c("yinlin", "Yinlin", "Electro", "Rectifier", ["sub"], 88, ["electro"], ["coordinated"], "Electro off-field pressure and coordinated damage."),
   c("zhezhi", "Zhezhi", "Glacio", "Rectifier", ["sub", "support"], 87, ["glacio"], ["skill"], "Glacio helper and support."),
   c("sanhua", "Sanhua", "Glacio", "Sword", ["sub", "support"], 84, ["glacio"], ["basic"], "Excellent low-cost helper, especially for Basic Attack teams."),
@@ -479,15 +479,15 @@ const characters = [
   c("yuanwu", "Yuanwu", "Electro", "Gauntlets", ["sub", "defense"], 68, ["electro"], ["coordinated", "defense"], "Set-and-forget Electro utility."),
   c("aalto", "Aalto", "Aero", "Pistols", ["sub"], 64, ["aero"], ["aero"], "Aero ranged helper with movement tools."),
   c("lumi", "Lumi", "Electro", "Broadblade", ["sub"], 64, ["electro"], ["skill"], "Electro quick-swap helper."),
-  c("iuno", "Iuno", "Aero", "Gauntlets", ["sub", "support"], 93, ["aero"], ["utility"], "Newer Aero support/sub-DPS."),
-  c("lynae", "Lynae", "Spectro", "Pistols", ["sub"], 92, ["spectro"], ["spectro"], "Newer Spectro sub-DPS."),
+  c("iuno", "Iuno", "Aero", "Gauntlets", ["sub", "support"], 94, ["aero", "heavy"], ["utility", "heavy"], "Premium Aero support/sub-DPS."),
+  c("lynae", "Lynae", "Spectro", "Pistols", ["sub", "support"], 94, ["spectro", "tune"], ["spectro", "tune", "rupture", "strain"], "Premium Tune sub-DPS/buffer."),
   c("denia", "Denia", "Fusion", "Rectifier", ["sub"], 90, ["fusion"], ["burst"], "Fusion Burst sub-DPS."),
   c("rebecca", "Rebecca", "Electro", "Pistols", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
   c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 82, ["glacio", "echo-skill"], ["glacio", "echo-skill"], "Glacio and Echo Skill helper with source-check needed."),
   c("phoebe", "Phoebe", "Spectro", "Rectifier", ["main", "sub", "support"], 88, ["spectro"], ["frazzle"], "Flexible Spectro/Frazzle damage or support direction."),
   c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
   c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
-  c("mornye", "Mornye", "Spectro", "Broadblade", ["healer", "support"], 92, ["any"], ["sustain", "def", "tune"], "DEF-based healer support for Tune shells and safer rotations."),
+  c("mornye", "Mornye", "Spectro", "Broadblade", ["healer", "support"], 98, ["any", "tune"], ["sustain", "def", "tune"], "Premium DEF-based healer support for Tune shells and safer rotations."),
   c("baizhi", "Baizhi", "Glacio", "Rectifier", ["healer", "support"], 74, ["any"], ["sustain"], "Accessible healer for early accounts."),
   c("youhu", "Youhu", "Glacio", "Gauntlets", ["healer", "support"], 70, ["any"], ["sustain"], "Support healer with more specific kit management."),
   c("buling", "Buling", "Electro", "Rectifier", ["healer", "support"], 80, ["any"], ["sustain"], "Electro healer/support entry. Good as a sustain option while team-specific testing matures."),
@@ -556,7 +556,7 @@ const carryCeilingScores = {
 
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
-  cartethyia: pref(["ciaccona", "qiuyuan", "chisa", "iuno"], ["sanhua", "yangyang", "jianxin"], ["shorekeeper", "verina", "mornye", "baizhi", "rover"]),
+  cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   camellya: pref(["cantarella", "roccia", "sanhua"], ["taoqi", "danjin", "chisa"], ["shorekeeper", "verina", "chisa", "baizhi"]),
@@ -571,12 +571,12 @@ const teamPreferences = {
   danjin: pref(["roccia", "cantarella", "taoqi"], ["chisa", "sanhua", "yangyang"], ["shorekeeper", "verina", "chisa", "baizhi"]),
   lingyang: pref(["zhezhi", "sanhua", "lucilla"], ["youhu", "baizhi", "jianxin"], ["shorekeeper", "verina", "baizhi", "youhu"]),
   chixia: pref(["changli", "brant", "lupa"], ["mortefi", "denia", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
-  aemeath: pref(["lynae", "mornye", "denia"], ["brant", "lupa", "changli"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
+  aemeath: pref(["lynae", "lupa", "changli", "brant", "denia"], ["mornye", "shorekeeper", "verina"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
   hiyuki: pref(["lucilla", "chisa", "zhezhi"], ["sanhua", "youhu", "baizhi", "jianxin"], ["chisa", "shorekeeper", "verina", "buling", "baizhi", "youhu"]),
   sigrika: pref(["qiuyuan", "lucilla", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "verina", "buling", "baizhi"]),
-  galbrena: pref(["qiuyuan", "lupa", "changli"], ["brant", "denia", "mortefi"], ["shorekeeper", "verina", "buling", "baizhi"]),
+  galbrena: pref(["qiuyuan", "lupa", "brant", "iuno"], ["changli", "mortefi", "denia"], ["shorekeeper", "verina", "buling", "baizhi"]),
   lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua", "mornye"], ["shorekeeper", "verina", "buling", "mornye", "baizhi"]),
-  "luuk-herssen": pref(["denia", "lynae", "mornye"], ["sanhua", "phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
+  "luuk-herssen": pref(["lynae", "denia", "sanhua", "roccia"], ["phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   brant: pref(["lupa", "changli", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   phoebe: pref(["zani", "lynae", "rover"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "mornye", "baizhi"]),
   rover: pref(["ciaccona", "shorekeeper", "verina", "sanhua"], ["yangyang", "mortefi", "baizhi"], ["shorekeeper", "verina", "baizhi"])
@@ -584,7 +584,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
-  cartethyia: archetype("Aero Erosion", [["ciaccona", "shorekeeper"], ["ciaccona", "verina"], ["sanhua", "shorekeeper"], ["sanhua", "verina"], ["ciaccona", "rover"]], "Cartethyia is strongest when the team supports Aero Erosion, with Sanhua acting as a practical fallback helper when Ciaccona is missing."),
+  cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
   camellya: archetype("Havoc Basic", [["roccia", "shorekeeper"], ["sanhua", "shorekeeper"], ["danjin", "verina"]], "Camellya values Basic Attack/Havoc setup and enough safety for her field time."),
@@ -599,12 +599,12 @@ const teamArchetypes = {
   danjin: archetype("High-risk Havoc", [["roccia", "shorekeeper"], ["cantarella", "verina"], ["taoqi", "baizhi"]], "Danjin needs the site to protect players from stress: damage is high, safety matters."),
   lingyang: archetype("Glacio Basic", [["zhezhi", "shorekeeper"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Lingyang likes Glacio or Basic Attack helpers, but comfort support should stay visible."),
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
-  aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["denia", "mornye"], ["lynae", "shorekeeper"], ["brant", "shorekeeper"]], "Aemeath is mode-based, so Tune Rupture teams should be labeled clearly."),
+  aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["lupa", "mornye"], ["changli", "mornye"], ["brant", "mornye"], ["lynae", "shorekeeper"]], "Aemeath's premium Tune Rupture shell is Lynae plus Mornye. Fusion helpers can work, but Mornye should stay highly valued because of Tune Break and All DMG support."),
   hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"], ["sanhua", "verina"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla + Chisa treated as the premium current-patch target."),
   sigrika: archetype("Aero Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["lucilla", "buling"], ["ciaccona", "shorekeeper"]], "Sigrika is an Echo Skill carry; Qiuyuan is the priority helper if owned, with Lucilla treated as the practical backup path when Qiuyuan is missing."),
-  galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "lupa"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["changli", "verina"]], "Galbrena is an Echo Skill carry, so Qiuyuan matters more than generic Fusion matching."),
+  galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["iuno", "shorekeeper"]], "Galbrena is an Echo Skill carry, so Qiuyuan should surface before generic Fusion matching when owned."),
   lucy: archetype("Hack-Shifting Heavy", [["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["rebecca", "mornye"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem."),
-  "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["denia", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell, with Denia + Mornye treated as the current best target when both are owned."),
+  "luuk-herssen": archetype("Tune Strain", [["lynae", "mornye"], ["denia", "mornye"], ["sanhua", "mornye"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell first. Sanhua remains a fallback hypercarry helper, not the default if Lynae or Denia are owned."),
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
   phoebe: archetype("Spectro Frazzle", [["zani", "shorekeeper"], ["zani", "verina"], ["rover", "shorekeeper"]], "Phoebe is a premium Spectro Frazzle piece, especially for Zani.")
 };
@@ -1148,10 +1148,10 @@ function archetypeTeamScore(main, sub, sustain) {
   const archetype = teamArchetypes[main.slug];
   if (!archetype) return 0;
   const pair = [sub.slug, sustain.slug];
-  const idealIndex = archetype.ideal.findIndex((ideal) => ideal.every((slug) => pair.includes(slug)));
+  const idealIndex = archetype.ideal.findIndex((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.every((slug) => pair.includes(slug)));
   if (idealIndex >= 0) return 56 - idealIndex * 7;
-  if (archetype.ideal.some((ideal) => ideal.includes(sub.slug))) return 16;
-  if (archetype.ideal.some((ideal) => ideal.includes(sustain.slug))) return 10;
+  if (archetype.ideal.some((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.includes(sub.slug))) return 16;
+  if (archetype.ideal.some((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.includes(sustain.slug))) return 10;
   return 0;
 }
 
@@ -1159,7 +1159,7 @@ function premiumOwnedShellScore(main, sub, sustain) {
   const archetype = teamArchetypes[main.slug];
   if (!archetype) return 0;
   const pair = [sub.slug, sustain.slug];
-  const idealIndex = archetype.ideal.findIndex((ideal) => ideal.every((slug) => pair.includes(slug)));
+  const idealIndex = archetype.ideal.findIndex((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.every((slug) => pair.includes(slug)));
   if (idealIndex < 0) return 0;
   const premiumSupport = sustain.score >= 80 || sustain.roles.includes("healer");
   const premiumHelper = sub.score >= 82 || teamPreferences[main.slug]?.core.includes(sub.slug);
@@ -1168,10 +1168,65 @@ function premiumOwnedShellScore(main, sub, sustain) {
   return Math.max(10, 24 - idealIndex * 4);
 }
 
+function idealAllowedForActiveForms(main, ideal) {
+  if (!ideal.includes("rover")) return true;
+  if (main.slug === "cartethyia") return state.roverForm === "Aero";
+  if (main.slug === "zani" || main.slug === "phoebe") return state.roverForm === "Spectro";
+  return true;
+}
+
 function teamSpecificAdjustment(main, sub, sustain) {
-  if (main.slug === "luuk-herssen" && sub.slug === "sanhua" && sustain.slug === "mornye") return -34;
-  if (main.slug === "luuk-herssen" && sub.slug === "sanhua") return -18;
-  return 0;
+  const pair = [sub.slug, sustain.slug];
+  let score = 0;
+
+  if (main.slug === "cartethyia") {
+    if (pair.includes("ciaccona") && pair.includes("chisa")) score += 46;
+    if (pair.includes("ciaccona") && pair.includes("rover") && state.roverForm === "Aero") score += 42;
+    if (pair.includes("ciaccona") && pair.includes("shorekeeper")) score += 26;
+    if (pair.includes("sanhua") && pair.includes("rover") && state.roverForm === "Aero") score += 22;
+    if (pair.includes("aalto") && pair.includes("shorekeeper")) score += 14;
+    if (!pair.includes("ciaccona") && !pair.includes("sanhua") && !pair.includes("aalto")) score -= 18;
+    if (pair.includes("mornye") || pair.includes("lynae")) score -= 18;
+  }
+
+  if (main.slug === "aemeath") {
+    if (pair.includes("lynae") && pair.includes("mornye")) score += 48;
+    if (pair.includes("lupa") && pair.includes("mornye")) score += 28;
+    if (pair.includes("changli") && pair.includes("mornye")) score += 22;
+    if (pair.includes("brant") && pair.includes("mornye")) score += 18;
+    if (pair.includes("lynae") && !pair.includes("mornye")) score += 8;
+    if (pair.includes("mornye") && !pair.includes("lynae") && !pair.includes("lupa") && !pair.includes("changli") && !pair.includes("brant")) score += 6;
+  }
+
+  if (main.slug === "sigrika") {
+    if (pair.includes("qiuyuan") && pair.includes("shorekeeper")) score += 42;
+    if (pair.includes("qiuyuan") && pair.includes("ciaccona")) score += 34;
+    if (pair.includes("qiuyuan") && pair.includes("iuno")) score += 26;
+    if (pair.includes("qiuyuan") && pair.includes("cantarella")) score += 22;
+    if (!pair.includes("qiuyuan") && pair.includes("cantarella")) score += 12;
+    if (!pair.includes("qiuyuan") && pair.includes("lucilla")) score += 8;
+    if (!pair.includes("qiuyuan") && !pair.includes("cantarella") && !pair.includes("lucilla")) score -= 18;
+  }
+
+  if (main.slug === "galbrena") {
+    if (pair.includes("qiuyuan") && pair.includes("shorekeeper")) score += 42;
+    if (pair.includes("qiuyuan") && pair.includes("lupa")) score += 30;
+    if (pair.includes("brant") && pair.includes("lupa")) score += 24;
+    if (!pair.includes("qiuyuan") && !pair.includes("lupa")) score -= 14;
+  }
+
+  if (main.slug === "luuk-herssen") {
+    if (pair.includes("lynae") && pair.includes("mornye")) score += 46;
+    if (pair.includes("denia") && pair.includes("mornye")) score += 26;
+    if (sub.slug === "sanhua" && sustain.slug === "mornye") score += state.owned.lynae || state.owned.denia ? -18 : 10;
+    if (sub.slug === "sanhua" && sustain.slug !== "mornye") score -= 14;
+  }
+
+  if ((main.tags.includes("erosion") || main.tags.includes("frazzle")) && (pair.includes("lynae") || pair.includes("mornye"))) {
+    score -= 14;
+  }
+
+  return score;
 }
 
 function preferredRank(main, teammate, slot) {
