@@ -1047,8 +1047,9 @@ function generateTeams() {
         candidates.push({ members, main, score: scoreTeam(main, sub, third), reason: reasonTeam(main, sub, third) });
       });
     });
-    candidates.sort((a, b) => b.score - a.score);
-    teams.push(...dedupeTeams(candidates).slice(0, 3).map((team, index) => ({ ...team, mainRank: index + 1 })));
+    const coherentCandidates = candidates.filter(isSuggestibleTeam);
+    coherentCandidates.sort((a, b) => b.score - a.score);
+    teams.push(...dedupeTeams(coherentCandidates).slice(0, 3).map((team, index) => ({ ...team, mainRank: index + 1 })));
   });
   return keepRoverVisible(teams.sort((a, b) => b.score - a.score));
 }
@@ -1166,6 +1167,38 @@ function premiumOwnedShellScore(main, sub, sustain) {
   if (!premiumSupport || !premiumHelper) return 0;
   if (idealIndex === 0) return 38;
   return Math.max(10, 24 - idealIndex * 4);
+}
+
+function isSuggestibleTeam(team) {
+  const main = team.main;
+  const sub = team.members[1];
+  const third = team.members[2];
+  const pref = teamPreferences[main.slug];
+  const hasArchetype = Boolean(teamArchetypes[main.slug]);
+  const archetypeFit = teamFitLabel(team) === "Archetype fit";
+  const corePreferred = pref?.core.includes(sub.slug) || pref?.core.includes(third.slug);
+  const sustainPreferred = pref?.sustain.includes(third.slug);
+  const flexiblePreferred = pref?.flex.includes(sub.slug) || pref?.flex.includes(third.slug);
+  const safeThird = third.roles.includes("healer") || third.roles.includes("defense");
+  const hasNamedPartner = hasArchetype && teamArchetypes[main.slug].ideal.some((ideal) =>
+    idealAllowedForActiveForms(main, ideal) && (ideal.includes(sub.slug) || ideal.includes(third.slug))
+  );
+  const hasSharedPlan = helperSynergyReason(main, sub) || helperSynergyReason(main, third);
+
+  if (archetypeFit) return true;
+  if (corePreferred && (sustainPreferred || safeThird || hasNamedPartner)) return true;
+  if (flexiblePreferred && sustainPreferred && hasSharedPlan) return true;
+  if (!hasArchetype && (corePreferred || hasSharedPlan) && safeThird) return true;
+
+  return false;
+}
+
+function helperSynergyReason(main, helper) {
+  const element = firstElement(main.element).toLowerCase();
+  return helper.synergies.includes(element)
+    || helper.synergies.includes("any")
+    || main.synergies.some((tag) => helper.tags.includes(tag) || helper.synergies.includes(tag))
+    || helper.tags.some((tag) => main.tags.includes(tag));
 }
 
 function idealAllowedForActiveForms(main, ideal) {
