@@ -1248,6 +1248,7 @@ function renderResults() {
   teamResults.querySelectorAll("[data-team-key]").forEach((card) => {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".team-details")) return;
+      if (event.target.closest("[data-report-team]")) return;
       selectTeam(card.dataset.teamKey, Boolean(event.target.closest(".row-action")));
     });
   });
@@ -1258,6 +1259,12 @@ function renderResults() {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
       selectTeam(button.dataset.viewBuilds, true);
+    });
+  });
+  teamResults.querySelectorAll("[data-report-team]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      reportTeam(button.dataset.reportTeam, teams);
     });
   });
   renderBuilds(teams);
@@ -1289,9 +1296,12 @@ function bestTeamPanel(team) {
         <div class="reason-strip">
           ${reasonPill("Damage", damageLabel(team))}
           ${reasonPill("Safety", safetyLabel(team))}
-          ${reasonPill("Builds", buildReadiness(team))}
+          ${reasonPill("Confidence", teamConfidence(team).label)}
         </div>
-        <button class="button primary team-build-button" type="button" data-view-builds="${key}">View builds</button>
+        <div class="team-actions">
+          <button class="button primary team-build-button" type="button" data-view-builds="${key}">View builds</button>
+          <button class="button ghost team-report-button" type="button" data-report-team="${key}">Report this team</button>
+        </div>
       </div>
       <div class="best-team-visual">
         <div class="portrait-trio" aria-label="Featured team portraits">
@@ -1361,7 +1371,7 @@ function groupLabel(group, teams) {
 function teamRow(team, rank) {
   const key = teamKey(team);
   return `
-    <button class="team-row ${state.selectedTeamKey === key ? "is-selected" : ""}" type="button" data-team-key="${key}">
+    <article class="team-row ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
       <span class="rank">${rank}</span>
       <span>
         <small>${rank === 1 ? "Recommended" : teamFitLabel(team)}</small>
@@ -1373,8 +1383,11 @@ function teamRow(team, rank) {
           ${teamChips(team)}
         </span>
       </span>
-      <span class="row-action">View builds</span>
-    </button>
+      <span class="row-actions">
+        <button class="row-action" type="button" data-view-builds="${key}">View builds</button>
+        <button class="row-action muted" type="button" data-report-team="${key}">Report</button>
+      </span>
+    </article>
   `;
 }
 
@@ -1396,6 +1409,7 @@ function teamChips(team) {
   if (state.weapons.has(team.main.build.weapon)) chips.push(`<span class="chip good">Weapon owned</span>`);
   if (team.members[2].roles.includes("healer")) chips.push(`<span class="chip good">Healer</span>`);
   if (teamFitLabel(team) === "Archetype fit") chips.push(`<span class="chip good">Target shell</span>`);
+  chips.push(`<span class="chip confidence">${teamConfidence(team).label}</span>`);
   const missing = missingBestShellNames(team);
   if (missing.length) chips.push(`<span class="chip missing">Missing ${missing[0]}</span>`);
   if (!chips.length) chips.push(`<span class="chip">${safetyLabel(team)}</span>`);
@@ -1411,7 +1425,10 @@ function selectedTeamPreview(team) {
       <div class="build-mini">
         ${team.members.map((member) => selectedBuildMini(member, team)).join("")}
       </div>
-      <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
+      <div class="team-actions">
+        <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
+        <button class="button ghost team-report-button" type="button" data-report-team="${teamKey(team)}">Report this team</button>
+      </div>
     </aside>
   `;
 }
@@ -1631,6 +1648,21 @@ function selectTeam(key, jumpToBuilds) {
   state.flowBuildsOpened = Boolean(jumpToBuilds);
   renderResults();
   if (jumpToBuilds) scrollToSection("#builds");
+}
+
+function reportTeam(key, teams = generateTeams()) {
+  state.selectedTeamKey = key;
+  renderResults();
+  const team = teams.find((item) => teamKey(item) === key);
+  const type = $("#feedback-type");
+  const message = $("#feedback-message");
+  if (type) type.value = "Team suggestion seems wrong";
+  if (message && team) {
+    message.placeholder = `What looks wrong with ${team.members.map((member) => member.name).join(" / ")}?`;
+  }
+  $("#save-status").textContent = "Team report ready";
+  scrollToSection("#feedback");
+  setTimeout(() => message?.focus(), 450);
 }
 
 function teamRevealButton(hiddenCount) {
