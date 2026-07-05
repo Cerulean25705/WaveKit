@@ -576,7 +576,7 @@ const teamPreferences = {
   sigrika: pref(["lucilla", "qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "mornye", "verina", "buling", "baizhi"]),
   galbrena: pref(["lucilla", "qiuyuan", "lupa", "brant", "iuno"], ["changli", "mortefi", "denia"], ["shorekeeper", "lupa", "verina", "buling", "baizhi"]),
   lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
-  "luuk-herssen": pref(["lynae", "denia", "sanhua", "roccia"], ["phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
+  "luuk-herssen": pref(["denia", "lynae", "sanhua", "roccia"], ["phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   brant: pref(["lupa", "changli", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   phoebe: pref(["zani", "lynae", "rover"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "mornye", "baizhi"]),
   rover: pref(["ciaccona", "shorekeeper", "verina", "sanhua"], ["yangyang", "mortefi", "baizhi"], ["shorekeeper", "verina", "baizhi"])
@@ -604,7 +604,7 @@ const teamArchetypes = {
   sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["qiuyuan", "mornye"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["lucilla", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Tethys highlights Lucilla hypercarry first, while Game8 highlights Qiuyuan; both should stay visible as valid premium routes."),
   galbrena: archetype("Fusion Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["lucilla", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Galbrena is an Echo Skill carry, so Lucilla and Qiuyuan should surface before generic Fusion matching when owned."),
   lucy: archetype("Hack-Shifting Heavy", [["rebecca", "mornye"], ["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem, with Mornye or Shorekeeper as the main comfort slots."),
-  "luuk-herssen": archetype("Tune Strain", [["lynae", "mornye"], ["denia", "mornye"], ["sanhua", "mornye"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell first. Sanhua remains a fallback hypercarry helper, not the default if Lynae or Denia are owned."),
+  "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["sanhua", "mornye"], ["denia", "shorekeeper"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell first. Denia is treated as his strongest current helper, Lynae is a strong alternate, and Sanhua remains the accessible fallback."),
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
   phoebe: archetype("Spectro Frazzle", [["zani", "shorekeeper"], ["zani", "verina"], ["rover", "shorekeeper"]], "Phoebe is a premium Spectro Frazzle piece, especially for Zani.")
 };
@@ -1242,7 +1242,9 @@ function teamSpecificAdjustment(main, sub, sustain) {
     if (pair.includes("ciaccona") && pair.includes("chisa")) score += 46;
     if (pair.includes("ciaccona") && pair.includes("rover") && state.roverForm === "Aero") score += 42;
     if (pair.includes("ciaccona") && pair.includes("shorekeeper")) score += 26;
-    if (pair.includes("sanhua") && pair.includes("rover") && state.roverForm === "Aero") score += 22;
+    if (pair.includes("chisa") && pair.includes("rover") && state.roverForm === "Aero") score += 38;
+    if (pair.includes("sanhua") && pair.includes("rover") && state.roverForm === "Aero") score += 18;
+    if (pair.includes("sanhua") && pair.includes("chisa")) score += 14;
     if (pair.includes("aalto") && pair.includes("shorekeeper")) score += 14;
     if (!pair.includes("ciaccona") && !pair.includes("sanhua") && !pair.includes("aalto")) score -= 18;
     if (pair.includes("mornye") || pair.includes("lynae")) score -= 18;
@@ -1298,8 +1300,9 @@ function teamSpecificAdjustment(main, sub, sustain) {
   }
 
   if (main.slug === "luuk-herssen") {
-    if (pair.includes("lynae") && pair.includes("mornye")) score += 46;
-    if (pair.includes("denia") && pair.includes("mornye")) score += 26;
+    if (pair.includes("denia") && pair.includes("mornye")) score += 52;
+    if (pair.includes("lynae") && pair.includes("mornye")) score += 38;
+    if (pair.includes("denia") && pair.includes("shorekeeper")) score += 22;
     if (sub.slug === "sanhua" && sustain.slug === "mornye") score += state.owned.lynae || state.owned.denia ? -18 : 10;
     if (sub.slug === "sanhua" && sustain.slug !== "mornye") score -= 14;
   }
