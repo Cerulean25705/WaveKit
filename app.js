@@ -483,7 +483,7 @@ const characters = [
   c("lynae", "Lynae", "Spectro", "Pistols", ["sub"], 92, ["spectro"], ["spectro"], "Newer Spectro sub-DPS."),
   c("denia", "Denia", "Fusion", "Rectifier", ["sub"], 90, ["fusion"], ["burst"], "Fusion Burst sub-DPS."),
   c("rebecca", "Rebecca", "Electro", "Pistols", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
-  c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 82, ["glacio"], ["glacio"], "Glacio helper with source-check needed."),
+  c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 82, ["glacio", "echo-skill"], ["glacio", "echo-skill"], "Glacio and Echo Skill helper with source-check needed."),
   c("phoebe", "Phoebe", "Spectro", "Rectifier", ["main", "sub", "support"], 88, ["spectro"], ["frazzle"], "Flexible Spectro/Frazzle damage or support direction."),
   c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
   c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
@@ -573,7 +573,7 @@ const teamPreferences = {
   chixia: pref(["changli", "brant", "lupa"], ["mortefi", "denia", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   aemeath: pref(["lynae", "mornye", "denia"], ["brant", "lupa", "changli"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
   hiyuki: pref(["lucilla", "chisa", "zhezhi"], ["sanhua", "youhu", "baizhi", "jianxin"], ["chisa", "shorekeeper", "verina", "buling", "baizhi", "youhu"]),
-  sigrika: pref(["qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "verina", "buling", "baizhi"]),
+  sigrika: pref(["qiuyuan", "lucilla", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "verina", "buling", "baizhi"]),
   galbrena: pref(["qiuyuan", "lupa", "changli"], ["brant", "denia", "mortefi"], ["shorekeeper", "verina", "buling", "baizhi"]),
   lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua", "mornye"], ["shorekeeper", "verina", "buling", "mornye", "baizhi"]),
   "luuk-herssen": pref(["denia", "lynae", "mornye"], ["sanhua", "phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
@@ -601,7 +601,7 @@ const teamArchetypes = {
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
   aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["denia", "mornye"], ["lynae", "shorekeeper"], ["brant", "shorekeeper"]], "Aemeath is mode-based, so Tune Rupture teams should be labeled clearly."),
   hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"], ["sanhua", "verina"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla + Chisa treated as the premium current-patch target."),
-  sigrika: archetype("Aero Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["ciaccona", "shorekeeper"]], "Sigrika is an Echo Skill carry; Qiuyuan is a priority helper if owned."),
+  sigrika: archetype("Aero Echo Skill", [["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["lucilla", "buling"], ["ciaccona", "shorekeeper"]], "Sigrika is an Echo Skill carry; Qiuyuan is the priority helper if owned, with Lucilla treated as the practical backup path when Qiuyuan is missing."),
   galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "lupa"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "verina"], ["qiuyuan", "buling"], ["changli", "verina"]], "Galbrena is an Echo Skill carry, so Qiuyuan matters more than generic Fusion matching."),
   lucy: archetype("Hack-Shifting Heavy", [["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["rebecca", "mornye"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem."),
   "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["denia", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell, with Denia + Mornye treated as the current best target when both are owned."),
@@ -1085,6 +1085,17 @@ function weaponInvestmentValue(character) {
   return ceiling >= 94 ? 22 : 16;
 }
 
+function carryInvestmentTeamScore(character) {
+  if (!character.roles.includes("main")) return 0;
+  const chain = state.owned[character.slug]?.chain || 0;
+  const hasSignature = state.weapons.has(character.build.weapon);
+  if (chain >= 6 && hasSignature) return 30;
+  if (chain >= 6) return 18;
+  if (chain >= 3 && hasSignature) return 16;
+  if (chain >= 3) return 8;
+  return 0;
+}
+
 function scoreTeam(main, sub, sustain) {
   const style = state.suggestionStyle || "Best Teams";
   let score = scoreCharacter(main) * 1.12 + sub.score * 0.55 + sustain.score * 0.62;
@@ -1093,6 +1104,7 @@ function scoreTeam(main, sub, sustain) {
   score += archetypeTeamScore(main, sub, sustain);
   score += premiumOwnedShellScore(main, sub, sustain);
   score += teamSpecificAdjustment(main, sub, sustain);
+  score += carryInvestmentTeamScore(main);
   if (main.score >= 90) score += 12;
   if (main.score < 75) score -= 8;
   if (sustain.roles.includes("healer")) score += style === "Ready Now" ? 16 : 9;
