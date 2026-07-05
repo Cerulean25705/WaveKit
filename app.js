@@ -1182,7 +1182,8 @@ function isSuggestibleTeam(team) {
   const archetypeFit = teamFitLabel(team) === "Archetype fit";
   const corePreferred = pref?.core.includes(sub.slug) || pref?.core.includes(third.slug);
   const sustainPreferred = pref?.sustain.includes(third.slug);
-  const flexiblePreferred = pref?.flex.includes(sub.slug) || pref?.flex.includes(third.slug);
+  const preferredHelpers = preferredHelperList(pref);
+  const flexiblePreferred = preferredHelpers.includes(sub.slug) || preferredHelpers.includes(third.slug);
   const safeThird = third.roles.includes("healer") || third.roles.includes("defense");
   const hasNamedPartner = hasArchetype && teamArchetypes[main.slug].ideal.some((ideal) =>
     idealAllowedForActiveForms(main, ideal) && (ideal.includes(sub.slug) || ideal.includes(third.slug))
@@ -1205,13 +1206,17 @@ function isSuggestibleTeam(team) {
 function ownedPreferredHelperAvailable(main) {
   const pref = teamPreferences[main.slug];
   if (!pref) return false;
-  const preferred = new Set([...(pref.core || []), ...(pref.good || []), ...(pref.flex || [])]);
+  const preferred = new Set(preferredHelperList(pref));
   return activeCharacters().some((character) =>
     character.slug !== main.slug
     && state.owned[character.slug]
     && preferred.has(character.slug)
     && !character.roles.includes("healer")
   );
+}
+
+function preferredHelperList(pref) {
+  return [...(pref?.core || []), ...(pref?.good || []), ...(pref?.comfort || [])];
 }
 
 function helperSynergyReason(main, helper) {
