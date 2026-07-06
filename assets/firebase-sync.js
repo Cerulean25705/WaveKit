@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/fireba
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   sendPasswordResetEmail,
@@ -27,12 +28,17 @@ export function isCloudConfigured() {
   return Boolean(configured);
 }
 
-export function initCloudSync(onUserChanged) {
+export function initCloudSync(onUserChanged, onAuthError) {
   if (!configured) return { configured: false };
   const app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
   onAuthStateChanged(auth, (user) => onUserChanged?.(serialiseUser(user)));
+  getRedirectResult(auth)
+    .then((credential) => {
+      if (credential?.user) onUserChanged?.(serialiseUser(credential.user));
+    })
+    .catch((error) => onAuthError?.(error));
   return { configured: true };
 }
 
@@ -51,6 +57,7 @@ export async function createAccountWithEmail(email, password) {
 export async function signInWithGoogle() {
   ensureReady();
   const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
   await signInWithRedirect(auth, provider);
   return null;
 }

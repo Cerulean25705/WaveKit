@@ -2820,6 +2820,10 @@ async function initCloudSync() {
       setCloudStatus("Signed in. Loading cloud profile...");
       renderCloudSync();
       autoLoadCloudProfiles();
+    }, (error) => {
+      cloud.user = null;
+      setCloudStatus(cleanCloudError(error));
+      renderCloudSync();
     });
   } catch {
     clearTimeout(timeout);
