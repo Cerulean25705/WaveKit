@@ -2833,12 +2833,16 @@ function renderCloudSync() {
   const signedOut = $("#cloud-signed-out");
   const signedIn = $("#cloud-signed-in");
   const userLabel = $("#cloud-user-label");
+  const userId = $("#cloud-user-id");
   const status = $("#cloud-sync-status");
   if (!signedOut || !signedIn || !status) return;
   signedOut.hidden = Boolean(cloud.user);
   signedIn.hidden = !cloud.user;
   if (userLabel && cloud.user) {
     userLabel.textContent = `Signed in as ${cloud.user.email || cloud.user.displayName || "WaveKit user"}`;
+  }
+  if (userId && cloud.user) {
+    userId.textContent = `WaveKit ID: ${shortWaveKitId(cloud.user.uid)}`;
   }
   if (cloud.initializing) {
     status.textContent = "Cloud sync connecting...";
@@ -2852,11 +2856,17 @@ function renderCloudSync() {
     "#cloud-reset-password",
     "#cloud-save",
     "#cloud-load",
+    "#cloud-copy-id",
+    "#cloud-discord-code",
     "#cloud-sign-out"
   ].forEach((selector) => {
     const button = $(selector);
     if (button) button.disabled = cloud.busy || !cloud.configured;
   });
+}
+
+function shortWaveKitId(uid = "") {
+  return uid ? `${uid.slice(0, 6)}...${uid.slice(-4)}` : "pending";
 }
 
 function setCloudStatus(message) {
@@ -2920,6 +2930,49 @@ async function resetCloudPassword() {
 
 async function signOutCloud() {
   await runCloudAction("Signing out...", () => cloud.api.signOutCloud(), "Signed out. Local profiles still work.");
+}
+
+async function copyWaveKitId() {
+  if (!cloud.user?.uid) {
+    setCloudStatus("Sign in before copying your WaveKit ID.");
+    return;
+  }
+  await copyText(`WaveKit ID: ${cloud.user.uid}`, "WaveKit ID copied.");
+}
+
+async function createDiscordLinkCode() {
+  if (!cloud.configured || !cloud.user || !cloud.api) {
+    setCloudStatus("Sign in before creating a Discord link code.");
+    return;
+  }
+  const code = generateDiscordLinkCode();
+  await runCloudAction("Creating Discord link code...", async () => {
+    await cloud.api.saveDiscordLinkCode(code);
+  }, `Discord code copied: ${code}`);
+  await copyText(code, `Discord code copied: ${code}`);
+}
+
+function generateDiscordLinkCode() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const values = new Uint32Array(10);
+  crypto.getRandomValues(values);
+  return [...values].map((value, index) => {
+    const letter = alphabet[value % alphabet.length];
+    return index === 4 ? `-${letter}` : letter;
+  }).join("");
+}
+
+async function copyText(text, successMessage) {
+  if (!navigator.clipboard?.writeText) {
+    fallbackCopy(text);
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    setCloudStatus(successMessage);
+  } catch {
+    fallbackCopy(text);
+  }
 }
 
 async function saveCloudProfiles(successMessage = "Cloud profile synced") {
@@ -3080,6 +3133,8 @@ $("#cloud-google").addEventListener("click", signInGoogleCloud);
 $("#cloud-reset-password").addEventListener("click", resetCloudPassword);
 $("#cloud-save").addEventListener("click", () => saveCloudProfiles("Cloud profile synced"));
 $("#cloud-load").addEventListener("click", loadCloudProfiles);
+$("#cloud-copy-id").addEventListener("click", copyWaveKitId);
+$("#cloud-discord-code").addEventListener("click", createDiscordLinkCode);
 $("#cloud-sign-out").addEventListener("click", signOutCloud);
 document.addEventListener("click", handleAccountMenuDismiss);
 document.addEventListener("keydown", handleAccountMenuDismiss);

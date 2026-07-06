@@ -42,6 +42,15 @@ The Firestore profile document is stored at:
 
 Only the signed-in user should be able to read or write their own profile document.
 
+For Discord bot linking, signed-in users can copy their Firebase-backed WaveKit ID
+or generate a Discord link code. The code is stored on the same profile document at:
+
+`users/{firebaseUserId}/profiles/wavekit.discordLink.code`
+
+A trusted bot backend using Firebase Admin can look up that code, then link the
+Discord user to the matching Firebase user/profile. Treat link codes as temporary
+pairing codes and regenerate them when needed.
+
 ## Fan Project Notice
 
 WaveKit is an unofficial fan-made tool. Wuthering Waves, its characters, names, art, icons, and related assets belong to Kuro Games. WaveKit is not affiliated with, endorsed by, or sponsored by Kuro Games.

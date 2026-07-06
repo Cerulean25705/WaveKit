@@ -83,6 +83,18 @@ export async function loadCloudProfiles() {
   return snapshot.exists() ? snapshot.data() : null;
 }
 
+export async function saveDiscordLinkCode(code) {
+  ensureReady();
+  if (!auth.currentUser) throw new Error("not-signed-in");
+  await setDoc(profileDoc(auth.currentUser.uid), {
+    discordLink: {
+      code,
+      createdAt: serverTimestamp()
+    },
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+}
+
 function profileDoc(uid) {
   return doc(db, "users", uid, "profiles", "wavekit");
 }
