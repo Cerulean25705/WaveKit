@@ -2920,7 +2920,10 @@ async function createCloudAccount() {
 }
 
 async function signInGoogleCloud() {
-  await runCloudAction("Sending you to Google...", () => cloud.api.signInWithGoogle(), "Returning from Google...");
+  await runCloudAction("Opening Google sign in...", async () => {
+    const user = await cloud.api.signInWithGoogle();
+    if (user) cloud.user = user;
+  }, "Signed in. Loading cloud profile...");
 }
 
 async function resetCloudPassword() {

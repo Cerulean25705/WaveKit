@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signInWithRedirect,
   signOut
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
@@ -58,8 +59,16 @@ export async function signInWithGoogle() {
   ensureReady();
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
-  await signInWithRedirect(auth, provider);
-  return null;
+  try {
+    const credential = await signInWithPopup(auth, provider);
+    return serialiseUser(credential.user);
+  } catch (error) {
+    if (error?.code === "auth/popup-closed-by-user" || error?.code === "auth/cancelled-popup-request") {
+      throw error;
+    }
+    await signInWithRedirect(auth, provider);
+    return null;
+  }
 }
 
 export async function resetCloudPassword(email) {
