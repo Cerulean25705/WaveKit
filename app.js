@@ -344,6 +344,22 @@ const weaponPurposeHints = {
   "Call of the Abyss": "Rectifier support option"
 };
 
+const fiveStarWeapons = new Set([
+  "Abyss Surges", "Ages of Harvest", "Blazing Brilliance", "Blazing Justice", "Bloodpact's Pledge",
+  "Cosmic Ripples", "Daybreaker's Spine", "Defier's Thorn", "Emerald Sentence", "Emerald of Genesis",
+  "Everbright Polestar", "Forged Dwarf Star", "Frostburn", "Lethean Elegy", "Luminous Hymn",
+  "Lux & Umbra", "Lustrous Razor", "Moongazer's Sigil", "Red Spring", "Rime-Draped Sprouts",
+  "Solsworn Ciphers", "Spectral Trigger", "Spectrum Blaster", "Starfield Calibrator", "Static Mist",
+  "Stellar Symphony", "Stringmaster", "The Last Dance", "Thunderflare Dominion", "Tragicomedy",
+  "Unflickering Valor", "Verdant Summit", "Verity's Handle", "Whispers of Sirens", "Wildfire Mark",
+  "Woodland Aria"
+]);
+
+const fourStarResonators = new Set([
+  "aalto", "baizhi", "chixia", "danjin", "lumi", "mortefi", "sanhua", "taoqi", "yangyang",
+  "yuanwu", "youhu"
+]);
+
 const roverForms = {
   Spectro: {
     element: "Spectro",
@@ -752,32 +768,18 @@ function renderCharacters() {
   const visible = characters
     .filter(characterMatches)
     .map((character) => character.slug === "rover" ? activeRover() : character)
-    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
-  characterGrid.innerHTML = visible.map((character) => {
-    const owned = state.owned[character.slug];
-    const focused = state.focus.has(character.slug);
-    return `
-      <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${character.slug === "rover" ? "is-rover" : ""} element-${firstElement(character.element).toLowerCase()}" data-character-card="${character.slug}">
-        <button class="character-toggle" type="button" data-character="${character.slug}" aria-pressed="${Boolean(owned)}">
-          ${visual(character)}
-          <span class="character-info">
-            <strong>${character.name}</strong>
-            <small>${roleLabel(character)} · ${character.element}</small>
-          </span>
-        </button>
-        <button class="focus-toggle" type="button" data-focus-character="${character.slug}" aria-pressed="${focused}" aria-label="Prioritise ${character.name}">
-          ${focused ? "★" : "☆"}
-        </button>
-        ${character.slug === "rover" ? roverFormPicker() : ""}
-        <div class="chain-row" aria-label="${character.name} Resonance Chain">
-          <span>RC</span>
-          <button type="button" data-chain-minus="${character.slug}" data-chain-action="decrease">-</button>
-          <strong>${owned?.chain ?? 0}</strong>
-          <button type="button" data-chain-plus="${character.slug}" data-chain-action="increase">+</button>
-        </div>
-      </article>
-    `;
-  }).join("");
+    .sort(sortByRarityThenName);
+  characterGrid.innerHTML = raritySections(visible, characterRarity).map(({ rarity, items }) => `
+    <section class="selection-rarity-group rarity-${rarity}">
+      <header class="selection-rarity-heading">
+        <span>${rarityLabel(rarity)}</span>
+        <small>${items.length} Resonator${items.length === 1 ? "" : "s"}</small>
+      </header>
+      <div class="selection-rarity-grid">
+        ${items.map(characterCard).join("")}
+      </div>
+    </section>
+  `).join("");
   characterGrid.querySelectorAll("[data-character-card]").forEach((card) => {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".chain-row")) return;
@@ -812,6 +814,32 @@ function renderCharacters() {
       changeChain(button.dataset.chainPlus, 1);
     });
   });
+}
+
+function characterCard(character) {
+  const owned = state.owned[character.slug];
+  const focused = state.focus.has(character.slug);
+  return `
+    <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${character.slug === "rover" ? "is-rover" : ""} element-${firstElement(character.element).toLowerCase()}" data-character-card="${character.slug}">
+      <button class="character-toggle" type="button" data-character="${character.slug}" aria-pressed="${Boolean(owned)}">
+        ${visual(character)}
+        <span class="character-info">
+          <strong>${character.name}</strong>
+          <small>${rarityStars(characterRarity(character))} · ${roleLabel(character)} · ${character.element}</small>
+        </span>
+      </button>
+      <button class="focus-toggle" type="button" data-focus-character="${character.slug}" aria-pressed="${focused}" aria-label="Prioritise ${character.name}">
+        ${focused ? "★" : "☆"}
+      </button>
+      ${character.slug === "rover" ? roverFormPicker() : ""}
+      <div class="chain-row" aria-label="${character.name} Resonance Chain">
+        <span>RC</span>
+        <button type="button" data-chain-minus="${character.slug}" data-chain-action="decrease">-</button>
+        <strong>${owned?.chain ?? 0}</strong>
+        <button type="button" data-chain-plus="${character.slug}" data-chain-action="increase">+</button>
+      </div>
+    </article>
+  `;
 }
 
 function selectRoverForm(form) {
@@ -849,15 +877,16 @@ function renderWeapons() {
     });
   const input = $("#weapon-search");
   if (input && input.value !== state.weaponSearch) input.value = state.weaponSearch;
-  weaponGrid.innerHTML = weapons.map((weapon) => `
-    <button class="weapon-card ${state.weapons.has(weapon) ? "is-owned" : ""}" type="button" data-weapon="${weapon}">
-      ${weaponVisual(weapon)}
-      <span class="weapon-copy">
-        <strong>${weapon}</strong>
-        <small>${weaponTypeFor(weapon)} · ${weaponHint(weapon)}</small>
-      </span>
-      <span class="owned-badge">${state.weapons.has(weapon) ? "Owned" : "Tap to add"}</span>
-    </button>
+  weaponGrid.innerHTML = raritySections(weapons, weaponRarity).map(({ rarity, items }) => `
+    <section class="selection-rarity-group rarity-${rarity}">
+      <header class="selection-rarity-heading">
+        <span>${rarityLabel(rarity)}</span>
+        <small>${items.length} Weapon${items.length === 1 ? "" : "s"}</small>
+      </header>
+      <div class="selection-rarity-grid">
+        ${items.map(weaponCard).join("")}
+      </div>
+    </section>
   `).join("");
   weaponGrid.querySelectorAll("[data-weapon]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -868,6 +897,50 @@ function renderWeapons() {
       render();
     });
   });
+}
+
+function weaponCard(weapon) {
+  return `
+    <button class="weapon-card ${state.weapons.has(weapon) ? "is-owned" : ""}" type="button" data-weapon="${weapon}">
+      ${weaponVisual(weapon)}
+      <span class="weapon-copy">
+        <strong>${weapon}</strong>
+        <small>${rarityStars(weaponRarity(weapon))} · ${weaponTypeFor(weapon)} · ${weaponHint(weapon)}</small>
+      </span>
+      <span class="owned-badge">${state.weapons.has(weapon) ? "Owned" : "Tap to add"}</span>
+    </button>
+  `;
+}
+
+function raritySections(items, getRarity) {
+  return [5, 4, 3]
+    .map((rarity) => ({ rarity, items: items.filter((item) => getRarity(item) === rarity) }))
+    .filter((group) => group.items.length);
+}
+
+function sortByRarityThenName(a, b) {
+  return characterRarity(b) - characterRarity(a)
+    || a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+}
+
+function characterRarity(character) {
+  return fourStarResonators.has(character.slug) ? 4 : 5;
+}
+
+function weaponRarity(weapon) {
+  if (fiveStarWeapons.has(weapon)) return 5;
+  if (/^(Training|Tyro|Guardian)\s/.test(weapon)) return 3;
+  if (/(?: of Night| of Voyager|#\d+)/.test(weapon)) return 3;
+  if (/^Originite:/.test(weapon)) return 3;
+  return 4;
+}
+
+function rarityLabel(rarity) {
+  return `${rarityStars(rarity)} ${rarity}-star`;
+}
+
+function rarityStars(rarity) {
+  return "★".repeat(rarity);
 }
 
 function weaponVisual(weapon) {
