@@ -1636,6 +1636,67 @@ h1 {
   white-space: nowrap;
 }
 
+.seo-team-strip em {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 760;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seo-team-note {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgba(139, 232, 255, 0.12);
+  border-radius: 12px;
+  color: var(--soft);
+  background: rgba(120, 244, 255, 0.06);
+  line-height: 1.5;
+}
+
+.seo-new-player-copy {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.seo-new-player-copy p {
+  margin: 0;
+  color: var(--soft);
+  line-height: 1.58;
+}
+
+.seo-glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.seo-glossary-grid span {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid rgba(139, 232, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(3, 12, 19, 0.42);
+}
+
+.seo-glossary-grid strong {
+  color: var(--gold);
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.seo-glossary-grid small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
 .seo-content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
@@ -4118,6 +4179,10 @@ h1 {
 
   .seo-talent-row,
   .seo-team-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .seo-glossary-grid {
     grid-template-columns: 1fr;
   }
 
