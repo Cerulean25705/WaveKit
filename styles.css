@@ -1227,9 +1227,9 @@ h1 {
 .seo-hero {
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
   gap: clamp(18px, 3vw, 34px);
-  align-items: stretch;
+  align-items: start;
   padding: clamp(14px, 2.4vw, 24px);
   border: 1px solid rgba(139, 232, 255, 0.18);
   border-radius: var(--radius);
@@ -1242,8 +1242,9 @@ h1 {
 
 .seo-hero > img {
   width: 100%;
-  min-height: 520px;
-  height: 100%;
+  height: clamp(360px, 42vw, 560px);
+  min-height: 0;
+  align-self: start;
   object-fit: cover;
   object-position: center 22%;
   border: 1px solid rgba(139, 232, 255, 0.18);
@@ -3473,7 +3474,7 @@ h1 {
   }
 
   .seo-hero > img {
-    min-height: 360px;
+    height: clamp(320px, 54vw, 430px);
   }
 
   .character-guide-hero .portrait {
@@ -3656,7 +3657,7 @@ h1 {
   }
 
   .seo-hero > img {
-    min-height: 260px;
+    height: clamp(240px, 58vw, 320px);
     border-radius: 12px;
   }
 
