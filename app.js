@@ -499,7 +499,7 @@ const characters = [
   c("lynae", "Lynae", "Spectro", "Pistols", ["sub", "support"], 94, ["spectro", "tune"], ["spectro", "tune", "rupture", "strain"], "Premium Tune sub-DPS/buffer."),
   c("denia", "Denia", "Fusion", "Rectifier", ["sub"], 90, ["fusion"], ["burst"], "Fusion Burst sub-DPS."),
   c("rebecca", "Rebecca", "Electro", "Pistols", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
-  c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 82, ["glacio", "echo-skill"], ["glacio", "echo-skill"], "Glacio and Echo Skill helper with source-check needed."),
+  c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 82, ["glacio", "echo-skill"], ["glacio", "echo-skill"], "Glacio and Echo Skill helper while current-patch testing matures."),
   c("phoebe", "Phoebe", "Spectro", "Rectifier", ["main", "sub", "support"], 88, ["spectro"], ["frazzle"], "Flexible Spectro/Frazzle damage or support direction."),
   c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
   c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
@@ -654,6 +654,7 @@ const flowNextDetail = $("#flow-next-detail");
 const flowNextButton = $("#flow-next-button");
 const navLinks = [...document.querySelectorAll(".topnav a[href^='#']")];
 const navSections = navLinks.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+let currentSectionHash = "#home";
 const profileStorageKey = "wavekit-profiles-v1";
 const legacyProfileKey = "tacet-team-helper-profile";
 const legacyProfilesKey = "tacet-team-helper-profiles-v2";
@@ -1676,7 +1677,7 @@ function renderFlowNext(teams = generateTeams()) {
   const ownedCount = Object.keys(state.owned).length;
   const selectedTeam = teams.find((team) => teamKey(team) === state.selectedTeamKey);
   const next = nextFlowAction({ ownedCount, selectedTeam, teams });
-  if (next.target === "builds" && state.flowBuildsOpened) {
+  if (shouldHideFlowNext(next)) {
     flowNext.hidden = true;
     return;
   }
@@ -1686,6 +1687,29 @@ function renderFlowNext(teams = generateTeams()) {
   flowNextTitle.textContent = next.title;
   flowNextDetail.textContent = next.detail;
   flowNextButton.textContent = next.button;
+}
+
+function shouldHideFlowNext(next) {
+  if (flowSuppressedBySection()) return true;
+  return next.target === "builds" && state.flowBuildsOpened;
+}
+
+function flowSuppressedBySection() {
+  const topbarHeight = $(".topbar")?.getBoundingClientRect().height || 0;
+  return ["#feedback", "#trust", "#sources"].some((hash) => {
+    const section = document.querySelector(hash);
+    if (!section) return false;
+    const rect = section.getBoundingClientRect();
+    return rect.top <= topbarHeight + 80 && rect.bottom > topbarHeight + 80;
+  });
+}
+
+function syncFlowNextVisibility() {
+  if (flowSuppressedBySection()) {
+    flowNext.hidden = true;
+  } else if (flowNext.hidden) {
+    renderFlowNext();
+  }
 }
 
 function nextFlowAction({ ownedCount, selectedTeam, teams }) {
@@ -1793,6 +1817,7 @@ function scrollToSection(primarySelector, preferredSelector = primarySelector) {
 }
 
 function setActiveNav(hash) {
+  currentSectionHash = hash || currentSectionHash;
   navLinks.forEach((link) => {
     const isActive = link.getAttribute("href") === hash;
     link.classList.toggle("is-active", isActive);
@@ -1809,7 +1834,10 @@ function updateActiveNav() {
       currentHash = `#${section.id}`;
     }
   });
+  const previousHash = currentSectionHash;
   setActiveNav(currentHash);
+  if (currentSectionHash !== previousHash) renderFlowNext();
+  else syncFlowNextVisibility();
 }
 
 function tierTeams(teams) {
@@ -2379,8 +2407,20 @@ function feedbackContext(team) {
   const ownedCount = Object.keys(state.owned).length;
   const weaponCount = state.weapons.size;
   const roverText = `${state.roverForm} active; owned ${([...state.roverForms].sort()).join(", ")}`;
+  const ownedRoster = feedbackOwnedRoster();
+  const ownedWeapons = feedbackOwnedWeapons();
+  const focused = [...state.focus].map(characterName).sort((a, b) => a.localeCompare(b)).join(", ") || "None";
   if (!team) {
-    return `No team selected. Suggestion style: ${state.suggestionStyle}. Owned Resonators: ${ownedCount}. Owned weapons: ${weaponCount}. Rover: ${roverText}.`;
+    return [
+      "No team selected.",
+      `Suggestion style: ${state.suggestionStyle}`,
+      `Owned Resonators: ${ownedCount}`,
+      `Owned roster: ${ownedRoster}`,
+      `Focused DPS: ${focused}`,
+      `Owned weapons: ${weaponCount}`,
+      `Weapon list: ${ownedWeapons}`,
+      `Rover: ${roverText}`
+    ].join("\n");
   }
   return [
     `Selected team: ${team.members.map((member) => member.name).join(" / ")}`,
@@ -2388,11 +2428,32 @@ function feedbackContext(team) {
     `Safety: ${safetyLabel(team)}`,
     `Confidence: ${teamConfidence(team).label}`,
     `Roster logic: ${missingAlternativeNote(team)}`,
+    `Best-shell reference: ${bestShellDetail(team)}`,
     `Suggestion style: ${state.suggestionStyle}`,
     `Owned Resonators: ${ownedCount}`,
+    `Owned roster: ${ownedRoster}`,
+    `Focused DPS: ${focused}`,
     `Owned weapons: ${weaponCount}`,
+    `Weapon list: ${ownedWeapons}`,
     `Rover: ${roverText}`
   ].join("\n");
+}
+
+function feedbackOwnedRoster() {
+  const owned = Object.entries(state.owned)
+    .map(([slug, info]) => {
+      const name = characterName(slug);
+      const chain = Number.isFinite(info?.chain) ? info.chain : 0;
+      const focus = state.focus.has(slug) ? " focus" : "";
+      return `${name} R${chain}${focus}`;
+    })
+    .sort((a, b) => a.localeCompare(b));
+  return owned.length ? owned.join(", ") : "None";
+}
+
+function feedbackOwnedWeapons() {
+  const weapons = [...state.weapons].sort((a, b) => a.localeCompare(b));
+  return weapons.length ? weapons.join(", ") : "None";
 }
 
 function copyFeedbackContext() {

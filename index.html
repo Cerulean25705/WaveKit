@@ -3,18 +3,81 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>WaveKit</title>
-    <meta name="description" content="WaveKit is a fan-made Wuthering Waves team helper that suggests practical teams and builds from the Resonators and weapons you own.">
-    <meta property="og:title" content="WaveKit">
-    <meta property="og:description" content="Build Wuthering Waves teams from what you actually own.">
-    <meta property="og:image" content="assets/wavekit-mark.png">
+    <title>WaveKit - Wuthering Waves Team Helper, Builds, and Resonator Guides</title>
+    <meta name="description" content="WaveKit is a fan-made Wuthering Waves team helper with practical team suggestions, Resonator builds, weapon notes, and character guidance based on what you own.">
+    <meta name="keywords" content="WaveKit, Wuthering Waves, WuWa, Wuthering Waves teams, Wuthering Waves builds, WuWa team helper, WuWa builds, Resonator guide">
+    <link rel="canonical" href="https://wavekit.net/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wavekit.net/">
+    <meta property="og:title" content="WaveKit - Wuthering Waves Team Helper">
+    <meta property="og:description" content="Build Wuthering Waves teams from the Resonators and weapons you actually own.">
+    <meta property="og:image" content="https://wavekit.net/assets/wavekit-mark.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WaveKit - Wuthering Waves Team Helper">
+    <meta name="twitter:description" content="Practical WuWa team suggestions, builds, and Resonator guidance based on your account.">
+    <meta name="twitter:image" content="https://wavekit.net/assets/wavekit-mark.png">
     <meta name="theme-color" content="#061827">
     <link rel="icon" href="assets/wavekit-mark.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=fixed-topbar-2">
+    <link rel="stylesheet" href="styles.css?v=seo-characters-1">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "name": "WaveKit",
+            "url": "https://wavekit.net/",
+            "description": "Fan-made Wuthering Waves team helper, character guide, and build reference."
+          },
+          {
+            "@type": "WebApplication",
+            "name": "WaveKit",
+            "url": "https://wavekit.net/",
+            "applicationCategory": "GameApplication",
+            "operatingSystem": "Any",
+            "description": "Fan-made Wuthering Waves team helper with account-aware team suggestions, Resonator builds, weapon notes, and readable character guidance.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is WaveKit?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "WaveKit is a fan-made Wuthering Waves team helper that suggests practical teams and builds from the Resonators and weapons a player owns."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does WaveKit only recommend perfect premium teams?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. WaveKit shows strong known team shells when you own them, but it also looks for sensible fallback teams and safer substitutes from your actual roster."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need an account to use WaveKit?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Profiles can stay local in the browser. Optional cloud sync is available for players who want to keep their roster across devices."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <header class="topbar">
@@ -26,6 +89,7 @@
       </a>
       <nav class="topnav" aria-label="Page sections">
         <a href="#how">How it works</a>
+        <a href="#characters">Characters</a>
         <a href="#helper">Helper</a>
         <a href="#results">Teams</a>
         <a href="#builds">Builds</a>
@@ -114,6 +178,45 @@
             <h3>Honest data</h3>
             <p>Newer or less-confirmed character data is marked for review instead of being presented as absolute truth.</p>
           </article>
+        </div>
+      </section>
+
+      <section id="characters" class="section character-library-section" aria-labelledby="characters-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Resonator guides</p>
+            <h2 id="characters-title">A cleaner place for every character.</h2>
+            <p>
+              The full character guide area is separate from the team helper, so you can browse builds, weapons,
+              Echo notes, and team direction without fighting a scrollable panel.
+            </p>
+            <div class="section-inline-actions">
+              <a class="button primary" href="characters/">Open character guides</a>
+              <a class="button ghost" href="#helper">Use team helper</a>
+            </div>
+          </div>
+          <div class="save-card trust-card">
+            <strong>51</strong>
+            <span>character guides</span>
+          </div>
+        </div>
+        <div class="character-hub-grid">
+          <a class="character-hub-card" href="characters/cartethyia/">
+            <img src="assets/wallpapers/cartethyia.webp" alt="Cartethyia guide">
+            <span><strong>Cartethyia</strong><small>Aero DPS guide</small></span>
+          </a>
+          <a class="character-hub-card" href="characters/shorekeeper/">
+            <img src="assets/wallpapers/shorekeeper.jpg" alt="Shorekeeper guide">
+            <span><strong>Shorekeeper</strong><small>Healer support guide</small></span>
+          </a>
+          <a class="character-hub-card" href="characters/sigrika/">
+            <img src="assets/wallpapers/sigrika.webp" alt="Sigrika guide">
+            <span><strong>Sigrika</strong><small>Echo Skill DPS guide</small></span>
+          </a>
+          <a class="character-hub-card" href="characters/">
+            <img src="assets/wavekit-mark.png" alt="">
+            <span><strong>All Resonators</strong><small>Browse every guide</small></span>
+          </a>
         </div>
       </section>
 
@@ -264,20 +367,45 @@
         <div id="build-results" class="build-results"></div>
       </section>
 
-      <section id="sources" class="section sources" aria-labelledby="sources-title">
+      <section id="faq" class="section faq-section" aria-labelledby="faq-title">
         <div class="section-heading">
-          <p class="kicker">Source notes</p>
-          <h2 id="sources-title">Built to be honest about certainty.</h2>
+          <p class="kicker">Quick answers</p>
+          <h2 id="faq-title">Wuthering Waves teams without the pressure.</h2>
           <p>
-            This prototype uses released-character and build data checked against public guide sources. Team
-            scoring is conservative: it prefers proven shells and sensible alternatives over risky guesses.
+            WaveKit is built for players who want useful team and build direction without needing to read ten pages
+            of meta discussion before they can play.
           </p>
         </div>
-        <div class="source-list">
-          <a href="https://game8.co/games/Wuthering-Waves/archives/452489">Game8 character list</a>
-          <a href="https://game8.co/games/Wuthering-Waves/archives/457465">Game8 all character builds</a>
-          <a href="https://game8.co/games/Wuthering-Waves/archives/454728">Game8 team comps</a>
-          <a href="https://www.pcgamer.com/games/rpg/wuthering-waves-banner-next-current/">Current banner notes</a>
+        <div class="faq-grid">
+          <article class="seo-card">
+            <h3>What is WaveKit?</h3>
+            <p>WaveKit is a fan-made Wuthering Waves team helper that suggests practical teams and builds from the Resonators and weapons you own.</p>
+          </article>
+          <article class="seo-card">
+            <h3>Does it only recommend premium teams?</h3>
+            <p>No. Strong known shells are prioritised when you own them, but WaveKit also shows sensible fallback teams and safer substitutes.</p>
+          </article>
+          <article class="seo-card">
+            <h3>Do I need an account?</h3>
+            <p>No. Profiles can stay local in your browser. Optional cloud sync is only there if you want the same roster across devices.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="sources" class="section sources" aria-labelledby="sources-title">
+        <div class="section-heading">
+          <p class="kicker">Data notes</p>
+          <h2 id="sources-title">Built to be honest about certainty.</h2>
+          <p>
+            WaveKit is a fan-made helper shaped by released-character data, public theorycrafting, and player
+            reports. Team scoring is conservative: it prefers proven shells and sensible alternatives over risky guesses.
+          </p>
+        </div>
+        <div class="source-list data-note-list">
+          <span>Released roster only</span>
+          <span>Player reports reviewed</span>
+          <span>Patch-sensitive picks marked cautiously</span>
+          <span>No hidden paid recommendations</span>
         </div>
       </section>
 
@@ -326,6 +454,7 @@
           <label class="field">
             <span>Contact, optional</span>
             <input name="contact" type="text" placeholder="Discord, email, Reddit, or leave blank">
+            <small>Leave a contact if you want a reply. Blank reports still help improve WaveKit.</small>
           </label>
           <div class="feedback-preview">
             <strong>Included context</strong>
@@ -392,8 +521,8 @@
 
     <footer class="footer">
       <p>
-        Fan-made prototype. Wuthering Waves belongs to Kuro Games. Saved profiles are local to this browser
-        until a real account backend is added.
+        Fan-made project. Wuthering Waves belongs to Kuro Games. Profiles can stay local in your browser or sync
+        through optional WaveKit cloud login.
       </p>
     </footer>
 
