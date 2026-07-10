@@ -23,7 +23,7 @@ const wallpapers = new Map([
 
 const builds = Object.fromEntries([
   ["shorekeeper", "Healer-Support Build", "Stellar Symphony", "Rejuvenating Glow", "Fallacy of No Return", "Healing Bonus or CRIT DMG / Energy Regen or HP% / HP%"],
-  ["yangyang-xuanling", "Current Patch Aero DPS Build", "Azure Oath", "Windward Pilgrimage, Sierra Gale", "Reminiscence: Fleurdelys", "CRIT Rate or CRIT DMG / Aero DMG or ATK% / ATK%"],
+  ["yangyang-xuanling", "Current Patch Havoc DPS Build", "Azure Oath", "Song of Feathered Trace", "Thousand-Puppet Pavilion", "CRIT Rate or CRIT DMG / Havoc DMG or ATK% / ATK%"],
   ["suisui", "Upcoming Support Build", "Aureate Zenith", "Moonlit Clouds or Rejuvenating Glow", "Impermanence Heron or support Echo", "Energy Regen / kit-scaling stat / comfort"],
   ["phrolova", "Havoc DPS Build", "Lethean Elegy", "Dream of the Lost, Havoc Eclipse", "Nightmare: Hecate", "Crit DMG or CRIT Rate / Havoc DMG / ATK%"],
   ["augusta", "Electro DPS", "Thunderflare Dominion", "Crown of Valor, Void Thunder", "The False Sovereign", "Crit DMG or CRIT Rate / Electro DMG or ATK% / ATK%"],
@@ -130,6 +130,7 @@ const characterWeaponAlternates = {
   mortefi: ["Static Mist", "Cadenza", "Thunderbolt"],
   sanhua: ["Emerald of Genesis", "Commando of Conviction", "Lunar Cutter"],
   yangyang: ["Emerald of Genesis", "Commando of Conviction", "Lunar Cutter"],
+  "yangyang-xuanling": ["Emerald of Genesis", "Blazing Brilliance", "Lumingloss"],
   danjin: ["Emerald of Genesis", "Lumingloss", "Commando of Conviction"],
   chixia: ["Static Mist", "Thunderbolt", "Novaburst"],
   aalto: ["Static Mist", "Cadenza", "Novaburst"],
@@ -470,7 +471,7 @@ const knownWeaponTypes = {
 
 const characters = [
   c("shorekeeper", "Shorekeeper", "Spectro", "Rectifier", ["healer", "support"], 99, ["any"], ["crit", "sustain"], "Premium sustain. Healing, Crit support, and low-stress team flow."),
-  c("yangyang-xuanling", "Yangyang: Xuanling", "Aero", "Sword", ["main"], 92, ["aero"], ["aero", "current-patch"], "New version 3.5 Aero damage character. WaveKit keeps her guide conservative while current-patch testing settles."),
+  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 92, ["havoc"], ["havoc", "heavy", "current-patch"], "New version 3.5 Havoc damage character. WaveKit keeps her guide conservative while current-patch testing settles."),
   c("verina", "Verina", "Spectro", "Rectifier", ["healer", "support"], 96, ["any"], ["atk", "sustain"], "Very forgiving healer and universal support."),
   c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry. Likes Havoc helpers and stable sustain."),
   c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 98, ["aero"], ["aero", "erosion", "negative"], "Aero carry with strong payoff when the team supports her Erosion mechanic."),
@@ -516,7 +517,7 @@ const characters = [
   c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
   c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
   c("mornye", "Mornye", "Spectro", "Broadblade", ["healer", "support"], 98, ["any", "tune"], ["sustain", "def", "tune"], "Premium DEF-based healer support for Tune shells and safer rotations."),
-  c("suisui", "Suisui", "Spectro", "Broadblade", ["support", "healer"], 82, ["any"], ["sustain", "upcoming"], "Unreleased Resonator. Suisui is expected on the second half of the version 3.5 banner, July 31 to August 20, 2026, so WaveKit lists her guide info but does not use her in the team helper yet."),
+  c("suisui", "Suisui", "Glacio", "Rectifier", ["support", "healer"], 82, ["any"], ["sustain", "upcoming"], "Unreleased Resonator. Suisui is expected on the second half of the version 3.5 banner, July 31 to August 20, 2026, so WaveKit lists her guide info but does not use her in the team helper yet."),
   c("baizhi", "Baizhi", "Glacio", "Rectifier", ["healer", "support"], 74, ["any"], ["sustain"], "Accessible healer for early accounts."),
   c("youhu", "Youhu", "Glacio", "Gauntlets", ["healer", "support"], 70, ["any"], ["sustain"], "Support healer with more specific kit management."),
   c("buling", "Buling", "Electro", "Rectifier", ["healer", "support"], 80, ["any"], ["sustain"], "Electro healer/support entry. Good as a sustain option while team-specific testing matures."),
@@ -586,7 +587,7 @@ const carryCeilingScores = {
 
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
-  "yangyang-xuanling": pref(["ciaccona", "iuno", "qiuyuan"], ["yangyang", "aalto", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
+  "yangyang-xuanling": pref(["lynae", "rebecca", "phrolova", "mortefi"], ["chisa", "mornye", "verina"], ["chisa", "mornye", "verina", "baizhi"]),
   cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
@@ -615,7 +616,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
-  "yangyang-xuanling": archetype("Aero Carry", [["ciaccona", "shorekeeper"], ["iuno", "shorekeeper"], ["qiuyuan", "verina"], ["yangyang", "verina"]], "Yangyang: Xuanling is new in version 3.5, so WaveKit starts with conservative Aero carry shells until stronger current-patch testing is available."),
+  "yangyang-xuanling": archetype("Havoc Heavy Carry", [["lynae", "chisa"], ["rebecca", "chisa"], ["phrolova", "chisa"], ["mortefi", "verina"], ["lynae", "mornye"]], "Yangyang: Xuanling is new in version 3.5, so WaveKit starts with conservative Havoc/Heavy Attack shells until stronger current-patch testing is available."),
   cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
@@ -2535,7 +2536,7 @@ function useNote(character, team) {
     "shorekeeper": "Shorekeeper is the premium safety net. Prioritise Energy Regen and uptime so her field, healing, and Crit support are ready before hard fights.",
     "sanhua": "Sanhua is a quick helper: use her fast setup, trigger her burst window, then hand field time back to the main damage dealer.",
     "yangyang": "Yangyang is comfort utility. Use her for grouping and Energy help when a team feels scattered or starved for rotations.",
-    "yangyang-xuanling": "Yangyang: Xuanling is new, so treat this as conservative current-patch guidance. Use Aero helpers first, keep a real sustain ready, and send feedback if her best shell changes.",
+    "yangyang-xuanling": "Yangyang: Xuanling is new, so treat this as conservative current-patch guidance. Use Havoc or Heavy Attack helpers first, keep a real sustain ready, and send feedback if her best shell changes.",
     "jianxin": "Jianxin is a defensive comfort pick. She can smooth out rough fights with grouping, shielding, and safer pacing.",
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
