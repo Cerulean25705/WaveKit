@@ -2272,10 +2272,48 @@ h1 {
   min-height: 306px;
 }
 
+.character-card.is-upcoming {
+  cursor: default;
+  border-color: rgba(255, 215, 122, 0.28);
+}
+
+.character-card.is-upcoming .portrait,
+.character-card.is-upcoming .character-toggle {
+  opacity: 0.72;
+}
+
+.character-card.is-upcoming .character-toggle,
+.character-card.is-upcoming .focus-toggle,
+.character-card.is-upcoming .chain-row button {
+  cursor: not-allowed;
+}
+
+.upcoming-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 215, 122, 0.34);
+  border-radius: 999px;
+  background: rgba(3, 12, 19, 0.82);
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .character-card:hover,
 .character-card:focus-within {
   transform: translateY(-2px);
   border-color: var(--accent, var(--teal));
+}
+
+.character-card.is-upcoming:hover,
+.character-card.is-upcoming:focus-within {
+  transform: none;
+  border-color: rgba(255, 215, 122, 0.28);
 }
 
 .character-toggle {

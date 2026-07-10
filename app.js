@@ -16,12 +16,15 @@ const wallpapers = new Map([
   wallpaper("rebecca", "rebecca.webp"), wallpaper("roccia", "roccia.jpg"), wallpaper("rover", "rover.jpg"),
   wallpaper("sanhua", "sanhua.webp"), wallpaper("shorekeeper", "shorekeeper.jpg"), wallpaper("sigrika", "sigrika.webp"),
   wallpaper("taoqi", "taoqi.webp"), wallpaper("verina", "verina.jpg"), wallpaper("xiangli-yao", "xiangli-yao.jpg"),
-  wallpaper("yangyang", "yangyang.webp"), wallpaper("yinlin", "yinlin.jpg"), wallpaper("youhu", "youhu.webp"),
+  wallpaper("yangyang", "yangyang.webp"), wallpaper("yangyang-xuanling", "yangyang-xuanling.webp"),
+  wallpaper("yinlin", "yinlin.jpg"), wallpaper("youhu", "youhu.webp"), wallpaper("suisui", "suisui.webp"),
   wallpaper("yuanwu", "yuanwu.webp"), wallpaper("zani", "zani.webp"), wallpaper("zhezhi", "zhezhi.jpg")
 ]);
 
 const builds = Object.fromEntries([
   ["shorekeeper", "Healer-Support Build", "Stellar Symphony", "Rejuvenating Glow", "Fallacy of No Return", "Healing Bonus or CRIT DMG / Energy Regen or HP% / HP%"],
+  ["yangyang-xuanling", "Current Patch Aero DPS Build", "Azure Oath", "Windward Pilgrimage, Sierra Gale", "Reminiscence: Fleurdelys", "CRIT Rate or CRIT DMG / Aero DMG or ATK% / ATK%"],
+  ["suisui", "Upcoming Support Build", "Aureate Zenith", "Moonlit Clouds or Rejuvenating Glow", "Impermanence Heron or support Echo", "Energy Regen / kit-scaling stat / comfort"],
   ["phrolova", "Havoc DPS Build", "Lethean Elegy", "Dream of the Lost, Havoc Eclipse", "Nightmare: Hecate", "Crit DMG or CRIT Rate / Havoc DMG / ATK%"],
   ["augusta", "Electro DPS", "Thunderflare Dominion", "Crown of Valor, Void Thunder", "The False Sovereign", "Crit DMG or CRIT Rate / Electro DMG or ATK% / ATK%"],
   ["iuno", "Aero Sub-DPS", "Moongazer's Sigil", "Crown of Valor, Sierra Gale", "Lady of the Sea", "Crit DMG or CRIT Rate / Aero DMG / ATK%"],
@@ -76,6 +79,7 @@ const builds = Object.fromEntries([
 
 const echoCosts = {
   cartethyia: "4-4-1-1-1",
+  "yangyang-xuanling": "4-3-3-1-1",
   zani: "3-4-3-1-1",
   phoebe: "3-4-3-1-1",
   "luuk-herssen": "3-4-3-1-1",
@@ -86,7 +90,8 @@ const echoCosts = {
   mornye: "4-3-3-1-1",
   baizhi: "4-3-3-1-1",
   youhu: "4-3-3-1-1",
-  buling: "4-3-3-1-1"
+  buling: "4-3-3-1-1",
+  suisui: "4-3-3-1-1"
 };
 
 const weaponFallbacks = {
@@ -139,7 +144,6 @@ const weaponCatalog = new Map([
   ["Augment", "Rectifier"],
   ["Aether Strike", "Gauntlets"],
   ["Autumntrace", "Broadblade"],
-  ["Aureate Zenith", "Broadblade"],
   ["Azure Oath", "Sword"],
   ["Beguiling Melody", "Broadblade"],
   ["Blazing Brilliance", "Sword"],
@@ -291,7 +295,7 @@ const weaponPurposeHints = {
   "Fables of Wisdom": "Sword support option",
   "Bloodpact's Pledge": "Sword damage support",
   "Somnoire Anchor": "Event Sword DPS",
-  "Azure Oath": "Sword DPS option",
+  "Azure Oath": "Current patch Sword DPS option",
 
   "Pistols of Night": "Starter Pistols DPS",
   "Pistols of Voyager": "Starter Pistols DPS",
@@ -323,7 +327,7 @@ const weaponPurposeHints = {
   "Pulsation Bracer": "Gauntlets DPS option",
   "Celestial Spiral": "Gauntlets DPS option",
   "Legend of Drunken Hero": "Gauntlets DPS option",
-  "Aether Strike": "Gauntlets DPS option",
+  "Aether Strike": "Current patch Gauntlets option",
 
   "Rectifier of Night": "Starter Rectifier DPS",
   "Rectifier of Voyager": "Starter Rectifier DPS",
@@ -341,7 +345,8 @@ const weaponPurposeHints = {
   "Waltz in Masquerade": "Rectifier DPS option",
   "Radiant Dawn": "Rectifier DPS option",
   "Ocean's Gift": "Rectifier support option",
-  "Call of the Abyss": "Rectifier support option"
+  "Call of the Abyss": "Rectifier support option",
+  "Firstlight's Herald": "Current patch Rectifier option"
 };
 
 const fiveStarWeapons = new Set([
@@ -352,13 +357,16 @@ const fiveStarWeapons = new Set([
   "Solsworn Ciphers", "Spectral Trigger", "Spectrum Blaster", "Starfield Calibrator", "Static Mist",
   "Stellar Symphony", "Stringmaster", "The Last Dance", "Thunderflare Dominion", "Tragicomedy",
   "Unflickering Valor", "Verdant Summit", "Verity's Handle", "Whispers of Sirens", "Wildfire Mark",
-  "Woodland Aria"
+  "Woodland Aria", "Azure Oath", "Firstlight's Herald", "Aether Strike"
 ]);
 
 const fourStarResonators = new Set([
   "aalto", "baizhi", "chixia", "danjin", "lumi", "mortefi", "sanhua", "taoqi", "yangyang",
   "yuanwu", "youhu"
 ]);
+
+const upcomingCharacters = new Set(["suisui"]);
+const upcomingWeapons = new Set(["Aureate Zenith"]);
 
 const roverForms = {
   Spectro: {
@@ -454,11 +462,15 @@ const knownWeaponTypes = {
   "Thunderbolt": "Pistols",
   "Cadenza": "Pistols",
   "Novaburst": "Pistols",
-  "Pistols#26": "Pistols"
+  "Pistols#26": "Pistols",
+  "Azure Oath": "Sword",
+  "Firstlight's Herald": "Rectifier",
+  "Aether Strike": "Gauntlets"
 };
 
 const characters = [
   c("shorekeeper", "Shorekeeper", "Spectro", "Rectifier", ["healer", "support"], 99, ["any"], ["crit", "sustain"], "Premium sustain. Healing, Crit support, and low-stress team flow."),
+  c("yangyang-xuanling", "Yangyang: Xuanling", "Aero", "Sword", ["main"], 92, ["aero"], ["aero", "current-patch"], "New version 3.5 Aero damage character. WaveKit keeps her guide conservative while current-patch testing settles."),
   c("verina", "Verina", "Spectro", "Rectifier", ["healer", "support"], 96, ["any"], ["atk", "sustain"], "Very forgiving healer and universal support."),
   c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry. Likes Havoc helpers and stable sustain."),
   c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 98, ["aero"], ["aero", "erosion", "negative"], "Aero carry with strong payoff when the team supports her Erosion mechanic."),
@@ -504,6 +516,7 @@ const characters = [
   c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
   c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
   c("mornye", "Mornye", "Spectro", "Broadblade", ["healer", "support"], 98, ["any", "tune"], ["sustain", "def", "tune"], "Premium DEF-based healer support for Tune shells and safer rotations."),
+  c("suisui", "Suisui", "Spectro", "Broadblade", ["support", "healer"], 82, ["any"], ["sustain", "upcoming"], "Unreleased Resonator. Suisui is expected on the second half of the version 3.5 banner, July 31 to August 20, 2026, so WaveKit lists her guide info but does not use her in the team helper yet."),
   c("baizhi", "Baizhi", "Glacio", "Rectifier", ["healer", "support"], 74, ["any"], ["sustain"], "Accessible healer for early accounts."),
   c("youhu", "Youhu", "Glacio", "Gauntlets", ["healer", "support"], 70, ["any"], ["sustain"], "Support healer with more specific kit management."),
   c("buling", "Buling", "Electro", "Rectifier", ["healer", "support"], 80, ["any"], ["sustain"], "Electro healer/support entry. Good as a sustain option while team-specific testing matures."),
@@ -551,6 +564,7 @@ const carryCeilingScores = {
   aemeath: 97,
   hiyuki: 97,
   galbrena: 95,
+  "yangyang-xuanling": 92,
   jiyan: 92,
   jinhsi: 92,
   changli: 91,
@@ -572,6 +586,7 @@ const carryCeilingScores = {
 
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
+  "yangyang-xuanling": pref(["ciaccona", "iuno", "qiuyuan"], ["yangyang", "aalto", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
@@ -600,6 +615,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
+  "yangyang-xuanling": archetype("Aero Carry", [["ciaccona", "shorekeeper"], ["iuno", "shorekeeper"], ["qiuyuan", "verina"], ["yangyang", "verina"]], "Yangyang: Xuanling is new in version 3.5, so WaveKit starts with conservative Aero carry shells until stronger current-patch testing is available."),
   cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
@@ -626,6 +642,8 @@ const teamArchetypes = {
 };
 
 const dataConfidence = {
+  "yangyang-xuanling": ["review", "New 3.5 release - needs testing"],
+  suisui: ["review", "Unreleased - banner expected July 31 to August 20, 2026"],
   aemeath: ["review", "Needs current patch review"],
   hiyuki: ["review", "Needs current patch review"],
   denia: ["checked", "Guide checked"],
@@ -696,7 +714,13 @@ function firstElement(element) {
 }
 
 function activeCharacters() {
-  return characters.map((character) => character.slug === "rover" ? activeRover() : character);
+  return characters
+    .filter((character) => !upcomingCharacters.has(character.slug))
+    .map((character) => character.slug === "rover" ? activeRover() : character);
+}
+
+function isUpcomingCharacter(slug) {
+  return upcomingCharacters.has(slug);
 }
 
 function activeRover() {
@@ -785,6 +809,7 @@ function renderCharacters() {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".chain-row")) return;
       if (event.target.closest(".rover-form-row")) return;
+      if (isUpcomingCharacter(card.dataset.characterCard)) return;
       toggleCharacter(card.dataset.characterCard);
     });
   });
@@ -818,26 +843,28 @@ function renderCharacters() {
 }
 
 function characterCard(character) {
-  const owned = state.owned[character.slug];
-  const focused = state.focus.has(character.slug);
+  const upcoming = isUpcomingCharacter(character.slug);
+  const owned = upcoming ? false : state.owned[character.slug];
+  const focused = upcoming ? false : state.focus.has(character.slug);
   return `
-    <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${character.slug === "rover" ? "is-rover" : ""} element-${firstElement(character.element).toLowerCase()}" data-character-card="${character.slug}">
-      <button class="character-toggle" type="button" data-character="${character.slug}" aria-pressed="${Boolean(owned)}">
+    <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${upcoming ? "is-upcoming" : ""} ${character.slug === "rover" ? "is-rover" : ""} element-${firstElement(character.element).toLowerCase()}" data-character-card="${character.slug}">
+      <button class="character-toggle" type="button" data-character="${character.slug}" aria-pressed="${Boolean(owned)}" ${upcoming ? "disabled" : ""}>
         ${visual(character)}
         <span class="character-info">
           <strong>${character.name}</strong>
-          <small>${rarityStars(characterRarity(character))} · ${roleLabel(character)} · ${character.element}</small>
+          <small>${upcoming ? "Unreleased · July 31 banner" : `${rarityStars(characterRarity(character))} · ${roleLabel(character)} · ${character.element}`}</small>
         </span>
       </button>
-      <button class="focus-toggle" type="button" data-focus-character="${character.slug}" aria-pressed="${focused}" aria-label="Prioritise ${character.name}">
+      <button class="focus-toggle" type="button" data-focus-character="${character.slug}" aria-pressed="${focused}" aria-label="Prioritise ${character.name}" ${upcoming ? "disabled" : ""}>
         ${focused ? "★" : "☆"}
       </button>
+      ${upcoming ? `<span class="upcoming-badge">Unreleased</span>` : ""}
       ${character.slug === "rover" ? roverFormPicker() : ""}
-      <div class="chain-row" aria-label="${character.name} Resonance Chain">
+      <div class="chain-row" aria-label="${character.name} Resonance Chain" ${upcoming ? `aria-disabled="true"` : ""}>
         <span>RC</span>
-        <button type="button" data-chain-minus="${character.slug}" data-chain-action="decrease">-</button>
+        <button type="button" data-chain-minus="${character.slug}" data-chain-action="decrease" ${upcoming ? "disabled" : ""}>-</button>
         <strong>${owned?.chain ?? 0}</strong>
-        <button type="button" data-chain-plus="${character.slug}" data-chain-action="increase">+</button>
+        <button type="button" data-chain-plus="${character.slug}" data-chain-action="increase" ${upcoming ? "disabled" : ""}>+</button>
       </div>
     </article>
   `;
@@ -1048,6 +1075,7 @@ function roleLabel(character) {
 }
 
 function toggleCharacter(slug) {
+  if (isUpcomingCharacter(slug)) return;
   if (state.owned[slug]) {
     delete state.owned[slug];
     state.focus.delete(slug);
@@ -1061,6 +1089,7 @@ function toggleCharacter(slug) {
 }
 
 function changeChain(slug, delta) {
+  if (isUpcomingCharacter(slug)) return;
   if (!state.owned[slug] && delta < 1) return;
   if (!state.owned[slug]) state.owned[slug] = { chain: 0 };
   state.owned[slug].chain = Math.max(0, Math.min(6, state.owned[slug].chain + delta));
@@ -1088,6 +1117,7 @@ function updateCharacterCard(slug) {
 }
 
 function toggleFocus(slug) {
+  if (isUpcomingCharacter(slug)) return;
   if (!state.owned[slug]) state.owned[slug] = { chain: 0 };
   state.focus.has(slug) ? state.focus.delete(slug) : state.focus.add(slug);
   markUnsaved();
@@ -2505,6 +2535,7 @@ function useNote(character, team) {
     "shorekeeper": "Shorekeeper is the premium safety net. Prioritise Energy Regen and uptime so her field, healing, and Crit support are ready before hard fights.",
     "sanhua": "Sanhua is a quick helper: use her fast setup, trigger her burst window, then hand field time back to the main damage dealer.",
     "yangyang": "Yangyang is comfort utility. Use her for grouping and Energy help when a team feels scattered or starved for rotations.",
+    "yangyang-xuanling": "Yangyang: Xuanling is new, so treat this as conservative current-patch guidance. Use Aero helpers first, keep a real sustain ready, and send feedback if her best shell changes.",
     "jianxin": "Jianxin is a defensive comfort pick. She can smooth out rough fights with grouping, shielding, and safer pacing.",
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
@@ -2523,7 +2554,8 @@ function useNote(character, team) {
     "luuk-herssen": "Luuk Herssen wants a Tune Strain shell. Denia + Mornye is prioritised when owned, with Lynae treated as a strong alternate rather than the default best pair.",
     "lucy": "Lucy wants Hack-Shifting support when available. Rebecca is prioritised as her intended partner, then the healer keeps the damage window stable.",
     "rebecca": "Rebecca is not just generic heavy support here. In Lucy teams, use her Hack-Shifting setup first so Lucy benefits from the paired mechanics before taking field time.",
-    "aemeath": "Aemeath is mode-based. Keep Tune Rupture and Fusion Burst advice separate so the build does not become muddled."
+    "aemeath": "Aemeath is mode-based. Keep Tune Rupture and Fusion Burst advice separate so the build does not become muddled.",
+    "suisui": "Suisui is unreleased until her expected July 31, 2026 banner. WaveKit keeps her visible as upcoming guide info, but she is not used for team suggestions yet."
   };
   if (kitNotes[character.slug]) return kitNotes[character.slug];
   if (character.roles.includes("main")) return `Use ${character.name} as the field-time damage dealer. Set up ${team.members[1].name} and ${team.members[2].name} first, then spend the cleanest window on damage.`;
@@ -2644,6 +2676,9 @@ function persistProfiles() {
 }
 
 function normaliseProfile(payload) {
+  const owned = Object.fromEntries(
+    Object.entries(payload.owned || {}).filter(([slug]) => !upcomingCharacters.has(slug))
+  );
   return {
     profileName: payload.profileName || "",
     experience: payload.experience || "New",
@@ -2652,9 +2687,9 @@ function normaliseProfile(payload) {
     suggestionStyle: normaliseSuggestionStyle(payload),
     roverForm: roverForms[payload.roverForm] ? payload.roverForm : "Aero",
     roverForms: normaliseRoverForms(payload.roverForms, payload.roverForm),
-    owned: payload.owned || {},
-    focus: payload.focus || payload.favorites || [],
-    weapons: payload.weapons || []
+    owned,
+    focus: (payload.focus || payload.favorites || []).filter((slug) => !upcomingCharacters.has(slug)),
+    weapons: (payload.weapons || []).filter((weapon) => !upcomingWeapons.has(weapon))
   };
 }
 
