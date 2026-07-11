@@ -1669,6 +1669,168 @@ h1 {
   line-height: 1.58;
 }
 
+.seo-account-panel {
+  overflow: hidden;
+  margin-top: 20px;
+  border: 1px solid rgba(139, 232, 255, 0.16);
+  border-radius: var(--radius);
+  background:
+    var(--glass-sheen),
+    rgba(7, 20, 29, 0.78);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+}
+
+.seo-account-panel header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(139, 232, 255, 0.12);
+}
+
+.seo-account-panel header span,
+.seo-account-grid span {
+  color: var(--gold);
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seo-account-panel h2 {
+  margin: 4px 0 0;
+  font-size: 1.18rem;
+}
+
+.seo-account-panel p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.seo-account-panel header > strong {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #061016;
+  background: linear-gradient(135deg, var(--teal), var(--gold));
+  font-size: 0.74rem;
+  font-weight: 950;
+}
+
+.seo-account-empty,
+.seo-account-content {
+  padding: 16px 18px 18px;
+}
+
+.seo-account-empty > p:first-child {
+  color: var(--text);
+}
+
+.seo-account-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.seo-account-grid div,
+.seo-account-team,
+.seo-account-team-icons span {
+  border: 1px solid rgba(139, 232, 255, 0.12);
+  border-radius: var(--radius);
+  background: rgba(3, 12, 19, 0.42);
+}
+
+.seo-account-grid div {
+  min-width: 0;
+  padding: 13px;
+}
+
+.seo-account-grid strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seo-account-team {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.95fr) minmax(0, 1.05fr);
+  gap: 14px;
+  align-items: center;
+  padding: 13px;
+}
+
+.seo-account-team-icons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.seo-account-team-icons span {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+  padding: 8px;
+  text-align: center;
+}
+
+.seo-account-team-icons img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  object-position: center 16%;
+  border: 1px solid rgba(139, 232, 255, 0.24);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.seo-account-team-icons small {
+  color: var(--gold);
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seo-account-team-icons strong {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seo-account-team-icons .is-missing {
+  border-color: rgba(255, 215, 122, 0.22);
+  background: rgba(255, 215, 122, 0.06);
+}
+
+.seo-account-team-icons .is-missing img {
+  opacity: 0.56;
+  filter: grayscale(0.25);
+}
+
+.seo-account-missing {
+  padding: 12px;
+  border: 1px solid rgba(255, 215, 122, 0.18);
+  border-radius: var(--radius);
+  background: rgba(255, 215, 122, 0.06);
+  color: #ffe8a4;
+  font-weight: 760;
+}
+
+.seo-account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
 .seo-glossary-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4045,6 +4207,11 @@ h1 {
 @media (max-width: 900px) {
   .seo-hero,
   .seo-build-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .seo-account-grid,
+  .seo-account-team {
     grid-template-columns: 1fr;
   }
 }
