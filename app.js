@@ -130,7 +130,7 @@ const characterWeaponAlternates = {
   mortefi: ["Static Mist", "Cadenza", "Thunderbolt"],
   sanhua: ["Emerald of Genesis", "Commando of Conviction", "Lunar Cutter"],
   yangyang: ["Emerald of Genesis", "Commando of Conviction", "Lunar Cutter"],
-  "yangyang-xuanling": ["Emerald of Genesis", "Blazing Brilliance", "Lumingloss"],
+  "yangyang-xuanling": ["Emerald Sentence", "Red Spring", "Everbright Polestar", "Frostburn", "Emerald of Genesis"],
   danjin: ["Emerald of Genesis", "Lumingloss", "Commando of Conviction"],
   chixia: ["Static Mist", "Thunderbolt", "Novaburst"],
   aalto: ["Static Mist", "Cadenza", "Novaburst"],
