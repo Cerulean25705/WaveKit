@@ -1,5 +1,11 @@
 const wallpaper = (slug, file) => [slug, file];
 
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
+
 const wallpapers = new Map([
   wallpaper("aalto", "aalto.webp"), wallpaper("aemeath", "aemeath.webp"), wallpaper("augusta", "augusta.webp"),
   wallpaper("baizhi", "baizhi.webp"), wallpaper("brant", "brant.jpg"), wallpaper("buling", "buling.webp"),
