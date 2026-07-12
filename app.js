@@ -362,6 +362,7 @@ const fiveStarWeapons = new Set([
 ]);
 
 const fourStarResonators = new Set([
+  "buling",
   "aalto", "baizhi", "chixia", "danjin", "lumi", "mortefi", "sanhua", "taoqi", "yangyang",
   "yuanwu", "youhu"
 ]);
