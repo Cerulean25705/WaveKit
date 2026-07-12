@@ -848,21 +848,28 @@ function characterCard(character) {
   const upcoming = isUpcomingCharacter(character.slug);
   const owned = upcoming ? false : state.owned[character.slug];
   const focused = upcoming ? false : state.focus.has(character.slug);
+  const isRover = character.slug === "rover";
+  const displayName = isRover ? "Rover" : character.name;
+  const characterDetail = upcoming
+    ? "Unreleased · July 31 banner"
+    : isRover
+      ? `${rarityStars(characterRarity(character))} · Active: ${state.roverForm} · Forms: Spectro / Havoc / Aero`
+      : `${rarityStars(characterRarity(character))} · ${roleLabel(character)} · ${character.element}`;
   return `
-    <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${upcoming ? "is-upcoming" : ""} ${character.slug === "rover" ? "is-rover" : ""} element-${firstElement(character.element).toLowerCase()}" data-character-card="${character.slug}">
+    <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${upcoming ? "is-upcoming" : ""} ${isRover ? "is-rover" : ""} element-${firstElement(character.element).toLowerCase()}" data-character-card="${character.slug}">
       <button class="character-toggle" type="button" data-character="${character.slug}" aria-pressed="${Boolean(owned)}" ${upcoming ? "disabled" : ""}>
         ${visual(character)}
         <span class="character-info">
-          <strong>${character.name}</strong>
-          <small>${upcoming ? "Unreleased · July 31 banner" : `${rarityStars(characterRarity(character))} · ${roleLabel(character)} · ${character.element}`}</small>
+          <strong>${displayName}</strong>
+          <small>${characterDetail}</small>
         </span>
       </button>
-      <button class="focus-toggle" type="button" data-focus-character="${character.slug}" aria-pressed="${focused}" aria-label="Prioritise ${character.name}" ${upcoming ? "disabled" : ""}>
+      <button class="focus-toggle" type="button" data-focus-character="${character.slug}" aria-pressed="${focused}" aria-label="Prioritise ${displayName}" ${upcoming ? "disabled" : ""}>
         ${focused ? "★" : "☆"}
       </button>
       ${upcoming ? `<span class="upcoming-badge">Unreleased</span>` : ""}
-      ${character.slug === "rover" ? roverFormPicker() : ""}
-      <div class="chain-row" aria-label="${character.name} Resonance Chain" ${upcoming ? `aria-disabled="true"` : ""}>
+      ${isRover ? roverFormPicker() : ""}
+      <div class="chain-row" aria-label="${displayName} Resonance Chain" ${upcoming ? `aria-disabled="true"` : ""}>
         <span>RC</span>
         <button type="button" data-chain-minus="${character.slug}" data-chain-action="decrease" ${upcoming ? "disabled" : ""}>-</button>
         <strong>${owned?.chain ?? 0}</strong>
