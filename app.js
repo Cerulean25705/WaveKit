@@ -867,6 +867,7 @@ function characterCard(character) {
       <button class="focus-toggle" type="button" data-focus-character="${character.slug}" aria-pressed="${focused}" aria-label="Prioritise ${displayName}" ${upcoming ? "disabled" : ""}>
         ${focused ? "★" : "☆"}
       </button>
+      <span class="character-owned-badge" aria-hidden="true">Owned</span>
       ${upcoming ? `<span class="upcoming-badge">Unreleased</span>` : ""}
       ${isRover ? roverFormPicker() : ""}
       <div class="chain-row" aria-label="${displayName} Resonance Chain" ${upcoming ? `aria-disabled="true"` : ""}>
@@ -902,10 +903,7 @@ function roverFormPicker() {
 
 function renderWeapons() {
   const query = state.weaponSearch.toLowerCase();
-  const weapons = [...new Set([
-    ...weaponCatalog.keys(),
-    ...activeCharacters().flatMap((character) => [character.build.weapon, ...alternateWeapons(character)]).filter(Boolean)
-  ])].filter(isSelectableWeapon).sort()
+  const weapons = selectableWeapons()
     .filter((weapon) => {
       const type = weaponTypeFor(weapon);
       const typeMatch = state.weaponTypeFilter === "All" || type === state.weaponTypeFilter;
@@ -947,6 +945,28 @@ function weaponCard(weapon) {
       <span class="owned-badge">${state.weapons.has(weapon) ? "Owned" : "Tap to add"}</span>
     </button>
   `;
+}
+
+function selectableWeapons() {
+  return [...new Set([
+    ...weaponCatalog.keys(),
+    ...activeCharacters().flatMap((character) => [character.build.weapon, ...alternateWeapons(character)]).filter(Boolean)
+  ])].filter(isSelectableWeapon).sort();
+}
+
+function setFourStarWeapons(owned) {
+  selectableWeapons()
+    .filter((weapon) => weaponRarity(weapon) === 4)
+    .forEach((weapon) => {
+      if (owned) {
+        state.weapons.add(weapon);
+      } else {
+        state.weapons.delete(weapon);
+      }
+    });
+  markUnsaved();
+  resetFlowGuide();
+  render();
 }
 
 function raritySections(items, getRarity) {
@@ -1095,6 +1115,22 @@ function toggleCharacter(slug) {
   resetFlowGuide();
   updateCharacterCard(slug);
   refreshRosterSelection();
+}
+
+function setFourStarResonators(owned) {
+  activeCharacters()
+    .filter((character) => characterRarity(character) === 4)
+    .forEach((character) => {
+      if (owned) {
+        if (!state.owned[character.slug]) state.owned[character.slug] = { chain: 0 };
+      } else {
+        delete state.owned[character.slug];
+        state.focus.delete(character.slug);
+      }
+    });
+  markUnsaved();
+  resetFlowGuide();
+  render();
 }
 
 function changeChain(slug, delta) {
@@ -3297,6 +3333,11 @@ $("#weapon-search").addEventListener("input", (event) => {
   state.weaponSearch = event.target.value;
   renderWeapons();
 });
+
+$("#select-four-star-resonators").addEventListener("click", () => setFourStarResonators(true));
+$("#clear-four-star-resonators").addEventListener("click", () => setFourStarResonators(false));
+$("#select-four-star-weapons").addEventListener("click", () => setFourStarWeapons(true));
+$("#clear-four-star-weapons").addEventListener("click", () => setFourStarWeapons(false));
 
 $("#save-profile").addEventListener("click", saveProfile);
 $("#reset-profile").addEventListener("click", resetProfile);

@@ -29,7 +29,7 @@
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=selection-aura-1">
+    <link rel="stylesheet" href="styles.css?v=mobile-selector-1">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -358,6 +358,10 @@
               </label>
               <div id="role-filters" class="filters" aria-label="Role filters"></div>
             </div>
+            <div class="quick-select-actions" aria-label="Quick Resonator selection">
+              <button id="select-four-star-resonators" class="button ghost compact-button" type="button">Add all 4-star Resonators</button>
+              <button id="clear-four-star-resonators" class="button ghost compact-button" type="button">Clear 4-star Resonators</button>
+            </div>
             <div id="character-grid" class="character-grid" aria-label="Selectable characters"></div>
           </section>
 
@@ -375,6 +379,10 @@
               <input id="weapon-search" type="search" placeholder="Weapon or character name">
             </label>
             <div id="weapon-type-filters" class="filters weapon-type-filters" aria-label="Weapon type filters"></div>
+            <div class="quick-select-actions" aria-label="Quick weapon selection">
+              <button id="select-four-star-weapons" class="button ghost compact-button" type="button">Add all 4-star weapons</button>
+              <button id="clear-four-star-weapons" class="button ghost compact-button" type="button">Clear 4-star weapons</button>
+            </div>
             <div id="weapon-grid" class="weapon-grid" aria-label="Selectable weapons"></div>
           </section>
         </div>
@@ -629,6 +637,6 @@
     </div>
 
     <script src="assets/weapon-images.js"></script>
-    <script src="app.js?v=rover-display-1"></script>
+    <script src="app.js?v=mobile-selector-1"></script>
   </body>
 </html>
