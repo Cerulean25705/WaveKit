@@ -222,7 +222,8 @@ textarea {
 
 .account-bar {
   min-width: 0;
-  max-width: min(230px, 28vw);
+  width: min(310px, 32vw);
+  max-width: 100%;
   display: grid;
   justify-items: end;
   gap: 6px;
@@ -230,15 +231,14 @@ textarea {
 
 .account-bar > span {
   max-width: 100%;
-  overflow: hidden;
   color: var(--gold);
   font-size: 0.68rem;
   font-weight: 840;
   letter-spacing: 0.04em;
+  line-height: 1.22;
   text-align: right;
-  text-overflow: ellipsis;
   text-transform: uppercase;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .account-actions {
@@ -274,10 +274,10 @@ textarea {
   top: calc(var(--topbar-offset) + 8px);
   right: clamp(12px, 3vw, 48px);
   z-index: 1001;
-  width: min(360px, calc(100vw - 24px));
+  width: min(520px, calc(100vw - 24px));
   max-height: calc(100svh - 92px);
   overflow: auto;
-  padding: 12px;
+  padding: 16px;
   border: 1px solid rgba(139, 232, 255, 0.25);
   border-radius: var(--radius);
   background:
@@ -300,9 +300,9 @@ textarea {
 }
 
 .account-actions input {
-  width: 118px;
-  min-height: 34px;
-  padding: 0 9px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
   color: var(--text);
   border: 1px solid rgba(139, 232, 255, 0.18);
   border-radius: var(--radius);
@@ -315,7 +315,7 @@ textarea {
   max-width: 100%;
   overflow-wrap: anywhere;
   color: var(--soft);
-  font-size: 0.78rem;
+  font-size: 0.88rem;
 }
 
 .compact-button {
@@ -4431,7 +4431,7 @@ h1 {
     grid-row: 1;
     min-width: 0;
     width: 100%;
-    max-width: min(188px, 46vw);
+    max-width: min(260px, 54vw);
     justify-items: end;
   }
 
@@ -4444,7 +4444,7 @@ h1 {
   }
 
   .account-actions input {
-    width: calc(50% - 4px);
+    width: 100%;
   }
 
   .account-menu-panel {
@@ -4453,6 +4453,7 @@ h1 {
     right: 10px;
     width: auto;
     max-height: calc(100svh - 98px);
+    padding: 14px;
     border-color: rgba(203, 250, 255, 0.32);
     border-radius: 14px;
   }
@@ -4924,16 +4925,16 @@ h1 {
   }
 
   .account-bar > span {
-    max-width: 168px;
-    font-size: 0.58rem;
+    max-width: 100%;
+    font-size: 0.56rem;
   }
 
   .account-bar {
-    max-width: min(176px, 48vw);
+    max-width: min(230px, 56vw);
   }
 
   .account-actions input {
-    width: calc(50% - 4px);
+    width: 100%;
   }
 
   .compact-button {
