@@ -2514,9 +2514,35 @@ h1 {
 .character-card.is-owned {
   border-color: var(--accent, var(--teal));
   box-shadow:
-    0 0 0 1px var(--accent-soft, rgba(120, 244, 255, 0.18)),
-    0 0 28px var(--accent-soft, rgba(120, 244, 255, 0.16)),
+    inset 0 0 0 2px var(--accent, var(--teal)),
+    0 0 0 2px rgba(255, 255, 255, 0.08),
+    0 0 0 5px var(--accent-soft, rgba(120, 244, 255, 0.18)),
+    0 0 36px var(--accent-soft, rgba(120, 244, 255, 0.26)),
     0 18px 32px rgba(0, 0, 0, 0.28);
+}
+
+.character-card.is-owned::after {
+  content: "Owned";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: #031018;
+  background: linear-gradient(135deg, #e8ffff, var(--accent, var(--teal)) 60%, #ffd77a);
+  box-shadow:
+    0 0 0 1px var(--accent-soft, rgba(120, 244, 255, 0.18)),
+    0 0 22px var(--accent-soft, rgba(120, 244, 255, 0.22)),
+    0 8px 18px rgba(0, 0, 0, 0.28);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .character-card.is-focused {
@@ -2805,11 +2831,16 @@ h1 {
 
 .weapon-card.is-owned {
   border-color: var(--gold);
-  box-shadow: 0 0 0 1px rgba(255, 215, 122, 0.22), 0 0 28px rgba(255, 215, 122, 0.13), 0 18px 30px rgba(0, 0, 0, 0.28);
+  box-shadow:
+    inset 0 0 0 2px var(--gold),
+    0 0 0 2px rgba(255, 255, 255, 0.08),
+    0 0 0 5px rgba(255, 215, 122, 0.2),
+    0 0 36px rgba(255, 215, 122, 0.24),
+    0 18px 30px rgba(0, 0, 0, 0.28);
   background:
     var(--glass-sheen),
-    radial-gradient(circle at 50% 0%, rgba(255, 215, 122, 0.15), transparent 48%),
-    linear-gradient(160deg, rgba(255, 215, 122, 0.18), transparent 52%),
+    radial-gradient(circle at 50% 0%, rgba(255, 215, 122, 0.22), transparent 48%),
+    linear-gradient(160deg, rgba(255, 215, 122, 0.22), transparent 52%),
     rgba(24, 21, 14, 0.92);
 }
 
@@ -2849,6 +2880,9 @@ h1 {
   color: #031018;
   border-color: transparent;
   background: linear-gradient(135deg, #ffe7a8, var(--gold));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 18px rgba(255, 215, 122, 0.22);
 }
 
 .weapon-search {
