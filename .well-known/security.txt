@@ -1,0 +1,5 @@
+Contact: https://wavekit.net/#feedback
+Contact: https://discord.gg/wgGaqt6pvD
+Expires: 2027-07-12T00:00:00Z
+Preferred-Languages: en
+Canonical: https://wavekit.net/.well-known/security.txt

@@ -1,0 +1,30 @@
+# WaveKit
+
+> Fan-made Wuthering Waves team helper and Resonator guide for players who want practical team suggestions based on the characters and weapons they own.
+
+WaveKit helps Wuthering Waves players choose teams without needing to understand every meta spreadsheet first. The site focuses on readable, player-friendly advice while still providing build details such as weapons, Echo/Sonata notes, stat direction, and team role context.
+
+This is an independent fan project. Wuthering Waves belongs to Kuro Games.
+
+## Key Pages
+
+- [WaveKit team helper](https://wavekit.net/): Interactive team helper, profile tools, owned Resonator selection, owned weapon selection, team suggestions, and feedback form.
+- [Wuthering Waves character guides](https://wavekit.net/characters/): Index of WaveKit's Wuthering Waves Resonator guides.
+- [Sitemap](https://wavekit.net/sitemap.xml): Full list of indexable WaveKit pages.
+- [Discord](https://discord.gg/wgGaqt6pvD): Community feedback and tester discussion.
+
+## What WaveKit Covers
+
+- Wuthering Waves team suggestions based on owned Resonators.
+- Character guide pages with build, weapon, Echo, Sonata, and team notes.
+- Safer fallback team logic when a player does not own the ideal premium team.
+- Optional account sync for keeping profiles across devices.
+- Player feedback workflows for correcting or improving team logic.
+
+## Audience
+
+WaveKit is for Wuthering Waves players who want useful team and build help without being pressured into only perfect meta teams. It is especially aimed at players who find team-building confusing, but it also keeps enough structure for experienced players to scan builds quickly.
+
+## Preferred Description
+
+WaveKit is a fan-made Wuthering Waves team helper that suggests practical teams and builds from the Resonators and weapons a player owns.
