@@ -4380,7 +4380,8 @@ h1 {
     grid-column: 2;
     grid-row: 1;
     min-width: 0;
-    max-width: min(178px, 44vw);
+    width: 100%;
+    max-width: min(188px, 46vw);
     justify-items: end;
   }
 
@@ -4406,6 +4407,13 @@ h1 {
     border-radius: 14px;
   }
 
+  .account-menu summary {
+    max-width: 100%;
+    min-height: 36px;
+    padding-inline: 10px;
+    white-space: nowrap;
+  }
+
   .hero {
     min-height: 620px;
   }
@@ -4413,6 +4421,50 @@ h1 {
   .hero-content {
     margin: 0 auto;
     padding-top: 36px;
+  }
+
+  .hero-content h1 {
+    max-width: 9.5ch;
+  }
+
+  .seo-anchor-tabs {
+    gap: 7px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .seo-anchor-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .seo-anchor-tabs a {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .seo-team-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .seo-team-strip span {
+    grid-template-columns: 52px minmax(0, 1fr);
+    justify-items: start;
+    text-align: left;
+  }
+
+  .seo-team-strip img {
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
+  }
+
+  .seo-team-strip strong,
+  .seo-team-strip em {
+    white-space: normal;
   }
 
   .panel {
@@ -4750,6 +4802,7 @@ h1 {
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    overflow-wrap: anywhere;
   }
 
   .build-more {
@@ -4825,6 +4878,10 @@ h1 {
     font-size: 0.58rem;
   }
 
+  .account-bar {
+    max-width: min(176px, 48vw);
+  }
+
   .account-actions input {
     width: calc(50% - 4px);
   }
@@ -4833,6 +4890,12 @@ h1 {
     min-height: 32px;
     padding: 0 8px;
     font-size: 0.68rem;
+  }
+
+  .account-menu summary.compact-button {
+    min-height: 34px;
+    max-width: 100%;
+    font-size: 0.66rem;
   }
 
   .flow-next {
@@ -4906,12 +4969,41 @@ h1 {
 
   .character-grid,
   .weapon-grid {
-    grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px;
   }
 
   .selection-rarity-grid {
-    grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .install-device {
+    min-height: 180px;
+    padding: 18px;
+  }
+
+  .install-device img {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+  }
+
+  .install-steps li {
+    min-height: 0;
+    padding: 14px 14px 14px 50px;
+  }
+
+  .install-steps li::before {
+    left: 14px;
+    top: 14px;
+  }
+
+  .install-steps strong {
+    font-size: 0.9rem;
+  }
+
+  .install-steps span {
+    font-size: 0.82rem;
   }
 
   .character-info {
