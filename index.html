@@ -6,19 +6,26 @@
     <title>WaveKit - Wuthering Waves Team Helper, Builds, and Resonator Guides</title>
     <meta name="description" content="WaveKit is a fan-made Wuthering Waves team helper with practical team suggestions, Resonator builds, weapon notes, and character guidance based on what you own.">
     <meta name="keywords" content="WaveKit, Wuthering Waves, WuWa, Wuthering Waves teams, Wuthering Waves builds, WuWa team helper, WuWa builds, Resonator guide">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="WaveKit">
     <link rel="canonical" href="https://wavekit.net/">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="WaveKit">
+    <meta property="og:locale" content="en_US">
     <meta property="og:url" content="https://wavekit.net/">
     <meta property="og:title" content="WaveKit - Wuthering Waves Team Helper">
     <meta property="og:description" content="Build Wuthering Waves teams from the Resonators and weapons you actually own.">
     <meta property="og:image" content="https://wavekit.net/assets/wavekit-mark.png">
+    <meta property="og:image:alt" content="WaveKit logo for a Wuthering Waves team helper">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="WaveKit - Wuthering Waves Team Helper">
     <meta name="twitter:description" content="Practical WuWa team suggestions, builds, and Resonator guidance based on your account.">
     <meta name="twitter:image" content="https://wavekit.net/assets/wavekit-mark.png">
+    <meta name="twitter:image:alt" content="WaveKit logo for a Wuthering Waves team helper">
     <meta name="theme-color" content="#061827">
     <link rel="icon" href="assets/wavekit-mark.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -29,22 +36,51 @@
         "@graph": [
           {
             "@type": "WebSite",
+            "@id": "https://wavekit.net/#website",
             "name": "WaveKit",
             "url": "https://wavekit.net/",
-            "description": "Fan-made Wuthering Waves team helper, character guide, and build reference."
+            "description": "Fan-made Wuthering Waves team helper, character guide, and build reference.",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://wavekit.net/#organization"
+            },
+            "keywords": "Wuthering Waves teams, WuWa builds, Wuthering Waves team helper, Resonator guides"
           },
           {
             "@type": "WebApplication",
+            "@id": "https://wavekit.net/#app",
             "name": "WaveKit",
             "url": "https://wavekit.net/",
             "applicationCategory": "GameApplication",
+            "applicationSubCategory": "Wuthering Waves team builder",
             "operatingSystem": "Any",
+            "isAccessibleForFree": true,
             "description": "Fan-made Wuthering Waves team helper with account-aware team suggestions, Resonator builds, weapon notes, and readable character guidance.",
+            "screenshot": "https://wavekit.net/assets/wavekit-hero-v2.png",
+            "featureList": [
+              "Wuthering Waves team suggestions based on owned Resonators",
+              "Weapon-aware build notes",
+              "Character guide pages for Resonators",
+              "Optional cloud sync for profiles"
+            ],
+            "publisher": {
+              "@id": "https://wavekit.net/#organization"
+            },
             "offers": {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "USD"
             }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://wavekit.net/#organization",
+            "name": "WaveKit",
+            "url": "https://wavekit.net/",
+            "logo": "https://wavekit.net/assets/wavekit-mark.png",
+            "sameAs": [
+              "https://discord.gg/wgGaqt6pvD"
+            ]
           },
           {
             "@type": "FAQPage",
