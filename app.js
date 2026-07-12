@@ -471,7 +471,7 @@ const knownWeaponTypes = {
 
 const characters = [
   c("shorekeeper", "Shorekeeper", "Spectro", "Rectifier", ["healer", "support"], 99, ["any"], ["crit", "sustain"], "Premium sustain. Healing, Crit support, and low-stress team flow."),
-  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 92, ["havoc"], ["havoc", "heavy", "current-patch"], "New version 3.5 Havoc damage character. WaveKit keeps her guide conservative while current-patch testing settles."),
+  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 96, ["havoc"], ["havoc", "heavy", "current-patch"], "Premium version 3.5 Havoc damage character. She prefers Havoc/Heavy Attack support, with Chisa as the cleanest sustain path and Verina as a fallback."),
   c("verina", "Verina", "Spectro", "Rectifier", ["healer", "support"], 96, ["any"], ["atk", "sustain"], "Very forgiving healer and universal support."),
   c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry. Likes Havoc helpers and stable sustain."),
   c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 98, ["aero"], ["aero", "erosion", "negative"], "Aero carry with strong payoff when the team supports her Erosion mechanic."),
@@ -565,7 +565,7 @@ const carryCeilingScores = {
   aemeath: 97,
   hiyuki: 97,
   galbrena: 95,
-  "yangyang-xuanling": 92,
+  "yangyang-xuanling": 96,
   jiyan: 92,
   jinhsi: 92,
   changli: 91,
@@ -587,7 +587,7 @@ const carryCeilingScores = {
 
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
-  "yangyang-xuanling": pref(["lynae", "rebecca", "phrolova", "mortefi"], ["chisa", "mornye", "verina"], ["chisa", "mornye", "verina", "baizhi"]),
+  "yangyang-xuanling": pref(["lynae", "rebecca", "phrolova", "iuno", "mortefi"], ["chisa", "mornye"], ["chisa", "verina", "baizhi"], ["chisa", "verina"]),
   cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
@@ -616,7 +616,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
-  "yangyang-xuanling": archetype("Havoc Heavy Carry", [["lynae", "chisa"], ["rebecca", "chisa"], ["phrolova", "chisa"], ["mortefi", "verina"], ["lynae", "mornye"]], "Yangyang: Xuanling is new in version 3.5, so WaveKit starts with conservative Havoc/Heavy Attack shells until stronger current-patch testing is available."),
+  "yangyang-xuanling": archetype("Havoc Heavy Carry", [["lynae", "chisa"], ["rebecca", "chisa"], ["phrolova", "chisa"], ["iuno", "chisa"], ["mortefi", "verina"], ["lynae", "mornye"]], "Yangyang: Xuanling is a premium Havoc carry who wants Havoc or Heavy Attack support. Chisa is the cleanest sustain/support path, while Verina is a practical fallback when the account is missing the current Havoc shell."),
   cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
@@ -643,7 +643,7 @@ const teamArchetypes = {
 };
 
 const dataConfidence = {
-  "yangyang-xuanling": ["review", "New 3.5 release - needs testing"],
+  "yangyang-xuanling": ["verified", "Version 3.5 current-patch guidance"],
   suisui: ["review", "Unreleased - banner expected July 31 to August 20, 2026"],
   aemeath: ["review", "Needs current patch review"],
   hiyuki: ["review", "Needs current patch review"],
@@ -2536,7 +2536,7 @@ function useNote(character, team) {
     "shorekeeper": "Shorekeeper is the premium safety net. Prioritise Energy Regen and uptime so her field, healing, and Crit support are ready before hard fights.",
     "sanhua": "Sanhua is a quick helper: use her fast setup, trigger her burst window, then hand field time back to the main damage dealer.",
     "yangyang": "Yangyang is comfort utility. Use her for grouping and Energy help when a team feels scattered or starved for rotations.",
-    "yangyang-xuanling": "Yangyang: Xuanling is new, so treat this as conservative current-patch guidance. Use Havoc or Heavy Attack helpers first, keep a real sustain ready, and send feedback if her best shell changes.",
+    "yangyang-xuanling": "Yangyang: Xuanling is a premium Havoc carry. Use Havoc or Heavy Attack helpers first, prefer Chisa when available, and use Verina as a practical fallback if your account is missing the current Havoc shell.",
     "jianxin": "Jianxin is a defensive comfort pick. She can smooth out rough fights with grouping, shielding, and safer pacing.",
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
