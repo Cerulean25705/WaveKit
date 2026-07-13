@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>WaveKit Wuthering Waves Guides</title>
+    <link>https://wavekit.net/</link>
+    <atom:link href="https://wavekit.net/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Latest WaveKit Wuthering Waves team helper updates, Resonator build guides, weapon notes, Echo/Sonata guidance, and character pages.</description>
+    <language>en</language>
+    <lastBuildDate>Mon, 13 Jul 2026 00:00:00 +1000</lastBuildDate>
+    <item>
+      <title>WaveKit Wuthering Waves Team Helper</title>
+      <link>https://wavekit.net/</link>
+      <guid>https://wavekit.net/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Build Wuthering Waves teams from the Resonators and weapons you actually own, then open build cards for Echoes, Sonata effects, weapons, and play notes.</description>
+    </item>
+    <item>
+      <title>Wuthering Waves Character Guides</title>
+      <link>https://wavekit.net/characters/</link>
+      <guid>https://wavekit.net/characters/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Browse WaveKit Resonator guides with builds, weapons, Echo/Sonata notes, team direction, and links into the account-aware team helper.</description>
+    </item>
+    <item>
+      <title>Sigrika Build, Teams, Weapons, and Echoes</title>
+      <link>https://wavekit.net/characters/sigrika/</link>
+      <guid>https://wavekit.net/characters/sigrika/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Sigrika Wuthering Waves build guide with team direction, weapons, Echo/Sonata setup, stats, and player-friendly notes.</description>
+    </item>
+    <item>
+      <title>Cartethyia Build, Teams, Weapons, and Echoes</title>
+      <link>https://wavekit.net/characters/cartethyia/</link>
+      <guid>https://wavekit.net/characters/cartethyia/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Cartethyia Wuthering Waves build guide with team shells, weapons, Windward Pilgrimage notes, Echo setup, and account-aware helper links.</description>
+    </item>
+    <item>
+      <title>Shorekeeper Build, Teams, Weapons, and Echoes</title>
+      <link>https://wavekit.net/characters/shorekeeper/</link>
+      <guid>https://wavekit.net/characters/shorekeeper/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Shorekeeper Wuthering Waves guide for sustain, support builds, weapons, Rejuvenating Glow, Echo setup, and safer team planning.</description>
+    </item>
+    <item>
+      <title>Aemeath Build, Teams, Weapons, and Echoes</title>
+      <link>https://wavekit.net/characters/aemeath/</link>
+      <guid>https://wavekit.net/characters/aemeath/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Aemeath Wuthering Waves build guide with weapons, Echoes, Sonata, team direction, and simple notes for readable team building.</description>
+    </item>
+    <item>
+      <title>Augusta Build, Teams, Weapons, and Echoes</title>
+      <link>https://wavekit.net/characters/augusta/</link>
+      <guid>https://wavekit.net/characters/augusta/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Augusta Wuthering Waves guide with build direction, weapons, Echo/Sonata setup, teams, and account-aware planning notes.</description>
+    </item>
+    <item>
+      <title>Jinhsi Build, Teams, Weapons, and Echoes</title>
+      <link>https://wavekit.net/characters/jinhsi/</link>
+      <guid>https://wavekit.net/characters/jinhsi/</guid>
+      <pubDate>Mon, 13 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Jinhsi Wuthering Waves build guide with team shells, weapons, Celestial Light notes, Echo setup, and beginner-readable build priorities.</description>
+    </item>
+  </channel>
+</rss>

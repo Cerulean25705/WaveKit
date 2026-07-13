@@ -5,3 +5,4 @@ Disallow: /thanks.html
 
 # AI-friendly site summary: https://wavekit.net/llms.txt
 Sitemap: https://wavekit.net/sitemap.xml
+Sitemap: https://wavekit.net/feed.xml

@@ -16,6 +16,9 @@
 /manifest.json
   Content-Type: application/manifest+json
 
+/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+
 /favicon.ico
   Content-Type: image/png
   Cache-Control: public, max-age=31536000, immutable
