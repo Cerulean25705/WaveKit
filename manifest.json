@@ -1,0 +1,27 @@
+{
+  "name": "WaveKit - Wuthering Waves Team Helper",
+  "short_name": "WaveKit",
+  "description": "Fan-made Wuthering Waves team helper with account-aware team suggestions, Resonator builds, weapon notes, and character guides.",
+  "id": "https://wavekit.net/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#02080d",
+  "theme_color": "#061827",
+  "categories": ["games", "utilities"],
+  "icons": [
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/wavekit-mark.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
