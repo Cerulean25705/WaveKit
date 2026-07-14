@@ -612,7 +612,7 @@ const teamPreferences = {
   chixia: pref(["changli", "brant", "lupa"], ["mortefi", "denia", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   aemeath: pref(["lynae", "lupa", "denia", "changli", "brant"], ["mornye", "chisa", "shorekeeper", "verina"], ["mornye", "chisa", "shorekeeper", "verina", "buling", "baizhi"]),
   hiyuki: pref(["lucilla", "lynae", "chisa", "zhezhi"], ["sanhua", "youhu", "baizhi", "jianxin"], ["chisa", "mornye", "shorekeeper", "verina", "buling", "baizhi", "youhu"]),
-  sigrika: pref(["lucilla", "qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "mornye", "verina", "buling", "baizhi"]),
+  sigrika: pref(["lucilla", "qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "mornye", "verina", "buling", "chisa", "baizhi"]),
   galbrena: pref(["lucilla", "qiuyuan", "lupa", "brant", "iuno"], ["changli", "mortefi", "denia"], ["shorekeeper", "lupa", "verina", "buling", "baizhi"]),
   lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
   "luuk-herssen": pref(["denia", "lynae", "sanhua", "roccia"], ["phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
@@ -641,7 +641,7 @@ const teamArchetypes = {
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
   aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["lynae", "chisa"], ["lupa", "mornye"], ["denia", "chisa"], ["denia", "lupa"], ["changli", "mornye"], ["brant", "mornye"], ["lynae", "shorekeeper"]], "Aemeath's premium Tune Rupture shell is Lynae plus Mornye. Tethys also highlights Chisa and Denia/Lupa paths, so WaveKit keeps those visible when owned."),
   hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "mornye"], ["lynae", "chisa"], ["lynae", "mornye"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla/Lynae plus Chisa or Mornye treated as current-patch targets."),
-  sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["qiuyuan", "mornye"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["lucilla", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Tethys highlights Lucilla hypercarry first, while Game8 highlights Qiuyuan; both should stay visible as valid premium routes."),
+  sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["lucilla", "mornye"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["lucilla", "verina"], ["qiuyuan", "mornye"], ["lucilla", "buling"], ["lucilla", "chisa"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Lucilla hypercarry shells should stay visible when owned, while Qiuyuan remains a valid premium route and can use Moonlit Clouds as Sigrika's support setup."),
   galbrena: archetype("Fusion Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["lucilla", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Galbrena is an Echo Skill carry, so Lucilla and Qiuyuan should surface before generic Fusion matching when owned."),
   lucy: archetype("Hack-Shifting Heavy", [["rebecca", "mornye"], ["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem, with Mornye or Shorekeeper as the main comfort slots."),
   "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["sanhua", "mornye"], ["denia", "shorekeeper"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell first. Denia is treated as his strongest current helper, Lynae is a strong alternate, and Sanhua remains the accessible fallback."),
@@ -1437,6 +1437,10 @@ function teamSpecificAdjustment(main, sub, sustain) {
 
   if (main.slug === "sigrika") {
     if (pair.includes("lucilla") && pair.includes("shorekeeper")) score += 44;
+    if (pair.includes("lucilla") && pair.includes("mornye")) score += 38;
+    if (pair.includes("lucilla") && pair.includes("verina")) score += 34;
+    if (pair.includes("lucilla") && pair.includes("buling")) score += 30;
+    if (pair.includes("lucilla") && pair.includes("chisa")) score += 26;
     if (pair.includes("qiuyuan") && pair.includes("shorekeeper")) score += 42;
     if (pair.includes("qiuyuan") && pair.includes("ciaccona")) score += 34;
     if (pair.includes("qiuyuan") && pair.includes("mornye")) score += 28;
@@ -2433,10 +2437,10 @@ function buildForTeam(character, team) {
   if (character.slug === "qiuyuan" && team.main.slug === "sigrika") {
     return {
       ...character.build,
-      build: "Moonlit Support Build",
+      build: "Moonlit Support Build for Sigrika",
       sonata: "Moonlit Clouds",
       echo: "Impermanence Heron",
-      stats: "Energy Regen or CRIT / Aero DMG or Energy Regen / ATK%"
+      stats: "Energy Regen or CRIT / Aero DMG or Energy Regen / ATK% - funnel Moonlit buffs to Sigrika"
     };
   }
   return character.build;
