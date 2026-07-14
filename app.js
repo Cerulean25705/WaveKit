@@ -594,7 +594,7 @@ const carryCeilingScores = {
 
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
-  "yangyang-xuanling": pref(["lynae", "rebecca", "phrolova", "iuno", "mortefi"], ["chisa", "mornye"], ["chisa", "verina", "baizhi"], ["chisa", "verina"]),
+  "yangyang-xuanling": pref(["lynae", "rebecca", "mortefi"], ["chisa", "mornye"], ["chisa", "verina", "baizhi"], ["chisa", "verina"]),
   cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
@@ -623,7 +623,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
-  "yangyang-xuanling": archetype("Havoc Heavy Carry", [["lynae", "chisa"], ["rebecca", "chisa"], ["phrolova", "chisa"], ["iuno", "chisa"], ["mortefi", "verina"], ["lynae", "mornye"]], "Yangyang: Xuanling is a premium Havoc carry who wants Havoc or Heavy Attack support. Chisa is the cleanest sustain/support path, while Verina is a practical fallback when the account is missing the current Havoc shell."),
+  "yangyang-xuanling": archetype("Havoc Heavy Carry", [["lynae", "chisa"], ["rebecca", "chisa"], ["mortefi", "verina"], ["lynae", "mornye"]], "Yangyang: Xuanling is a new Havoc carry. WaveKit is keeping her teams conservative until more player-tested routes settle, so it prioritises Lynae or Heavy Attack support with Chisa as the cleanest safety path."),
   cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
@@ -650,7 +650,7 @@ const teamArchetypes = {
 };
 
 const dataConfidence = {
-  "yangyang-xuanling": ["verified", "Version 3.5 current-patch guidance checked July 14"],
+  "yangyang-xuanling": ["review", "New release - teams kept conservative while player testing settles"],
   suisui: ["review", "Unreleased - banner expected July 31 to August 20, 2026"],
   aemeath: ["review", "Needs current patch review"],
   hiyuki: ["review", "Needs current patch review"],
@@ -2586,7 +2586,7 @@ function useNote(character, team) {
     "shorekeeper": "Shorekeeper is the premium safety net. Prioritise Energy Regen and uptime so her field, healing, and Crit support are ready before hard fights.",
     "sanhua": "Sanhua is a quick helper: use her fast setup, trigger her burst window, then hand field time back to the main damage dealer.",
     "yangyang": "Yangyang is comfort utility. Use her for grouping and Energy help when a team feels scattered or starved for rotations.",
-    "yangyang-xuanling": "Yangyang: Xuanling is a premium Havoc carry. Use Havoc or Heavy Attack helpers first, prefer Chisa when available, and use Verina as a practical fallback if your account is missing the current Havoc shell.",
+    "yangyang-xuanling": "Yangyang: Xuanling is a new Havoc carry. Use the current-patch shell first when you own it, but treat fallback teams as cautious suggestions until more player testing settles.",
     "jianxin": "Jianxin is a defensive comfort pick. She can smooth out rough fights with grouping, shielding, and safer pacing.",
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
