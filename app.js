@@ -136,7 +136,7 @@ const characterWeaponAlternates = {
   mortefi: ["Static Mist", "Cadenza", "Thunderbolt"],
   sanhua: ["Emerald of Genesis", "Commando of Conviction", "Lunar Cutter"],
   yangyang: ["Emerald of Genesis", "Commando of Conviction", "Lunar Cutter"],
-  "yangyang-xuanling": ["Emerald Sentence", "Red Spring", "Everbright Polestar", "Frostburn", "Emerald of Genesis"],
+  "yangyang-xuanling": ["Emerald Sentence", "Emerald of Genesis", "Red Spring", "Everbright Polestar", "Frostburn"],
   danjin: ["Emerald of Genesis", "Lumingloss", "Commando of Conviction"],
   chixia: ["Static Mist", "Thunderbolt", "Novaburst"],
   aalto: ["Static Mist", "Cadenza", "Novaburst"],
@@ -478,9 +478,9 @@ const knownWeaponTypes = {
 
 const characters = [
   c("shorekeeper", "Shorekeeper", "Spectro", "Rectifier", ["healer", "support"], 99, ["any"], ["crit", "sustain"], "Premium sustain. Healing, Crit support, and low-stress team flow."),
-  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 96, ["havoc"], ["havoc", "heavy", "current-patch"], "Premium version 3.5 Havoc damage character. She prefers Havoc/Heavy Attack support, with Chisa as the cleanest sustain path and Verina as a fallback."),
+  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 96, ["havoc"], ["havoc", "hypercarry", "current-patch"], "New version 3.5 Havoc hypercarry. Current guide references point toward Rebecca, Lynae, or Phrolova as helpers, with Chisa or Shorekeeper as support."),
   c("verina", "Verina", "Spectro", "Rectifier", ["healer", "support"], 96, ["any"], ["atk", "sustain"], "Very forgiving healer and universal support."),
-  c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry. Likes Havoc helpers and stable sustain."),
+  c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main", "sub"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry/sub-DPS. Likes Havoc helpers and stable sustain."),
   c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 98, ["aero"], ["aero", "erosion", "negative"], "Aero carry with strong payoff when the team supports her Erosion mechanic."),
   c("jinhsi", "Jinhsi", "Spectro", "Broadblade", ["main"], 92, ["spectro"], ["coordinated", "burst"], "Burst carry that wants helpers who enable her damage window."),
   c("zani", "Zani", "Spectro", "Gauntlets", ["main"], 92, ["spectro"], ["frazzle"], "Spectro damage dealer that appreciates Frazzle or Spectro support."),
@@ -594,7 +594,7 @@ const carryCeilingScores = {
 
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
-  "yangyang-xuanling": pref(["lynae", "rebecca", "mortefi"], ["chisa", "mornye"], ["chisa", "verina", "baizhi"], ["chisa", "verina"]),
+  "yangyang-xuanling": pref(["rebecca", "lynae", "phrolova"], ["mortefi"], ["chisa", "shorekeeper", "verina", "baizhi"], ["chisa", "shorekeeper"]),
   cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
@@ -623,7 +623,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
-  "yangyang-xuanling": archetype("Havoc Heavy Carry", [["lynae", "chisa"], ["rebecca", "chisa"], ["mortefi", "verina"], ["lynae", "mornye"]], "Yangyang: Xuanling is a new Havoc carry. WaveKit is keeping her teams conservative until more player-tested routes settle, so it prioritises Lynae or Heavy Attack support with Chisa as the cleanest safety path."),
+  "yangyang-xuanling": archetype("Havoc Hypercarry", [["rebecca", "chisa"], ["lynae", "chisa"], ["phrolova", "chisa"], ["rebecca", "shorekeeper"], ["lynae", "shorekeeper"], ["phrolova", "shorekeeper"]], "Yangyang: Xuanling is a new Havoc hypercarry. Current guide references show Rebecca, Lynae, and Phrolova as primary helper options, with Chisa or Shorekeeper as the main support paths."),
   cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
@@ -650,7 +650,7 @@ const teamArchetypes = {
 };
 
 const dataConfidence = {
-  "yangyang-xuanling": ["review", "New release - teams kept conservative while player testing settles"],
+  "yangyang-xuanling": ["review", "New release - aligned to current guide references, still watching player testing"],
   suisui: ["review", "Unreleased - banner expected July 31 to August 20, 2026"],
   aemeath: ["review", "Needs current patch review"],
   hiyuki: ["review", "Needs current patch review"],
@@ -1403,6 +1403,16 @@ function teamSpecificAdjustment(main, sub, sustain) {
     if (pair.includes("aalto") && pair.includes("shorekeeper")) score += 14;
     if (!pair.includes("ciaccona") && !pair.includes("sanhua") && !pair.includes("aalto")) score -= 18;
     if (pair.includes("mornye") || pair.includes("lynae")) score -= 18;
+  }
+
+  if (main.slug === "yangyang-xuanling") {
+    if (pair.includes("rebecca") && pair.includes("chisa")) score += 44;
+    if (pair.includes("lynae") && pair.includes("chisa")) score += 40;
+    if (pair.includes("phrolova") && pair.includes("chisa")) score += 36;
+    if (pair.includes("rebecca") && pair.includes("shorekeeper")) score += 34;
+    if (pair.includes("lynae") && pair.includes("shorekeeper")) score += 30;
+    if (pair.includes("phrolova") && pair.includes("shorekeeper")) score += 28;
+    if (!pair.includes("rebecca") && !pair.includes("lynae") && !pair.includes("phrolova") && !pair.includes("mortefi")) score -= 18;
   }
 
   if (main.slug === "aemeath") {
@@ -2586,7 +2596,7 @@ function useNote(character, team) {
     "shorekeeper": "Shorekeeper is the premium safety net. Prioritise Energy Regen and uptime so her field, healing, and Crit support are ready before hard fights.",
     "sanhua": "Sanhua is a quick helper: use her fast setup, trigger her burst window, then hand field time back to the main damage dealer.",
     "yangyang": "Yangyang is comfort utility. Use her for grouping and Energy help when a team feels scattered or starved for rotations.",
-    "yangyang-xuanling": "Yangyang: Xuanling is a new Havoc carry. Use the current-patch shell first when you own it, but treat fallback teams as cautious suggestions until more player testing settles.",
+    "yangyang-xuanling": "Yangyang: Xuanling is a new Havoc hypercarry. Set up Rebecca, Lynae, or Phrolova first, keep Chisa or Shorekeeper ready for support, then give Xuanling the focused damage window.",
     "jianxin": "Jianxin is a defensive comfort pick. She can smooth out rough fights with grouping, shielding, and safer pacing.",
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
