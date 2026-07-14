@@ -2305,12 +2305,26 @@ h1 {
 }
 
 .changelog-panel {
-  margin-top: 16px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-color: rgba(139, 232, 255, 0.1);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.035), transparent 48%),
+    rgba(7, 20, 29, 0.62);
+  box-shadow: none;
+}
+
+.changelog-panel .panel-heading {
+  margin-bottom: 10px;
+}
+
+.changelog-panel .panel-heading h3 {
+  font-size: 1.05rem;
 }
 
 .changelog-list {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2318,23 +2332,23 @@ h1 {
 
 .changelog-list li {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 8px;
   align-items: start;
-  padding: 12px;
-  border: 1px solid rgba(139, 232, 255, 0.12);
-  border-radius: var(--radius);
-  background: rgba(139, 232, 255, 0.035);
+  padding: 9px 10px;
+  border: 1px solid rgba(139, 232, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(139, 232, 255, 0.025);
 }
 
 .changelog-list strong {
   color: var(--gold);
-  font-size: 0.84rem;
+  font-size: 0.78rem;
 }
 
 .changelog-list span {
-  color: var(--soft);
-  font-size: 0.9rem;
+  color: var(--muted);
+  font-size: 0.84rem;
   line-height: 1.45;
 }
 
