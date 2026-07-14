@@ -650,7 +650,7 @@ const teamArchetypes = {
 };
 
 const dataConfidence = {
-  "yangyang-xuanling": ["verified", "Version 3.5 current-patch guidance"],
+  "yangyang-xuanling": ["verified", "Version 3.5 current-patch guidance checked July 14"],
   suisui: ["review", "Unreleased - banner expected July 31 to August 20, 2026"],
   aemeath: ["review", "Needs current patch review"],
   hiyuki: ["review", "Needs current patch review"],
