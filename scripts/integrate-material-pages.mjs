@@ -9,7 +9,7 @@ const directories = (await fs.readdir(characterRoot, { withFileTypes: true })).f
 for (const directory of directories) {
   const file = path.join(characterRoot, directory.name, "index.html");
   let html = await fs.readFile(file, "utf8");
-  html = html.replace(/styles\.css\?v=[^\"']+/g, "styles.css?v=release-audit-1");
+  html = html.replace(/styles\.css\?v=[^\"']+/g, "styles.css?v=echo-guides-1");
   if (!html.includes('href="../../weapons/"')) {
     html = html.replace('<a href="../">Characters</a>', '<a href="../">Characters</a>\n        <a href="../../weapons/">Weapons</a>');
   }
