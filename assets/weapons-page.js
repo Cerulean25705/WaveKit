@@ -32,7 +32,7 @@
   ).join("");
   const itemHtml = (item) => `
     <div class="material-item rarity-${item.rarity || 0}">
-      <img src="${kit.escape(item.icon)}" alt="" loading="lazy" decoding="async">
+      <img src="${kit.escape(item.icon)}" alt="${kit.escape(item.name)} material icon" loading="lazy" decoding="async">
       <span><strong>${kit.escape(item.name)}</strong><small>${kit.escape(kit.materialCategory(item))}</small></span>
       <b>x${kit.formatNumber(item.quantity)}</b>
     </div>`;
@@ -77,7 +77,7 @@
     return `
       <details class="weapon-card ${owned.has(weapon.name) ? "is-owned" : ""}" data-weapon-name="${kit.escape(weapon.name)}" data-rarity="${weapon.rarity}" id="weapon-${kit.escape(weapon.slug)}" style="--weapon-image: url('${kit.escape(image)}')">
         <summary>
-          <div class="weapon-card-art rarity-${weapon.rarity}"><img src="${kit.escape(image)}" alt="" loading="lazy" decoding="async"></div>
+          <div class="weapon-card-art rarity-${weapon.rarity}"><img src="${kit.escape(image)}" alt="${kit.escape(weapon.name)} weapon icon" loading="lazy" decoding="async"></div>
           <div class="weapon-card-copy">
             <span>${weapon.rarity}-star ${kit.escape(weapon.type)}</span>
             <h2>${kit.escape(weapon.name)}</h2>

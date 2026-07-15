@@ -4042,7 +4042,7 @@ h1 {
 }
 
 .character-card.is-rover {
-  min-height: 306px;
+  min-height: 334px;
 }
 
 .character-card.is-upcoming {
@@ -4167,7 +4167,7 @@ h1 {
 }
 
 .character-card.is-rover .portrait.character-art img {
-  padding-bottom: 92px;
+  padding-bottom: 126px;
 }
 
 .portrait::after {
@@ -4200,7 +4200,7 @@ h1 {
 }
 
 .character-card.is-rover .character-info {
-  inset: auto 0 82px;
+  inset: auto 0 116px;
 }
 
 .chain-row {
@@ -4235,7 +4235,7 @@ h1 {
   inset: auto 10px 50px;
   z-index: 4;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -6263,7 +6263,7 @@ h1 {
   }
 
   .character-card.is-rover {
-    min-height: 268px;
+    min-height: 296px;
   }
 
   .character-info {
@@ -6352,6 +6352,7 @@ h1 {
   }
 
   .team-row {
+    width: auto;
     grid-template-columns: auto minmax(0, 1fr);
     padding: 12px;
     border-radius: 12px;
@@ -6624,7 +6625,7 @@ h1 {
   }
 
   .character-card.is-rover {
-    min-height: 224px;
+    min-height: 254px;
   }
 
   .character-grid,
@@ -6693,7 +6694,7 @@ h1 {
   }
 
   .character-card.is-rover .portrait.character-art img {
-    padding-bottom: 96px;
+    padding-bottom: 128px;
   }
 
   .chain-row {

@@ -421,6 +421,21 @@ const roverForms = {
       echo: "Reminiscence: Fleurdelys or Feilian Beringal",
       stats: "CRIT Rate or CRIT DMG / Aero DMG / ATK%"
     }
+  },
+  Electro: {
+    element: "Electro",
+    roles: ["sub"],
+    score: 80,
+    synergies: ["electro", "any"],
+    tags: ["electro", "flare", "skill", "flexible"],
+    note: "Electro Rover is a flexible version 3.5 sub-DPS/support with team ATK utility. Current testing is still developing, so WaveKit does not treat this form as a standalone carry.",
+    build: {
+      build: "Electro Rover sub-DPS/support build",
+      weapon: "Emerald of Genesis",
+      sonata: "Void Thunder or Moonlit Clouds",
+      echo: "Nightmare: Tempest Mephis or Impermanence Heron",
+      stats: "CRIT Rate or CRIT DMG / Electro DMG or Energy Regen / ATK%"
+    }
   }
 };
 
@@ -529,7 +544,7 @@ const characters = [
   c("youhu", "Youhu", "Glacio", "Gauntlets", ["healer", "support"], 70, ["any"], ["sustain"], "Support healer with more specific kit management."),
   c("buling", "Buling", "Electro", "Rectifier", ["healer", "support"], 80, ["any"], ["sustain"], "Electro healer/support entry. Good as a sustain option while team-specific testing matures."),
   c("taoqi", "Taoqi", "Havoc", "Broadblade", ["defense", "support"], 62, ["havoc"], ["shield"], "Defensive support for safer teams."),
-  c("rover", "Rover", "Spectro / Havoc / Aero", "Sword", ["main", "sub"], 75, ["any"], ["flexible"], "Flexible account anchor with multiple forms.")
+  c("rover", "Rover", "Spectro / Havoc / Aero / Electro", "Sword", ["main", "sub", "support"], 75, ["any"], ["flexible"], "Flexible account anchor with four currently available forms.")
 ];
 
 const state = {
@@ -862,10 +877,10 @@ function characterCard(character) {
   const characterDetail = upcoming
     ? "Unreleased · July 31 banner"
     : isRover
-      ? `${rarityStars(characterRarity(character))} · Active: ${state.roverForm} · Forms: Spectro / Havoc / Aero`
+      ? `${rarityStars(characterRarity(character))} · Active: ${state.roverForm} · Forms: ${Object.keys(roverForms).join(" / ")}`
       : `${rarityStars(characterRarity(character))} · ${roleLabel(character)} · ${character.element}`;
   return `
-    <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${upcoming ? "is-upcoming" : ""} ${isRover ? "is-rover" : ""} element-${firstElement(character.element).toLowerCase()}" data-character-card="${character.slug}">
+    <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${upcoming ? "is-upcoming" : ""} ${isRover ? "is-rover" : ""} element-${firstElement(isRover ? state.roverForm : character.element).toLowerCase()}" data-character-card="${character.slug}">
       <button class="character-toggle" type="button" data-character="${character.slug}" aria-pressed="${Boolean(owned)}" ${upcoming ? "disabled" : ""}>
         ${visual(character)}
         <span class="character-info">
@@ -1335,6 +1350,7 @@ function isSuggestibleTeam(team) {
   const main = team.main;
   const sub = team.members[1];
   const third = team.members[2];
+  if (!roverHelperAllowed(main, sub) || !roverHelperAllowed(main, third)) return false;
   const pref = teamPreferences[main.slug];
   const hasArchetype = Boolean(teamArchetypes[main.slug]);
   const archetypeFit = teamFitLabel(team) === "Archetype fit";
@@ -1387,6 +1403,13 @@ function helperSynergyReason(main, helper) {
 
 function idealAllowedForActiveForms(main, ideal) {
   if (!ideal.includes("rover")) return true;
+  if (main.slug === "cartethyia") return state.roverForm === "Aero";
+  if (main.slug === "zani" || main.slug === "phoebe") return state.roverForm === "Spectro";
+  return true;
+}
+
+function roverHelperAllowed(main, helper) {
+  if (helper.slug !== "rover") return true;
   if (main.slug === "cartethyia") return state.roverForm === "Aero";
   if (main.slug === "zani" || main.slug === "phoebe") return state.roverForm === "Spectro";
   return true;
@@ -2596,7 +2619,7 @@ function handleFeedbackSubmit(event) {
 
 function useNote(character, team) {
   const kitNotes = {
-    "rover": `${character.name} is being treated as your selected ${state.roverForm} form here. In Aero teams, they can be practical Erosion utility, but they are not a full healer. Keep the rotation simple and lean on a real sustain unit when fights get messy.`,
+    "rover": `${character.name} is being treated as your selected ${state.roverForm} form here. Rover's job changes substantially between forms, so follow the displayed form build and keep a real sustain unit when fights get messy.`,
     "jiyan": "Jiyan likes clear burst windows: prepare support effects first, then let him stay on field during his heavy attack/Liberation flow.",
     "mortefi": "Mortefi is strongest when his coordinated attacks support a field DPS. Build enough Energy Regen that his Outro and burst support arrive without awkward waiting.",
     "verina": "Verina is a low-stress sustain pick. Swap in, refresh healing and team buffs, then leave the field quickly so the damage dealer keeps momentum.",
