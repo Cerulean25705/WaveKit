@@ -30,7 +30,7 @@ const wallpapers = new Map([
 const builds = Object.fromEntries([
   ["shorekeeper", "Healer-Support Build", "Stellar Symphony", "Rejuvenating Glow", "Fallacy of No Return", "Healing Bonus or CRIT DMG / Energy Regen or HP% / HP%"],
   ["yangyang-xuanling", "Current Patch Havoc DPS Build", "Azure Oath", "Song of Feathered Trace", "Thousand-Puppet Pavilion", "CRIT Rate or CRIT DMG / Havoc DMG or ATK% / ATK%"],
-  ["suisui", "Upcoming Support Build", "Aureate Zenith", "Moonlit Clouds or Rejuvenating Glow", "Impermanence Heron or support Echo", "Energy Regen / kit-scaling stat / comfort"],
+  ["suisui", "Upcoming Support Build", "Firstlight's Herald", "Moonlit Clouds or Rejuvenating Glow", "Impermanence Heron or support Echo", "Energy Regen / kit-scaling stat / comfort"],
   ["phrolova", "Havoc DPS Build", "Lethean Elegy", "Dream of the Lost, Havoc Eclipse", "Nightmare: Hecate", "Crit DMG or CRIT Rate / Havoc DMG / ATK%"],
   ["augusta", "Electro DPS", "Thunderflare Dominion", "Crown of Valor, Void Thunder", "The False Sovereign", "Crit DMG or CRIT Rate / Electro DMG or ATK% / ATK%"],
   ["iuno", "Aero Sub-DPS", "Moongazer's Sigil", "Crown of Valor, Sierra Gale", "Lady of the Sea", "Crit DMG or CRIT Rate / Aero DMG / ATK%"],
@@ -374,7 +374,7 @@ const fourStarResonators = new Set([
 ]);
 
 const upcomingCharacters = new Set(["suisui"]);
-const upcomingWeapons = new Set(["Aureate Zenith"]);
+const upcomingWeapons = new Set(["Firstlight's Herald"]);
 
 const roverForms = {
   Spectro: {
