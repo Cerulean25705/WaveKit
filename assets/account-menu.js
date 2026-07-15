@@ -10,7 +10,7 @@ if (header && !header.querySelector("[data-shared-account]")) {
   account.innerHTML = `
     <span data-cloud-status>Checking account...</span>
     <details class="account-menu">
-      <summary class="button primary compact-button" data-account-label aria-label="Log in or create a WaveKit account">Log in</summary>
+      <summary class="button primary compact-button" data-account-label aria-label="Checking your WaveKit account">Account</summary>
       <div class="account-menu-panel">
         <div class="account-actions" data-signed-out>
           <input data-email type="email" autocomplete="email" placeholder="Email" aria-label="Email address">
@@ -42,6 +42,7 @@ if (header && !header.querySelector("[data-shared-account]")) {
   const controls = [...account.querySelectorAll("button, input")];
   let api = null;
   let configured = false;
+  let authResolved = false;
   let user = null;
   let busy = false;
   let cloudProfileReady = false;
@@ -56,8 +57,11 @@ if (header && !header.querySelector("[data-shared-account]")) {
     signedOut.hidden = Boolean(user);
     signedIn.hidden = !user;
     menu.classList.toggle("is-signed-in", Boolean(user));
-    label.textContent = user ? "Account" : "Log in";
-    label.setAttribute("aria-label", user ? "Open your WaveKit account" : "Log in or create a WaveKit account");
+    menu.classList.toggle("is-auth-pending", !authResolved);
+    label.textContent = !authResolved || user ? "Account" : "Log in";
+    label.setAttribute("aria-label", !authResolved
+      ? "Checking your WaveKit account"
+      : user ? "Open your WaveKit account" : "Log in or create a WaveKit account");
     controls.forEach((control) => {
       control.disabled = busy || !configured;
     });
@@ -271,12 +275,14 @@ if (header && !header.querySelector("[data-shared-account]")) {
     api = await import("./firebase-sync.js");
     configured = Boolean(config.firebaseEnabled && api.isCloudConfigured());
     if (!configured) {
+      authResolved = true;
       setStatus("Login is temporarily unavailable.");
       render();
     } else {
       setStatus("Profiles save locally until you log in.");
       render();
       api.initCloudSync((nextUser) => {
+        authResolved = true;
         user = nextUser;
         const needsProfileLoad = Boolean(user && preparedForUid !== user.uid);
         if (!user) {
@@ -293,12 +299,14 @@ if (header && !header.querySelector("[data-shared-account]")) {
           prepareCloudProfile();
         }
       }, (error) => {
+        authResolved = true;
         user = null;
         setStatus(errorMessage(error));
         render();
       });
     }
   } catch {
+    authResolved = true;
     setStatus("Login is temporarily unavailable.");
     render();
   }

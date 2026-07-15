@@ -689,6 +689,7 @@ const cloud = {
   api: null,
   configured: false,
   initializing: true,
+  authResolved: false,
   user: null,
   busy: false,
   loadedForUid: ""
@@ -3005,6 +3006,7 @@ async function initCloudSync() {
   const timeout = setTimeout(() => {
     if (!cloud.initializing) return;
     cloud.initializing = false;
+    cloud.authResolved = true;
     setCloudStatus("Cloud sync took too long to load. Refresh and try again.");
     renderCloudSync();
   }, 8000);
@@ -3013,6 +3015,7 @@ async function initCloudSync() {
     if (!config.firebaseEnabled) {
       clearTimeout(timeout);
       cloud.initializing = false;
+      cloud.authResolved = true;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
       return;
@@ -3022,6 +3025,7 @@ async function initCloudSync() {
     if (!cloud.configured) {
       clearTimeout(timeout);
       cloud.initializing = false;
+      cloud.authResolved = true;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
       return;
@@ -3031,6 +3035,7 @@ async function initCloudSync() {
     setCloudStatus("Cloud sync ready. Sign in to sync profiles.");
     renderCloudSync();
     cloud.api.initCloudSync((user) => {
+      cloud.authResolved = true;
       cloud.user = user;
       if (!user) {
         cloud.loadedForUid = "";
@@ -3042,6 +3047,7 @@ async function initCloudSync() {
       renderCloudSync();
       autoLoadCloudProfiles();
     }, (error) => {
+      cloud.authResolved = true;
       cloud.user = null;
       setCloudStatus(cleanCloudError(error));
       renderCloudSync();
@@ -3049,6 +3055,7 @@ async function initCloudSync() {
   } catch {
     clearTimeout(timeout);
     cloud.initializing = false;
+    cloud.authResolved = true;
     setCloudStatus("Cloud sync could not load.");
     renderCloudSync();
   }
@@ -3063,13 +3070,17 @@ function renderCloudSync() {
   const menu = $(".account-menu");
   const menuLabel = $("#account-menu-label");
   if (!signedOut || !signedIn || !status) return;
+  const accountPending = cloud.initializing || !cloud.authResolved;
   renderProfileSaveMode();
   signedOut.hidden = Boolean(cloud.user);
   signedIn.hidden = !cloud.user;
   menu?.classList.toggle("is-signed-in", Boolean(cloud.user));
+  menu?.classList.toggle("is-auth-pending", accountPending);
   if (menuLabel) {
-    menuLabel.textContent = cloud.user ? "Account" : "Log in";
-    menuLabel.setAttribute("aria-label", cloud.user ? "Open your WaveKit account" : "Log in or create a WaveKit account");
+    menuLabel.textContent = accountPending || cloud.user ? "Account" : "Log in";
+    menuLabel.setAttribute("aria-label", accountPending
+      ? "Checking your WaveKit account"
+      : cloud.user ? "Open your WaveKit account" : "Log in or create a WaveKit account");
   }
   if (userLabel && cloud.user) {
     userLabel.textContent = `Signed in as ${cloud.user.email || cloud.user.displayName || "WaveKit user"}`;

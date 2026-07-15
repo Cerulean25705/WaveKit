@@ -271,6 +271,11 @@ textarea {
   box-shadow: 0 0 10px rgba(100, 242, 208, 0.68);
 }
 
+.account-menu.is-auth-pending summary::before {
+  background: var(--blue);
+  box-shadow: 0 0 10px rgba(116, 182, 255, 0.6);
+}
+
 .account-menu summary::-webkit-details-marker {
   display: none;
 }
@@ -1575,7 +1580,7 @@ h1 {
 }
 
 .seo-topbar {
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) minmax(150px, 250px);
 }
 
 .seo-topbar .account-bar {

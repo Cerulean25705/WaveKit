@@ -1,4 +1,4 @@
-const CACHE_NAME = "wavekit-shell-v6";
+const CACHE_NAME = "wavekit-shell-v7";
 const APP_SHELL = [
   "/",
   "/index.html",
