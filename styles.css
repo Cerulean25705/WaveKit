@@ -2652,6 +2652,11 @@ h1 {
   padding: 0;
 }
 
+.material-result-group .material-item:only-child {
+  grid-column: 1 / -1;
+  width: min(100%, 360px);
+}
+
 .material-empty,
 .material-data-note {
   color: var(--muted);
@@ -2784,53 +2789,119 @@ h1 {
 
 .weapon-directory {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.weapon-card {
+.weapon-directory .weapon-card {
+  position: relative;
+  display: block;
   min-width: 0;
+  min-height: 0;
+  gap: 0;
+  padding: 0;
   border: 1px solid rgba(139, 232, 255, 0.15);
   border-radius: 8px;
+  color: var(--text);
+  text-align: left;
   background: rgba(5, 17, 25, 0.76);
+  cursor: pointer;
   overflow: hidden;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
-.weapon-card[open] {
+.weapon-directory .weapon-card:not([open]):hover {
+  border-color: rgba(139, 232, 255, 0.34);
+  background: rgba(8, 25, 35, 0.92);
+  transform: translateY(-1px);
+}
+
+.weapon-directory .weapon-card[open] {
   grid-column: 1 / -1;
   border-color: rgba(100, 242, 208, 0.32);
+  background: linear-gradient(145deg, rgba(8, 28, 38, 0.98), rgba(4, 15, 23, 0.98));
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.3), 0 0 34px rgba(100, 242, 208, 0.045);
 }
 
-.weapon-card.is-owned {
+.weapon-directory .weapon-card[data-rarity="5"][open] {
+  border-color: rgba(255, 215, 122, 0.42);
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.32), 0 0 38px rgba(255, 215, 122, 0.07);
+}
+
+.weapon-directory .weapon-card[data-rarity="4"][open] {
+  border-color: rgba(191, 139, 255, 0.38);
+}
+
+.weapon-directory .weapon-card.is-owned {
   box-shadow: inset 3px 0 var(--mint);
 }
 
-.weapon-card > summary {
+.weapon-directory .weapon-card > summary {
+  position: relative;
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
   align-items: center;
-  min-height: 90px;
-  gap: 12px;
-  padding: 9px 12px;
+  min-height: 72px;
+  gap: 9px;
+  padding: 7px 9px;
+  isolation: isolate;
 }
 
-.weapon-card > summary:hover {
+.weapon-directory .weapon-card > summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(circle at 9% 50%, rgba(100, 242, 208, 0.08), transparent 38%);
+  content: "";
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.weapon-directory .weapon-card[open] > summary::before {
+  background-image: linear-gradient(90deg, rgba(4, 16, 23, 0.22), rgba(4, 16, 23, 0.9) 46%), var(--weapon-image);
+  background-position: right 22% center;
+  background-repeat: no-repeat;
+  background-size: auto, 240px;
+  filter: saturate(0.72);
+  opacity: 0.16;
+}
+
+.weapon-directory .weapon-card > summary:hover {
   background: rgba(139, 232, 255, 0.045);
 }
 
-.weapon-card-art {
+.weapon-directory .weapon-card-art {
   display: grid;
-  width: 68px;
-  height: 68px;
+  width: 54px;
+  height: 54px;
   place-items: center;
   border-radius: 7px;
   background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.045);
+  transition: width 180ms ease, height 180ms ease, box-shadow 180ms ease;
 }
 
-.weapon-card-art img {
-  width: 64px;
-  height: 64px;
+.weapon-directory .weapon-card-art img {
+  width: 52px;
+  height: 52px;
   object-fit: contain;
+}
+
+.weapon-directory .weapon-card[open] > summary {
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  min-height: 108px;
+  padding: 8px 14px;
+}
+
+.weapon-directory .weapon-card[open] .weapon-card-art {
+  width: 88px;
+  height: 88px;
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 122, 0.18), 0 10px 28px rgba(0, 0, 0, 0.24);
+}
+
+.weapon-directory .weapon-card[open] .weapon-card-art img {
+  width: 84px;
+  height: 84px;
 }
 
 .weapon-card-copy {
@@ -2844,12 +2915,16 @@ h1 {
   text-transform: uppercase;
 }
 
-.weapon-card-copy h2 {
+.weapon-directory .weapon-card-copy h2 {
   margin: 3px 0;
   overflow: hidden;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.weapon-directory .weapon-card[open] .weapon-card-copy h2 {
+  font-size: 1.35rem;
 }
 
 .weapon-card-copy p {
@@ -2867,14 +2942,26 @@ h1 {
   gap: 2px;
 }
 
-.weapon-card-state strong {
+.weapon-directory .weapon-card-state strong {
+  padding: 4px 6px;
+  border: 1px solid rgba(100, 242, 208, 0.18);
+  border-radius: 6px;
+  background: rgba(100, 242, 208, 0.055);
   color: var(--mint);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
 }
 
-.weapon-card-state span {
+.weapon-directory .weapon-card-state span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid rgba(139, 232, 255, 0.18);
+  border-radius: 50%;
   color: var(--teal);
-  font-size: 1.25rem;
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 160ms ease;
 }
 
 .weapon-card[open] .weapon-card-state span {
@@ -2882,8 +2969,35 @@ h1 {
 }
 
 .weapon-card-details {
-  padding: 0 14px 14px;
+  margin: 0 12px 12px;
+  padding: 14px;
   border-top: 1px solid rgba(139, 232, 255, 0.12);
+  border-radius: 7px;
+  background: rgba(2, 12, 18, 0.58);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.weapon-detail-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(139, 232, 255, 0.1);
+}
+
+.weapon-detail-heading span {
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.weapon-detail-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
 }
 
 .weapon-user-links {
@@ -2923,6 +3037,12 @@ h1 {
   padding: 40px;
   color: var(--muted);
   text-align: center;
+}
+
+@media (max-width: 1040px) {
+  .weapon-directory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
@@ -2999,6 +3119,30 @@ h1 {
     min-height: 74px;
     gap: 8px;
     padding: 7px;
+  }
+
+  .weapon-directory .weapon-card[open] > summary {
+    grid-template-columns: 74px minmax(0, 1fr);
+    min-height: 92px;
+    padding: 8px;
+  }
+
+  .weapon-directory .weapon-card[open] .weapon-card-art {
+    width: 70px;
+    height: 70px;
+  }
+
+  .weapon-directory .weapon-card[open] .weapon-card-art img {
+    width: 68px;
+    height: 68px;
+  }
+
+  .weapon-directory .weapon-card[open] .weapon-card-copy h2 {
+    font-size: 1rem;
+  }
+
+  .weapon-detail-heading {
+    display: grid;
   }
 
   .weapon-card-art {
