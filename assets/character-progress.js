@@ -18,6 +18,15 @@
     return Math.max(min, Math.min(max, Math.round(number)));
   };
 
+  const levelOptions = (current, values) => {
+    const saved = clamp(current, Math.min(...values), Math.max(...values));
+    const options = saved && !values.includes(saved) ? [...values, saved].sort((a, b) => a - b) : values;
+    return [
+      '<option value="">Not set</option>',
+      ...options.map((value) => `<option value="${value}" ${saved === value ? "selected" : ""}>${value}${saved === value && !values.includes(value) ? " (saved)" : ""}</option>`)
+    ].join("");
+  };
+
   const loadStore = () => {
     try {
       const stored = JSON.parse(localStorage.getItem(profileStorageKey) || "{}");
@@ -38,6 +47,8 @@
   const progress = profile.progress?.[guide.slug] || {};
   const owned = Boolean(profile.owned?.[guide.slug]);
   const bestWeapon = (guide.weaponOptions || []).find((weapon) => (profile.weapons || []).includes(weapon));
+  const equipmentLevels = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90];
+  const skillLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   const planner = document.createElement("section");
   planner.className = "seo-progress-panel";
@@ -51,11 +62,11 @@
       <strong data-progress-status>${owned ? "Saved profile" : "Reference only"}</strong>
     </header>
     <div class="seo-progress-grid">
-      <label><span>Resonator level</span><input data-progress-field="characterLevel" type="number" inputmode="numeric" min="1" max="90" placeholder="1-90" value="${progress.characterLevel || ""}"></label>
-      <label><span>Weapon level</span><input data-progress-field="weaponLevel" type="number" inputmode="numeric" min="1" max="90" placeholder="1-90" value="${progress.weaponLevel || ""}"></label>
-      <label><span>Forte level</span><input data-progress-field="forteLevel" type="number" inputmode="numeric" min="1" max="10" placeholder="1-10" value="${progress.forteLevel || ""}"></label>
-      <label><span>Skill level</span><input data-progress-field="skillLevel" type="number" inputmode="numeric" min="1" max="10" placeholder="1-10" value="${progress.skillLevel || ""}"></label>
-      <label><span>Liberation level</span><input data-progress-field="liberationLevel" type="number" inputmode="numeric" min="1" max="10" placeholder="1-10" value="${progress.liberationLevel || ""}"></label>
+      <label><span>Resonator level</span><select data-progress-field="characterLevel" aria-label="Resonator level">${levelOptions(progress.characterLevel, equipmentLevels)}</select></label>
+      <label><span>Weapon level</span><select data-progress-field="weaponLevel" aria-label="Weapon level">${levelOptions(progress.weaponLevel, equipmentLevels)}</select></label>
+      <label><span>Forte level</span><select data-progress-field="forteLevel" aria-label="Forte level">${levelOptions(progress.forteLevel, skillLevels)}</select></label>
+      <label><span>Skill level</span><select data-progress-field="skillLevel" aria-label="Skill level">${levelOptions(progress.skillLevel, skillLevels)}</select></label>
+      <label><span>Liberation level</span><select data-progress-field="liberationLevel" aria-label="Liberation level">${levelOptions(progress.liberationLevel, skillLevels)}</select></label>
       <label class="seo-progress-check"><input data-progress-field="echoReady" type="checkbox" ${progress.echoReady ? "checked" : ""}><span>Echo set feels usable</span></label>
     </div>
     <label class="seo-progress-notes">

@@ -1974,6 +1974,7 @@ h1 {
 }
 
 .seo-progress-grid input,
+.seo-progress-grid select,
 .seo-progress-notes textarea {
   width: 100%;
   border: 1px solid rgba(139, 232, 255, 0.18);
@@ -1983,9 +1984,15 @@ h1 {
   font: inherit;
 }
 
-.seo-progress-grid input {
+.seo-progress-grid input,
+.seo-progress-grid select {
   min-height: 42px;
   padding: 0 11px;
+}
+
+.seo-progress-grid select {
+  appearance: auto;
+  cursor: pointer;
 }
 
 .seo-progress-notes {
