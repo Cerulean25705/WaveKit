@@ -92,6 +92,19 @@ if (header && !header.querySelector("[data-shared-account]")) {
     return Math.max(latest, updated);
   }, 0);
 
+  const canonicalise = (value) => {
+    if (Array.isArray(value)) return value.map(canonicalise);
+    if (!value || typeof value !== "object") return value;
+    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonicalise(value[key])]));
+  };
+
+  const stableStringify = (value) => JSON.stringify(canonicalise(value));
+
+  const cloudProfileVersion = (cloudData) => {
+    const profiles = Array.isArray(cloudData?.profiles) ? cloudData.profiles : [];
+    return [cloudData?.activeProfileId || "none", profiles.length, latestProfileUpdate(profiles)].join(":");
+  };
+
   const cloudPayload = () => {
     const store = loadLocalStore();
     return {
@@ -107,7 +120,7 @@ if (header && !header.querySelector("[data-shared-account]")) {
       activeProfileId: cloudData?.activeProfileId || ""
     };
     const currentStore = loadLocalStore();
-    const changed = JSON.stringify(currentStore) !== JSON.stringify(nextStore);
+    const changed = stableStringify(currentStore) !== stableStringify(nextStore);
     if (changed) localStorage.setItem(profileStorageKey, JSON.stringify(nextStore));
     return changed;
   };
@@ -133,7 +146,20 @@ if (header && !header.querySelector("[data-shared-account]")) {
       cloudProfileReady = true;
       setStatus("Signed in. Profile sync is active.");
       render();
-      if (shouldReload) window.location.reload();
+      if (shouldReload) {
+        const reloadKey = `wavekit-profile-reload:${user.uid}:${window.location.pathname}`;
+        const version = cloudProfileVersion(cloudData);
+        let reloadOnce = false;
+        try {
+          if (sessionStorage.getItem(reloadKey) !== version) {
+            sessionStorage.setItem(reloadKey, version);
+            reloadOnce = true;
+          }
+        } catch {
+          // Keep the current page stable when session storage is unavailable.
+        }
+        if (reloadOnce) window.location.reload();
+      }
     } catch (error) {
       cloudProfileReady = true;
       preparedForUid = "";
