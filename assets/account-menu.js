@@ -1,4 +1,5 @@
 const header = document.querySelector(".seo-topbar");
+const profileStorageKey = "wavekit-profiles-v1";
 
 if (header && !header.querySelector("[data-shared-account]")) {
   const helperUrl = new URL("../#helper", import.meta.url).href;
@@ -43,6 +44,9 @@ if (header && !header.querySelector("[data-shared-account]")) {
   let configured = false;
   let user = null;
   let busy = false;
+  let cloudProfileReady = false;
+  let profileSyncTimer = null;
+  let preparedForUid = "";
 
   const setStatus = (message) => {
     status.textContent = message;
@@ -61,9 +65,100 @@ if (header && !header.querySelector("[data-shared-account]")) {
       get("[data-user-label]").textContent = `Signed in as ${user.email || user.displayName || "WaveKit user"}`;
       get("[data-user-id]").textContent = `WaveKit ID: ${user.uid.slice(0, 6)}...${user.uid.slice(-4)}`;
     }
+    const plannerHint = document.querySelector("[data-progress-sync-note]");
+    if (plannerHint) {
+      plannerHint.textContent = user
+        ? "Automatic cloud sync is active for this planner."
+        : "Saved on this device. Log in above to sync this planner across devices.";
+    }
   };
 
   render();
+
+  const loadLocalStore = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(profileStorageKey) || "{}");
+      return {
+        profiles: Array.isArray(stored.profiles) ? stored.profiles : [],
+        activeProfileId: stored.activeProfileId || ""
+      };
+    } catch {
+      return { profiles: [], activeProfileId: "" };
+    }
+  };
+
+  const latestProfileUpdate = (profiles = []) => profiles.reduce((latest, profile) => {
+    const updated = Date.parse(profile?.updatedAt || "") || 0;
+    return Math.max(latest, updated);
+  }, 0);
+
+  const cloudPayload = () => {
+    const store = loadLocalStore();
+    return {
+      profiles: store.profiles,
+      activeProfileId: store.activeProfileId,
+      savedAt: new Date().toISOString()
+    };
+  };
+
+  const applyCloudStore = (cloudData) => {
+    const nextStore = {
+      profiles: Array.isArray(cloudData?.profiles) ? cloudData.profiles : [],
+      activeProfileId: cloudData?.activeProfileId || ""
+    };
+    const currentStore = loadLocalStore();
+    const changed = JSON.stringify(currentStore) !== JSON.stringify(nextStore);
+    if (changed) localStorage.setItem(profileStorageKey, JSON.stringify(nextStore));
+    return changed;
+  };
+
+  const prepareCloudProfile = async () => {
+    if (!user || !api) return;
+    cloudProfileReady = false;
+    setStatus("Loading your profile...");
+    try {
+      const localStore = loadLocalStore();
+      const cloudData = await api.loadCloudProfiles();
+      const cloudProfiles = Array.isArray(cloudData?.profiles) ? cloudData.profiles : [];
+      const localHasData = localStore.profiles.length > 0;
+      const cloudHasData = cloudProfiles.length > 0;
+      let shouldReload = false;
+
+      if (localHasData && (!cloudHasData || latestProfileUpdate(localStore.profiles) > latestProfileUpdate(cloudProfiles))) {
+        await api.saveCloudProfiles(cloudPayload());
+      } else if (cloudHasData) {
+        shouldReload = applyCloudStore(cloudData);
+      }
+
+      cloudProfileReady = true;
+      setStatus("Signed in. Profile sync is active.");
+      render();
+      if (shouldReload) window.location.reload();
+    } catch (error) {
+      cloudProfileReady = true;
+      preparedForUid = "";
+      setStatus(errorMessage(error));
+      render();
+    }
+  };
+
+  const syncLocalProfile = async () => {
+    if (!user || !api || !cloudProfileReady) return;
+    const payload = cloudPayload();
+    if (!payload.profiles.length) return;
+    setStatus("Saving planner progress...");
+    try {
+      await api.saveCloudProfiles(payload);
+      setStatus("Planner saved and synced.");
+    } catch (error) {
+      setStatus(errorMessage(error));
+    }
+  };
+
+  window.addEventListener("wavekit:profile-changed", () => {
+    clearTimeout(profileSyncTimer);
+    profileSyncTimer = setTimeout(syncLocalProfile, 450);
+  });
 
   const errorMessage = (error) => {
     const code = String(error?.code || error?.message || "").replace(/^auth\//, "");
@@ -157,8 +252,20 @@ if (header && !header.querySelector("[data-shared-account]")) {
       render();
       api.initCloudSync((nextUser) => {
         user = nextUser;
-        setStatus(user ? "Signed in. Profile sync is active." : "Profiles save locally until you log in.");
+        const needsProfileLoad = Boolean(user && preparedForUid !== user.uid);
+        if (!user) {
+          preparedForUid = "";
+          cloudProfileReady = false;
+        }
+        setStatus(user
+          ? needsProfileLoad ? "Signed in. Loading your profile..." : "Signed in. Profile sync is active."
+          : "Profiles save locally until you log in.");
         render();
+        if (needsProfileLoad) {
+          preparedForUid = user.uid;
+          cloudProfileReady = false;
+          prepareCloudProfile();
+        }
       }, (error) => {
         user = null;
         setStatus(errorMessage(error));

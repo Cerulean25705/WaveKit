@@ -61,6 +61,7 @@
       </div>
       <strong data-progress-status>${owned ? "Saved profile" : "Reference only"}</strong>
     </header>
+    <p class="seo-progress-sync-note" data-progress-sync-note>Saved on this device. Log in above to sync this planner across devices.</p>
     <div class="seo-progress-grid">
       <label><span>Resonator level</span><select data-progress-field="characterLevel" aria-label="Resonator level">${levelOptions(progress.characterLevel, equipmentLevels)}</select></label>
       <label><span>Weapon level</span><select data-progress-field="weaponLevel" aria-label="Weapon level">${levelOptions(progress.weaponLevel, equipmentLevels)}</select></label>
@@ -131,7 +132,8 @@
     };
     nextStore.profiles[index] = nextProfile;
     localStorage.setItem(profileStorageKey, JSON.stringify(nextStore));
-    if (status) status.textContent = "Saved locally";
+    if (status) status.textContent = "Saved on this device";
+    window.dispatchEvent(new CustomEvent("wavekit:profile-changed", { detail: { source: "character-planner" } }));
     renderNextSteps();
   };
 

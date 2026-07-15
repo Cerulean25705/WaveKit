@@ -2233,6 +2233,17 @@ h1 {
   border: 0;
 }
 
+.seo-progress-sync-note {
+  margin: 0 0 12px;
+  padding: 9px 11px;
+  border: 1px solid rgba(100, 242, 208, 0.16);
+  border-radius: 8px;
+  background: rgba(100, 242, 208, 0.055);
+  color: var(--soft);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .seo-progress-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
