@@ -553,7 +553,8 @@ const state = {
   flowBuildsOpened: false,
   owned: {},
   focus: new Set(),
-  weapons: new Set()
+  weapons: new Set(),
+  progress: {}
 };
 
 let autoSaveTimer = null;
@@ -1758,13 +1759,13 @@ function selectedBuildMini(character, team) {
   const build = buildForTeam(character, team);
   const file = wallpapers.get(character.slug) || wallpapers.get("rover");
   return `
-    <article>
+    <a href="${characterGuideHref(character)}" aria-label="Open ${character.name} guide">
       <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
       <div>
         <strong>${character.name}</strong>
         <span>${build.weapon} · ${build.sonata} · ${costPattern(character)}</span>
       </div>
-    </article>
+    </a>
   `;
 }
 
@@ -2406,10 +2407,12 @@ function renderBuilds(teams) {
     const alts = alternateWeapons(character);
     return `
       <article class="build-card element-${firstElement(character.element).toLowerCase()}">
-        ${visual(character)}
+        <a class="build-character-link build-portrait-link" href="${characterGuideHref(character)}" aria-label="Open ${character.name} guide">
+          ${visual(character)}
+        </a>
         <div>
           <span class="mini-kicker">${roleLabel(character)}</span>
-          <h3>${character.name}</h3>
+          <h3><a href="${characterGuideHref(character)}">${character.name}</a></h3>
           <span class="data-badge ${confidenceFor(character)[0]}">${confidenceFor(character)[1]}</span>
           <p>${character.note}</p>
           <dl class="build-quick">
@@ -2418,6 +2421,9 @@ function renderBuilds(teams) {
             <div><dt>Echo cost</dt><dd>${costPattern(character)}</dd></div>
             <div><dt>Main Echo</dt><dd>${build.echo}</dd></div>
           </dl>
+          <div class="build-card-actions">
+            <a class="button ghost compact-button" href="${characterGuideHref(character)}">Open character guide</a>
+          </div>
           <details class="build-more">
             <summary>More build details</summary>
             <dl>
@@ -2431,6 +2437,10 @@ function renderBuilds(teams) {
     `;
   }).join("")}
   `;
+}
+
+function characterGuideHref(character) {
+  return `characters/${character.slug}/`;
 }
 
 function buildForTeam(character, team) {
@@ -2681,7 +2691,8 @@ function profilePayload() {
     roverForms: [...state.roverForms],
     owned: state.owned,
     focus: [...state.focus],
-    weapons: [...state.weapons]
+    weapons: [...state.weapons],
+    progress: state.progress
   };
 }
 
@@ -2754,8 +2765,30 @@ function normaliseProfile(payload) {
     roverForms: normaliseRoverForms(payload.roverForms, payload.roverForm),
     owned,
     focus: (payload.focus || payload.favorites || []).filter((slug) => !upcomingCharacters.has(slug)),
-    weapons: (payload.weapons || []).filter((weapon) => !upcomingWeapons.has(weapon))
+    weapons: (payload.weapons || []).filter((weapon) => !upcomingWeapons.has(weapon)),
+    progress: normaliseProgress(payload.progress || {})
   };
+}
+
+function normaliseProgress(progress) {
+  if (!progress || typeof progress !== "object") return {};
+  return Object.fromEntries(Object.entries(progress)
+    .filter(([slug]) => !upcomingCharacters.has(slug))
+    .map(([slug, value]) => [slug, {
+      characterLevel: cleanProgressNumber(value?.characterLevel, 1, 90),
+      weaponLevel: cleanProgressNumber(value?.weaponLevel, 1, 90),
+      forteLevel: cleanProgressNumber(value?.forteLevel, 1, 10),
+      skillLevel: cleanProgressNumber(value?.skillLevel, 1, 10),
+      liberationLevel: cleanProgressNumber(value?.liberationLevel, 1, 10),
+      echoReady: Boolean(value?.echoReady),
+      notes: String(value?.notes || "").slice(0, 400)
+    }]));
+}
+
+function cleanProgressNumber(value, min, max) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number <= 0) return "";
+  return Math.max(min, Math.min(max, Math.round(number)));
 }
 
 function normaliseSuggestionStyle(payload) {
@@ -2785,6 +2818,7 @@ function applyProfile(profile) {
   state.owned = payload.owned;
   state.focus = new Set(payload.focus.filter((slug) => state.owned[slug]));
   state.weapons = new Set(payload.weapons);
+  state.progress = payload.progress;
   state.selectedTeamKey = "";
   state.showAllTeams = false;
   resetFlowGuide();
@@ -2807,6 +2841,7 @@ function clearWorkingProfile() {
   state.owned = {};
   state.focus = new Set();
   state.weapons = new Set();
+  state.progress = {};
 }
 
 function resetProfile() {

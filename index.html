@@ -30,7 +30,7 @@
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=mobile-selector-1">
+    <link rel="stylesheet" href="styles.css?v=planner-1">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -282,6 +282,49 @@
         </div>
       </section>
 
+      <section id="banner-watch" class="section banner-watch-section" aria-labelledby="banner-watch-title">
+        <div class="section-heading split compact-heading">
+          <div>
+            <p class="kicker">Banner watch</p>
+            <h2 id="banner-watch-title">Current patch picks at a glance.</h2>
+            <p>
+              A calm reminder of the current and upcoming Resonators WaveKit is watching, with quick links into
+              their guides and the team helper.
+            </p>
+          </div>
+          <div class="save-card trust-card">
+            <strong>3.5</strong>
+            <span>Banner notes checked July 14.</span>
+          </div>
+        </div>
+        <div class="banner-watch-grid" aria-label="Current and upcoming banner guidance">
+          <article class="banner-watch-card element-havoc">
+            <img src="assets/wallpapers/yangyang-xuanling.webp" alt="Yangyang: Xuanling guide artwork">
+            <div>
+              <span>Current guide focus</span>
+              <h3>Yangyang: Xuanling</h3>
+              <p>Havoc main DPS guidance is active, but still watched closely as more player testing lands.</p>
+              <div class="banner-watch-actions">
+                <a class="button primary" href="characters/yangyang-xuanling/">Open guide</a>
+                <a class="button ghost" href="#helper">Check my roster</a>
+              </div>
+            </div>
+          </article>
+          <article class="banner-watch-card element-glacio is-upcoming">
+            <img src="assets/wallpapers/suisui.webp" alt="Suisui guide artwork">
+            <div>
+              <span>Upcoming</span>
+              <h3>Suisui</h3>
+              <p>Listed as guide-only until her expected July 31 banner. She is not used in team suggestions yet.</p>
+              <div class="banner-watch-actions">
+                <a class="button primary" href="characters/suisui/">Preview guide</a>
+                <a class="button ghost" href="#trust">Read data notes</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section id="helper" class="section helper-shell" aria-labelledby="helper-title">
         <div class="section-heading split">
           <div>
@@ -307,7 +350,13 @@
 
         <div class="starter-note">
           <strong>Start simple</strong>
-          <p>Tap the Resonators you own first. Use the star on characters you want WaveKit to prioritise, then add weapons when you want more accurate build readiness.</p>
+          <p>Tap each Resonator once to mark RC0 owned. Use + only when you want to add Resonance Chain levels. Weapons are optional, but make build readiness more accurate.</p>
+        </div>
+
+        <div class="starter-helper-grid" aria-label="Beginner helper notes">
+          <span><strong>Not sure?</strong><small>Start with Resonators only. You can come back for weapons later.</small></span>
+          <span><strong>Tap once</strong><small>A selected card glows. Tap again to remove it from your profile.</small></span>
+          <span><strong>Pick a team</strong><small>Open builds after choosing the team that looks most useful to you.</small></span>
         </div>
 
         <div class="helper-grid">
@@ -641,6 +690,6 @@
     </div>
 
     <script src="assets/weapon-images.js"></script>
-    <script src="app.js?v=pwa-install-1"></script>
+    <script src="app.js?v=planner-1"></script>
   </body>
 </html>
