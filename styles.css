@@ -5886,6 +5886,16 @@ h1 {
     height: 30px;
   }
 
+  .build-card dl div:has(.sonata-list) {
+    grid-column: 1 / -1;
+  }
+
+  .build-card .sonata-chip {
+    max-width: 100%;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
   .member-chip {
     width: 100%;
     flex-basis: 100%;
