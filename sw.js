@@ -1,8 +1,12 @@
-const CACHE_NAME = "wavekit-shell-v8";
+const CACHE_NAME = "wavekit-shell-v9";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/site.webmanifest",
+  "/weapons/",
+  "/styles.css?v=materials-1",
+  "/assets/material-data.js?v=3.5-1",
+  "/assets/material-planner-core.js?v=materials-1",
   "/assets/wavekit-mark.png",
   "/assets/apple-touch-icon.png"
 ];

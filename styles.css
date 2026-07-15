@@ -2353,6 +2353,720 @@ h1 {
   font-size: 0.88rem;
 }
 
+/* Character and weapon material planning */
+.seo-material-planner {
+  grid-column: 1 / -1;
+  margin-top: 16px;
+  padding: clamp(16px, 2vw, 24px);
+  border: 1px solid rgba(112, 226, 245, 0.2);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(75, 220, 235, 0.08), transparent 38%),
+    rgba(4, 17, 25, 0.82);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.material-planner-heading,
+.material-results > header,
+.weapon-plan-results > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.material-planner-heading > div > span,
+.material-results header span:first-child {
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.material-planner-heading h2 {
+  margin: 4px 0 5px;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.material-planner-heading p {
+  margin: 0;
+  color: var(--soft);
+}
+
+.material-planner-heading > strong,
+[data-weapon-save-status] {
+  flex: 0 0 auto;
+  padding: 7px 9px;
+  border: 1px solid rgba(100, 242, 208, 0.2);
+  border-radius: 7px;
+  background: rgba(100, 242, 208, 0.07);
+  color: var(--mint);
+  font-size: 0.72rem;
+}
+
+.material-section {
+  margin-top: 14px;
+  border-top: 1px solid rgba(139, 232, 255, 0.14);
+}
+
+.material-section > summary,
+.weapon-card > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.material-section > summary::-webkit-details-marker,
+.weapon-card > summary::-webkit-details-marker {
+  display: none;
+}
+
+.material-section > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  gap: 12px;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.material-section > summary::after {
+  content: "+";
+  width: 26px;
+  color: var(--teal);
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.material-section[open] > summary::after {
+  content: "-";
+}
+
+.material-section > summary small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+.material-quick-grid,
+.material-result-group > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding-bottom: 12px;
+}
+
+.material-item {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 9px;
+  padding: 8px;
+  border: 1px solid rgba(139, 232, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(0, 8, 14, 0.48);
+}
+
+.material-item img {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.material-item > span {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.material-item strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.78rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+}
+
+.material-item small {
+  color: var(--muted);
+  font-size: 0.64rem;
+}
+
+.material-item b {
+  margin-left: auto;
+  color: var(--gold);
+  font-size: 0.76rem;
+}
+
+.material-preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.material-level-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.material-level-grid label,
+.weapon-plan-controls label {
+  display: grid;
+  gap: 5px;
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.material-level-grid select,
+.material-skill-row select,
+.weapon-plan-controls select,
+.weapon-toolbar input,
+.weapon-toolbar select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(139, 232, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(2, 11, 18, 0.88);
+  color: var(--text);
+  font: inherit;
+}
+
+.material-level-grid select,
+.material-skill-row select,
+.weapon-plan-controls select,
+.weapon-toolbar select {
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.material-skill-grid {
+  display: grid;
+  gap: 6px;
+}
+
+.material-skill-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(100px, 150px));
+  align-items: end;
+  gap: 9px;
+  padding: 9px;
+  border: 1px solid rgba(139, 232, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(5, 18, 27, 0.48);
+}
+
+.material-skill-row > span {
+  display: grid;
+  align-self: center;
+  gap: 3px;
+}
+
+.material-skill-row > span strong {
+  font-size: 0.84rem;
+}
+
+.material-skill-row > span small,
+.material-skill-row label {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.material-skill-row label {
+  display: grid;
+  gap: 4px;
+}
+
+.material-passive-toggle,
+.material-ascended-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid rgba(255, 215, 122, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 215, 122, 0.04);
+  cursor: pointer;
+}
+
+.material-passive-toggle input,
+.material-ascended-toggle input {
+  width: 19px;
+  height: 19px;
+  accent-color: var(--teal);
+}
+
+.material-passive-toggle span,
+.material-ascended-toggle span {
+  display: grid;
+  gap: 2px;
+}
+
+.material-passive-toggle small,
+.material-ascended-toggle small {
+  color: var(--muted);
+}
+
+.material-results,
+.weapon-plan-results {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(100, 242, 208, 0.17);
+  border-radius: 9px;
+  background: rgba(3, 13, 20, 0.64);
+}
+
+.material-results h3 {
+  margin: 3px 0 0;
+  font-size: 1rem;
+}
+
+.material-results > header > strong,
+.weapon-plan-results header span {
+  color: var(--mint);
+  font-size: 0.78rem;
+}
+
+.material-result-group {
+  margin-top: 12px;
+}
+
+.material-result-group h4 {
+  margin: 0 0 7px;
+  color: var(--soft);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+}
+
+.material-result-group > div {
+  padding: 0;
+}
+
+.material-empty,
+.material-data-note {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.material-weapon-bridge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(139, 232, 255, 0.14);
+  border-radius: 9px;
+  background: rgba(139, 232, 255, 0.045);
+}
+
+.material-weapon-bridge p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.weapon-index {
+  width: min(1240px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 70px;
+}
+
+.weapon-index-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 28px;
+  margin: 22px 0;
+}
+
+.weapon-index-heading h1 {
+  max-width: 820px;
+  margin: 6px 0 8px;
+  font-size: clamp(2rem, 4vw, 4rem);
+  line-height: 1;
+}
+
+.weapon-index-heading p {
+  max-width: 820px;
+  color: var(--soft);
+}
+
+.weapon-count-card {
+  display: grid;
+  min-width: 132px;
+  padding: 14px;
+  border: 1px solid rgba(100, 242, 208, 0.2);
+  border-radius: 8px;
+  background: rgba(100, 242, 208, 0.06);
+}
+
+.weapon-count-card strong {
+  color: var(--gold);
+  font-size: 1.8rem;
+}
+
+.weapon-count-card span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.weapon-toolbar {
+  position: sticky;
+  z-index: 12;
+  top: calc(var(--topbar-offset) + 8px);
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) repeat(2, minmax(130px, 180px)) auto;
+  align-items: end;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid rgba(139, 232, 255, 0.2);
+  border-radius: 9px;
+  background: rgba(4, 16, 23, 0.94);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.weapon-toolbar label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.weapon-toolbar input {
+  padding: 0 11px;
+}
+
+.weapon-toolbar .weapon-owned-filter {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid rgba(139, 232, 255, 0.16);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.weapon-owned-filter input {
+  width: 18px;
+  min-height: 18px;
+  accent-color: var(--teal);
+}
+
+.weapon-directory-note {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--gold);
+  background: rgba(255, 215, 122, 0.04);
+}
+
+.weapon-directory-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.weapon-directory {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.weapon-card {
+  min-width: 0;
+  border: 1px solid rgba(139, 232, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(5, 17, 25, 0.76);
+  overflow: hidden;
+}
+
+.weapon-card[open] {
+  grid-column: 1 / -1;
+  border-color: rgba(100, 242, 208, 0.32);
+}
+
+.weapon-card.is-owned {
+  box-shadow: inset 3px 0 var(--mint);
+}
+
+.weapon-card > summary {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 90px;
+  gap: 12px;
+  padding: 9px 12px;
+}
+
+.weapon-card > summary:hover {
+  background: rgba(139, 232, 255, 0.045);
+}
+
+.weapon-card-art {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.weapon-card-art img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.weapon-card-copy {
+  min-width: 0;
+}
+
+.weapon-card-copy > span {
+  color: var(--gold);
+  font-size: 0.64rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.weapon-card-copy h2 {
+  margin: 3px 0;
+  overflow: hidden;
+  font-size: 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weapon-card-copy p {
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weapon-card-state {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+}
+
+.weapon-card-state strong {
+  color: var(--mint);
+  font-size: 0.68rem;
+}
+
+.weapon-card-state span {
+  color: var(--teal);
+  font-size: 1.25rem;
+}
+
+.weapon-card[open] .weapon-card-state span {
+  transform: rotate(45deg);
+}
+
+.weapon-card-details {
+  padding: 0 14px 14px;
+  border-top: 1px solid rgba(139, 232, 255, 0.12);
+}
+
+.weapon-user-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+}
+
+.weapon-user-links > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.weapon-user-links a,
+.weapon-user-links span {
+  padding: 6px 8px;
+  border: 1px solid rgba(139, 232, 255, 0.15);
+  border-radius: 7px;
+  color: var(--soft);
+  font-size: 0.72rem;
+}
+
+.weapon-plan-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(130px, 220px)) 1fr;
+  align-items: end;
+  gap: 9px;
+}
+
+.weapon-plan-controls > strong {
+  justify-self: end;
+}
+
+.weapon-no-results {
+  padding: 40px;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .material-planner-heading,
+  .material-results > header,
+  .weapon-index-heading {
+    align-items: flex-start;
+  }
+
+  .material-quick-grid,
+  .material-result-group > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .material-item {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .material-item img {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .material-item strong {
+    font-size: 0.69rem;
+  }
+
+  .material-item small {
+    display: none;
+  }
+
+  .material-skill-row {
+    grid-template-columns: minmax(0, 1fr) repeat(2, 82px);
+  }
+
+  .material-skill-row > span small {
+    display: none;
+  }
+
+  .weapon-index {
+    width: min(100% - 18px, 1240px);
+    padding-top: 18px;
+  }
+
+  .weapon-index-heading {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .weapon-count-card {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    gap: 7px;
+  }
+
+  .weapon-toolbar {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .weapon-search {
+    grid-column: 1 / -1;
+  }
+
+  .weapon-directory-note {
+    display: grid;
+  }
+
+  .weapon-card > summary {
+    grid-template-columns: 54px minmax(0, 1fr);
+    min-height: 74px;
+    gap: 8px;
+    padding: 7px;
+  }
+
+  .weapon-card-art {
+    width: 52px;
+    height: 52px;
+  }
+
+  .weapon-card-art img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .weapon-card-state {
+    display: none;
+  }
+
+  .weapon-card-copy h2 {
+    font-size: 0.82rem;
+  }
+
+  .weapon-card-copy p {
+    font-size: 0.64rem;
+  }
+
+  .weapon-plan-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .weapon-plan-controls > strong {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 430px) {
+  .seo-material-planner {
+    padding: 12px 10px;
+  }
+
+  .material-planner-heading {
+    display: grid;
+  }
+
+  .material-planner-heading > strong {
+    justify-self: start;
+  }
+
+  .material-level-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .material-skill-row {
+    grid-template-columns: 1fr 70px 70px;
+    gap: 5px;
+    padding: 7px 5px;
+  }
+
+  .material-skill-row select {
+    min-height: 38px;
+    padding: 0 5px;
+    font-size: 0.72rem;
+  }
+
+  .material-weapon-bridge {
+    display: grid;
+  }
+}
+
 .seo-glossary-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

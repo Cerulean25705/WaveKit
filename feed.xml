@@ -6,7 +6,14 @@
     <atom:link href="https://wavekit.net/feed.xml" rel="self" type="application/rss+xml" />
     <description>Latest WaveKit Wuthering Waves team helper updates, Resonator build guides, weapon notes, Echo/Sonata guidance, and character pages.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 13 Jul 2026 00:00:00 +1000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Jul 2026 00:00:00 +1000</lastBuildDate>
+    <item>
+      <title>Wuthering Waves Weapon and Material Planner</title>
+      <link>https://wavekit.net/weapons/</link>
+      <guid>https://wavekit.net/weapons/</guid>
+      <pubDate>Wed, 15 Jul 2026 00:00:00 +1000</pubDate>
+      <description>Search Wuthering Waves weapons, see useful Resonators, and calculate exact weapon ascension materials, EXP, and Shell Credits.</description>
+    </item>
     <item>
       <title>WaveKit Wuthering Waves Team Helper</title>
       <link>https://wavekit.net/</link>

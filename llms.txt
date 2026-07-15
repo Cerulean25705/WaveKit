@@ -10,6 +10,7 @@ This is an independent fan project. Wuthering Waves belongs to Kuro Games.
 
 - [WaveKit team helper](https://wavekit.net/): Interactive team helper, profile tools, owned Resonator selection, owned weapon selection, team suggestions, and feedback form.
 - [Wuthering Waves character guides](https://wavekit.net/characters/): Index of WaveKit's Wuthering Waves Resonator guides.
+- [Wuthering Waves weapons and material planner](https://wavekit.net/weapons/): Searchable 3-star, 4-star, and 5-star weapon directory with character recommendations and exact upgrade planning.
 - [Sitemap](https://wavekit.net/sitemap.xml): Full list of indexable WaveKit pages.
 - [Discord](https://discord.gg/wgGaqt6pvD): Community feedback and tester discussion.
 
@@ -17,6 +18,8 @@ This is an independent fan project. Wuthering Waves belongs to Kuro Games.
 
 - Wuthering Waves team suggestions based on owned Resonators.
 - Character guide pages with build, weapon, Echo, Sonata, and team notes.
+- Character ascension and skill material calculators with saved current and target levels.
+- Weapon ascension, EXP, and Shell Credit planning with optional profile sync.
 - Safer fallback team logic when a player does not own the ideal premium team.
 - Optional account sync for keeping profiles across devices.
 - Player feedback workflows for correcting or improving team logic.

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wuthering Waves Weapons, Materials, and Level Planner | WaveKit</title>
+    <meta name="description" content="Browse Wuthering Waves weapons by type and rarity, see which Resonators use them, and calculate exact weapon ascension materials and EXP with WaveKit.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://wavekit.net/weapons/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="WaveKit">
+    <meta property="og:title" content="Wuthering Waves Weapons and Material Planner | WaveKit">
+    <meta property="og:description" content="Search WuWa weapons, find good users, and calculate exact weapon level and ascension materials.">
+    <meta property="og:url" content="https://wavekit.net/weapons/">
+    <meta property="og:image" content="https://wavekit.net/assets/wavekit-mark.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#061827">
+    <link rel="icon" href="../assets/wavekit-mark.png" type="image/png">
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
+    <link rel="stylesheet" href="../styles.css?v=materials-1">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"WaveKit Wuthering Waves Weapon Directory and Material Planner","description":"Browse Wuthering Waves weapons by type and rarity, see useful Resonators, and calculate weapon level and ascension materials.","url":"https://wavekit.net/weapons/","isPartOf":{"@type":"WebSite","name":"WaveKit","url":"https://wavekit.net/"}}</script>
+  </head>
+  <body class="seo-page weapon-page">
+    <header class="topbar seo-topbar">
+      <a class="brand" href="../" aria-label="WaveKit home">
+        <span class="brand-mark" aria-hidden="true"><img src="../assets/wavekit-mark.png" alt=""></span>
+        <span>WaveKit</span>
+      </a>
+      <nav class="topnav" aria-label="Main navigation">
+        <a href="../#helper">Team helper</a>
+        <a href="../characters/">Characters</a>
+        <a href="./" aria-current="page">Weapons</a>
+        <a href="../#feedback">Feedback</a>
+        <a href="https://discord.gg/wgGaqt6pvD" target="_blank" rel="noopener">Discord</a>
+      </nav>
+    </header>
+    <main>
+      <section class="weapon-index">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../">WaveKit</a><span>/</span><strong>Weapons</strong></nav>
+        <div class="weapon-index-heading">
+          <div>
+            <p class="kicker">Wuthering Waves weapon planner</p>
+            <h1>Find a weapon. See who wants it. Plan the farm.</h1>
+            <p>Browse every 3-star, 4-star, and 5-star weapon currently in WaveKit's game records. Expand any weapon for exact remaining ascension materials, EXP, and Shell Credits.</p>
+          </div>
+          <div class="weapon-count-card"><strong data-weapon-count>110</strong><span>weapons shown</span></div>
+        </div>
+        <div class="weapon-toolbar" aria-label="Weapon filters">
+          <label class="weapon-search"><span>Search weapons or Resonators</span><input type="search" data-weapon-search placeholder="Try Everbright Polestar or Aemeath"></label>
+          <label><span>Type</span><select data-weapon-type><option>All</option><option>Sword</option><option>Broadblade</option><option>Gauntlets</option><option>Pistols</option><option>Rectifier</option></select></label>
+          <label><span>Rarity</span><select data-weapon-rarity><option value="All">All</option><option value="5">5-star</option><option value="4">4-star</option><option value="3">3-star</option></select></label>
+          <label class="weapon-owned-filter"><input type="checkbox" data-weapon-owned><span>Owned only</span></label>
+        </div>
+        <div class="weapon-directory-note">
+          <strong>How this page works</strong>
+          <p>Good-for labels come from WaveKit's current character build guides. A missing label means the weapon is flexible or has not yet been assigned to a guide, not that it is unusable.</p>
+        </div>
+        <div class="weapon-directory" data-weapon-directory></div>
+        <p class="weapon-no-results" data-weapon-empty hidden>No weapons match those filters.</p>
+      </section>
+    </main>
+    <footer class="footer"><p>Fan-made project. Wuthering Waves belongs to Kuro Games. Game records checked <span data-data-date></span>.</p></footer>
+    <script src="../assets/material-data.js?v=3.5-1"></script>
+    <script src="../assets/material-planner-core.js?v=materials-1"></script>
+    <script src="../assets/weapons-page.js?v=materials-1"></script>
+    <script type="module" src="../assets/account-menu.js?v=auth-state-1"></script>
+  </body>
+</html>

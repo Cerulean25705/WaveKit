@@ -1,7 +1,7 @@
 {
   "name": "WaveKit - Wuthering Waves Team Helper",
   "short_name": "WaveKit",
-  "description": "Fan-made Wuthering Waves team helper with account-aware team suggestions, Resonator builds, weapon notes, and character guides.",
+  "description": "Fan-made Wuthering Waves team helper with account-aware team suggestions, Resonator builds, character guides, and saved material planners.",
   "id": "https://wavekit.net/",
   "start_url": "/",
   "scope": "/",

@@ -554,7 +554,8 @@ const state = {
   owned: {},
   focus: new Set(),
   weapons: new Set(),
-  progress: {}
+  progress: {},
+  weaponProgress: {}
 };
 
 let autoSaveTimer = null;
@@ -2684,7 +2685,8 @@ function profilePayload() {
     owned: state.owned,
     focus: [...state.focus],
     weapons: [...state.weapons],
-    progress: state.progress
+    progress: state.progress,
+    weaponProgress: state.weaponProgress
   };
 }
 
@@ -2758,7 +2760,8 @@ function normaliseProfile(payload) {
     owned,
     focus: (payload.focus || payload.favorites || []).filter((slug) => !upcomingCharacters.has(slug)),
     weapons: (payload.weapons || []).filter((weapon) => !upcomingWeapons.has(weapon)),
-    progress: normaliseProgress(payload.progress || {})
+    progress: normaliseProgress(payload.progress || {}),
+    weaponProgress: normaliseWeaponProgress(payload.weaponProgress || {})
   };
 }
 
@@ -2773,8 +2776,33 @@ function normaliseProgress(progress) {
       skillLevel: cleanProgressNumber(value?.skillLevel, 1, 10),
       liberationLevel: cleanProgressNumber(value?.liberationLevel, 1, 10),
       echoReady: Boolean(value?.echoReady),
-      notes: String(value?.notes || "").slice(0, 400)
+      notes: String(value?.notes || "").slice(0, 400),
+      materialPlan: normaliseMaterialPlan(value?.materialPlan)
     }]));
+}
+
+function normaliseMaterialPlan(plan) {
+  if (!plan || typeof plan !== "object") return undefined;
+  const skillKeys = ["normal", "skill", "forte", "liberation", "intro"];
+  return {
+    currentLevel: cleanProgressNumber(plan.currentLevel, 1, 90) || 1,
+    targetLevel: cleanProgressNumber(plan.targetLevel, 1, 90) || 90,
+    currentAscended: Boolean(plan.currentAscended),
+    skills: Object.fromEntries(skillKeys.map((key) => [key, {
+      current: cleanProgressNumber(plan.skills?.[key]?.current, 1, 10) || 1,
+      target: cleanProgressNumber(plan.skills?.[key]?.target, 1, 10) || 8
+    }])),
+    includePassives: Boolean(plan.includePassives)
+  };
+}
+
+function normaliseWeaponProgress(progress) {
+  if (!progress || typeof progress !== "object") return {};
+  return Object.fromEntries(Object.entries(progress).map(([name, value]) => [name, {
+    currentLevel: cleanProgressNumber(value?.currentLevel, 1, 90) || 1,
+    targetLevel: cleanProgressNumber(value?.targetLevel, 1, 90) || 90,
+    currentAscended: Boolean(value?.currentAscended)
+  }]));
 }
 
 function cleanProgressNumber(value, min, max) {
@@ -2811,6 +2839,7 @@ function applyProfile(profile) {
   state.focus = new Set(payload.focus.filter((slug) => state.owned[slug]));
   state.weapons = new Set(payload.weapons);
   state.progress = payload.progress;
+  state.weaponProgress = payload.weaponProgress;
   state.selectedTeamKey = "";
   state.showAllTeams = false;
   resetFlowGuide();
@@ -2834,6 +2863,7 @@ function clearWorkingProfile() {
   state.focus = new Set();
   state.weapons = new Set();
   state.progress = {};
+  state.weaponProgress = {};
 }
 
 function resetProfile() {
