@@ -3060,10 +3060,17 @@ function renderCloudSync() {
   const userLabel = $("#cloud-user-label");
   const userId = $("#cloud-user-id");
   const status = $("#cloud-sync-status");
+  const menu = $(".account-menu");
+  const menuLabel = $("#account-menu-label");
   if (!signedOut || !signedIn || !status) return;
   renderProfileSaveMode();
   signedOut.hidden = Boolean(cloud.user);
   signedIn.hidden = !cloud.user;
+  menu?.classList.toggle("is-signed-in", Boolean(cloud.user));
+  if (menuLabel) {
+    menuLabel.textContent = cloud.user ? "Account" : "Log in";
+    menuLabel.setAttribute("aria-label", cloud.user ? "Open your WaveKit account" : "Log in or create a WaveKit account");
+  }
   if (userLabel && cloud.user) {
     userLabel.textContent = `Signed in as ${cloud.user.email || cloud.user.displayName || "WaveKit user"}`;
   }

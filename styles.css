@@ -256,6 +256,21 @@ textarea {
   list-style: none;
 }
 
+.account-menu summary::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px rgba(255, 215, 122, 0.62);
+}
+
+.account-menu.is-signed-in summary::before {
+  background: #64f2d0;
+  box-shadow: 0 0 10px rgba(100, 242, 208, 0.68);
+}
+
 .account-menu summary::-webkit-details-marker {
   display: none;
 }
@@ -1560,7 +1575,15 @@ h1 {
 }
 
 .seo-topbar {
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.seo-topbar .account-bar {
+  width: min(250px, 28vw);
+}
+
+.seo-topbar .account-bar > span {
+  font-size: 0.62rem;
 }
 
 .seo-article,
@@ -5036,6 +5059,15 @@ h1 {
     width: 100%;
     max-width: min(260px, 54vw);
     justify-items: end;
+  }
+
+  .seo-topbar .account-bar {
+    width: 100%;
+    max-width: min(230px, 56vw);
+  }
+
+  .seo-topbar .account-bar > span {
+    display: none;
   }
 
   .account-bar > span {
