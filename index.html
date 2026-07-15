@@ -30,7 +30,7 @@
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=banner-watch-2">
+    <link rel="stylesheet" href="styles.css?v=profile-flow-1">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -175,8 +175,7 @@
             <div id="cloud-signed-in" class="account-actions" hidden>
               <strong id="cloud-user-label">Signed in</strong>
               <span id="cloud-user-id" class="account-id">WaveKit ID pending</span>
-              <button id="cloud-save" class="button primary compact-button" type="button">Sync now</button>
-              <button id="cloud-load" class="button ghost compact-button" type="button">Load</button>
+              <span class="account-auto-sync"><strong>Automatic sync is on</strong><small>Profile changes sync as you make them.</small></span>
               <button id="cloud-copy-id" class="button ghost compact-button" type="button">Copy ID</button>
               <button id="cloud-discord-code" class="button ghost compact-button" type="button">Discord code</button>
               <button id="cloud-sign-out" class="button ghost compact-button" type="button">Sign out</button>
@@ -389,18 +388,18 @@
             <p class="kicker">Team helper</p>
             <h2 id="helper-title">A calmer setup flow.</h2>
             <p>
-              Save a local profile, choose your roster, then let the helper build teams around your strongest
-              damage dealers without pretending there is only one perfect answer.
+              Choose a profile, tap what you own, and WaveKit saves your progress automatically while it builds
+              teams around your strongest damage dealers.
             </p>
           </div>
           <div class="save-card" aria-live="polite">
             <strong id="save-status">Not saved yet</strong>
-            <span>Profiles stay on this device.</span>
+            <span id="save-status-detail">Your choices save automatically on this device.</span>
           </div>
         </div>
 
         <div class="flow-guide" aria-label="Setup steps">
-          <span><strong>1</strong> Name profile</span>
+          <span><strong>1</strong> Choose profile</span>
           <span><strong>2</strong> Tap owned Resonators</span>
           <span><strong>3</strong> Tap owned weapons</span>
           <span><strong>4</strong> Pick a team to build</span>
@@ -421,36 +420,31 @@
           <section class="panel profile-panel" aria-labelledby="profile-title">
             <div class="panel-heading">
               <span>Step 1</span>
-              <h3 id="profile-title">Player profile</h3>
+              <h3 id="profile-title">Your profile</h3>
+            </div>
+            <div class="profile-save-state" aria-live="polite">
+              <span class="profile-save-icon" aria-hidden="true">✓</span>
+              <span>
+                <strong id="profile-save-title">Saved automatically</strong>
+                <small id="profile-save-detail">Resonators and weapons stay saved on this device as you select them.</small>
+              </span>
             </div>
             <div id="profile-list" class="profile-list" aria-label="Saved profiles"></div>
             <div id="profile-summary" class="profile-summary" aria-live="polite"></div>
-            <div class="cloud-sync" aria-live="polite">
-              <div class="cloud-sync-heading">
-                <div>
-                  <span>Optional account sync</span>
-                  <strong>Use the account controls at the top to sync profiles across devices.</strong>
-                </div>
-                <small>Local profiles still work without signing in.</small>
-              </div>
-            </div>
             <div class="profile-actions compact">
-              <button id="new-profile" class="button ghost" type="button">New profile</button>
-              <button id="edit-profile" class="button ghost" type="button">Edit profile</button>
-              <button id="export-profile" class="button ghost" type="button">Export</button>
-              <button id="import-profile" class="button ghost" type="button">Import</button>
+              <button id="new-profile" class="button ghost" type="button">Add profile</button>
+              <button id="edit-profile" class="button ghost" type="button">Rename</button>
               <button id="delete-profile" class="button ghost danger" type="button">Delete</button>
             </div>
-            <input id="profile-import-file" class="visually-hidden" type="file" accept="application/json,.json">
             <div id="profile-editor" class="profile-editor">
               <label class="field">
-                <span>Profile name</span>
-                <input id="profile-name" type="text" placeholder="Optional">
+                <span>Profile name <small>optional</small></span>
+                <input id="profile-name" type="text" placeholder="For example: Main account">
               </label>
-            </div>
-            <div class="profile-actions">
-              <button id="save-profile" class="button primary" type="button">Save changes</button>
-              <button id="reset-profile" class="button ghost" type="button">Clear edits</button>
+              <div class="profile-actions profile-editor-actions">
+                <button id="save-profile" class="button primary" type="button">Done</button>
+                <button id="reset-profile" class="button ghost" type="button">Close</button>
+              </div>
             </div>
           </section>
 
@@ -748,6 +742,6 @@
     </div>
 
     <script src="assets/weapon-images.js"></script>
-    <script src="app.js?v=banner-watch-2"></script>
+    <script src="app.js?v=profile-flow-1"></script>
   </body>
 </html>

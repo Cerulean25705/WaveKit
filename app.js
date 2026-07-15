@@ -1809,22 +1809,13 @@ function syncFlowNextVisibility() {
 }
 
 function nextFlowAction({ ownedCount, selectedTeam, teams }) {
-  if (state.editMode && !state.activeProfileId) {
+  if (!state.activeProfileId && !workingProfileHasRosterData() && !state.profileName) {
     return {
       step: "Step 1 of 4",
       title: "Start setup",
-      detail: "Begin with the player profile section, then choose your roster.",
+      detail: "Choose a profile name if you want one, then start tapping the Resonators you own.",
       button: "Start",
       target: "profile"
-    };
-  }
-  if (state.editMode) {
-    return {
-      step: "Step 1 of 4",
-      title: "Save profile changes",
-      detail: "This keeps your choices on this device, then you can choose your roster.",
-      button: "Save changes",
-      target: "save"
     };
   }
   if (ownedCount < 3) {
@@ -2651,8 +2642,8 @@ function saveProfile() {
   state.editMode = false;
   try {
     persistProfiles();
-    $("#save-status").textContent = "Profile saved";
-    saveCloudProfiles("Cloud profile synced");
+    $("#save-status").textContent = cloud.user ? "Saved and synced" : "Profile ready";
+    silentCloudSync();
   } catch {
     $("#save-status").textContent = "Save blocked";
   }
@@ -2845,10 +2836,11 @@ function clearWorkingProfile() {
 }
 
 function resetProfile() {
-  clearWorkingProfile();
-  state.activeProfileId = "";
-  state.editMode = true;
-  $("#save-status").textContent = "Edits cleared";
+  if (!state.activeProfileId && !workingProfileHasRosterData() && state.profiles.length) {
+    applyProfile(state.profiles[0]);
+  }
+  state.editMode = false;
+  $("#save-status").textContent = "Profile closed";
   render();
 }
 
@@ -2881,54 +2873,11 @@ function deleteProfile() {
   try {
     persistProfiles();
     $("#save-status").textContent = "Profile deleted";
+    silentCloudSync();
   } catch {
     $("#save-status").textContent = "Delete blocked";
   }
   render();
-}
-
-function exportActiveProfile() {
-  const payload = profilePayload();
-  const exportData = {
-    app: "WaveKit",
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    profile: payload
-  };
-  const name = (payload.profileName || "wavekit-profile").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "wavekit-profile";
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${name}.json`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-  $("#save-status").textContent = "Profile exported";
-}
-
-function importProfileFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    try {
-      const parsed = JSON.parse(reader.result);
-      const imported = normaliseProfile(parsed.profile || parsed);
-      const id = `profile-${Date.now()}`;
-      const profile = { id, updatedAt: new Date().toISOString(), ...imported };
-      state.profiles.push(profile);
-      applyProfile(profile);
-      state.editMode = false;
-      persistProfiles();
-      saveCloudProfiles("Imported profile synced");
-      $("#save-status").textContent = "Profile imported";
-      render();
-    } catch {
-      $("#save-status").textContent = "Import failed";
-    }
-  });
-  reader.readAsText(file);
 }
 
 function renderProfileManager() {
@@ -2940,7 +2889,7 @@ function renderProfileManager() {
         <small>${Object.keys(payload.owned).length} resonators · ${payload.weapons.length} weapons · ${payload.focus.length} focus</small>
       </button>
     `;
-  }).join("") : `<div class="profile-empty">No saved profiles yet.</div>`;
+  }).join("") : `<div class="profile-empty">Your first profile will be created automatically when you name it or select a Resonator.</div>`;
   profileList.querySelectorAll("[data-profile-id]").forEach((button) => {
     button.addEventListener("click", () => {
       const profile = state.profiles.find((item) => item.id === button.dataset.profileId);
@@ -2950,6 +2899,7 @@ function renderProfileManager() {
       $("#save-status").textContent = "Profile selected";
       try {
         persistProfiles();
+        silentCloudSync();
       } catch {
         $("#save-status").textContent = "Profile selected, save blocked";
       }
@@ -2958,9 +2908,10 @@ function renderProfileManager() {
   });
   renderProfileSummary();
   profileEditor.hidden = !state.editMode;
-  $("#edit-profile").disabled = !state.activeProfileId && !state.profiles.length;
-  $("#delete-profile").disabled = !state.activeProfileId;
-  $("#save-profile").textContent = state.activeProfileId ? "Save changes" : "Create profile";
+  $("#new-profile").hidden = !state.profiles.length && !state.activeProfileId;
+  $("#edit-profile").hidden = !state.activeProfileId;
+  $("#delete-profile").hidden = !state.activeProfileId;
+  $("#save-profile").textContent = "Done";
 }
 
 function renderProfileSummary() {
@@ -2970,7 +2921,7 @@ function renderProfileSummary() {
     .map((character) => character.name);
   profileSummary.innerHTML = `
     <div>
-      <strong>${state.profileName || "Unsaved profile"}</strong>
+      <strong>${state.profileName || (state.activeProfileId ? "WaveKit profile" : "New profile")}</strong>
       <span>${state.suggestionStyle} suggestions</span>
     </div>
     <div class="summary-stats">
@@ -3008,7 +2959,7 @@ function render() {
 }
 
 function markUnsaved() {
-  if (state.activeProfileId) $("#save-status").textContent = "Unsaved changes";
+  $("#save-status").textContent = "Saving...";
   scheduleAutoSave();
 }
 
@@ -3023,6 +2974,7 @@ async function autoSaveProfile() {
     upsertWorkingProfile();
     persistProfiles();
     $("#save-status").textContent = cloud.user ? "Autosaved locally. Syncing..." : "Autosaved locally";
+    renderProfileManager();
     await silentCloudSync();
   } catch {
     $("#save-status").textContent = "Autosave blocked";
@@ -3109,6 +3061,7 @@ function renderCloudSync() {
   const userId = $("#cloud-user-id");
   const status = $("#cloud-sync-status");
   if (!signedOut || !signedIn || !status) return;
+  renderProfileSaveMode();
   signedOut.hidden = Boolean(cloud.user);
   signedIn.hidden = !cloud.user;
   if (userLabel && cloud.user) {
@@ -3127,8 +3080,6 @@ function renderCloudSync() {
     "#cloud-create-account",
     "#cloud-google",
     "#cloud-reset-password",
-    "#cloud-save",
-    "#cloud-load",
     "#cloud-copy-id",
     "#cloud-discord-code",
     "#cloud-sign-out"
@@ -3136,6 +3087,21 @@ function renderCloudSync() {
     const button = $(selector);
     if (button) button.disabled = cloud.busy || !cloud.configured;
   });
+}
+
+function renderProfileSaveMode() {
+  const title = $("#profile-save-title");
+  const detail = $("#profile-save-detail");
+  const headerDetail = $("#save-status-detail");
+  if (cloud.user) {
+    if (title) title.textContent = "Automatic cloud sync";
+    if (detail) detail.textContent = "Resonators, weapons, RC levels, and build progress sync as you change them.";
+    if (headerDetail) headerDetail.textContent = "Changes save here and sync automatically to your account.";
+  } else {
+    if (title) title.textContent = "Saved automatically";
+    if (detail) detail.textContent = "Resonators and weapons stay saved on this device as you select them.";
+    if (headerDetail) headerDetail.textContent = "Your choices save automatically on this device.";
+  }
 }
 
 function shortWaveKitId(uid = "") {
@@ -3185,7 +3151,7 @@ async function createCloudAccount() {
   await runCloudAction("Creating account...", async () => {
     cloud.user = await cloud.api.createAccountWithEmail(email, password);
     if (hasProfileProgress()) await cloud.api.saveCloudProfiles(cloudPayload());
-  }, hasProfileProgress() ? "Account created. Profile synced." : "Account created. Add resonators or weapons, then sync.");
+  }, hasProfileProgress() ? "Account created. Profile synced." : "Account created. Automatic sync is ready.");
 }
 
 async function signInGoogleCloud() {
@@ -3251,24 +3217,6 @@ async function copyText(text, successMessage) {
   }
 }
 
-async function saveCloudProfiles(successMessage = "Cloud profile synced") {
-  if (!cloud.configured || !cloud.user || !cloud.api) return;
-  await runCloudAction("Syncing profile...", () => cloud.api.saveCloudProfiles(cloudPayload()), successMessage);
-}
-
-async function loadCloudProfiles() {
-  if (!cloud.configured || !cloud.user || !cloud.api) return;
-  await runCloudAction("Loading cloud profile...", async () => {
-    const cloudData = await cloud.api.loadCloudProfiles();
-    if (!cloudData?.profiles?.length) {
-      throw new Error("no-cloud-profile");
-    }
-    if (!applyCloudProfiles(cloudData)) {
-      throw new Error("no-cloud-profile");
-    }
-  }, "Cloud profile loaded.");
-}
-
 async function autoLoadCloudProfiles() {
   if (!cloud.configured || !cloud.user || !cloud.api) return;
   const userKey = cloud.user.uid || cloud.user.email || cloud.user.displayName || "user";
@@ -3284,11 +3232,23 @@ async function autoLoadCloudProfiles() {
       } else {
         setCloudStatus("Signed in. No saved roster found yet.");
       }
+    } else if (hasProfileProgress()) {
+      await cloud.api.saveCloudProfiles(cloudPayload());
+      setCloudStatus("Signed in. Local profile synced.");
     } else {
-      setCloudStatus("Signed in. Sync when ready.");
+      setCloudStatus("Signed in. Automatic sync is ready.");
     }
   } catch (error) {
-    setCloudStatus(error?.message === "no-cloud-profile" ? "Signed in. Sync when ready." : cleanCloudError(error));
+    if (error?.message === "no-cloud-profile" && hasProfileProgress()) {
+      try {
+        await cloud.api.saveCloudProfiles(cloudPayload());
+        setCloudStatus("Signed in. Local profile synced.");
+      } catch (saveError) {
+        setCloudStatus(cleanCloudError(saveError));
+      }
+    } else {
+      setCloudStatus(error?.message === "no-cloud-profile" ? "Signed in. Automatic sync is ready." : cleanCloudError(error));
+    }
   } finally {
     cloud.busy = false;
     renderCloudSync();
@@ -3369,7 +3329,7 @@ function cleanCloudError(error) {
     "unavailable": "Firestore is temporarily unavailable. Try syncing again in a moment.",
     "cloud-sync-not-configured": "Cloud sync needs Firebase setup.",
     "not-signed-in": "Sign in before syncing.",
-    "no-cloud-profile": "No cloud profile found yet. Use Sync now first."
+    "no-cloud-profile": "No cloud profile found yet. Your next change will create one automatically."
   };
   return messages[code] || `Cloud sync failed${code ? ` (${code})` : ""}. Check Firebase setup and try again.`;
 }
@@ -3399,12 +3359,6 @@ $("#reset-profile").addEventListener("click", resetProfile);
 $("#new-profile").addEventListener("click", newProfile);
 $("#edit-profile").addEventListener("click", editProfile);
 $("#delete-profile").addEventListener("click", deleteProfile);
-$("#export-profile").addEventListener("click", exportActiveProfile);
-$("#import-profile").addEventListener("click", () => $("#profile-import-file").click());
-$("#profile-import-file").addEventListener("change", (event) => {
-  importProfileFile(event.target.files?.[0]);
-  event.target.value = "";
-});
 $("#copy-feedback-context").addEventListener("click", copyFeedbackContext);
 $("form[name='wavekit-feedback']").addEventListener("submit", handleFeedbackSubmit);
 flowNextButton.addEventListener("click", handleFlowNext);
@@ -3412,8 +3366,6 @@ $("#cloud-sign-in").addEventListener("click", signInCloud);
 $("#cloud-create-account").addEventListener("click", createCloudAccount);
 $("#cloud-google").addEventListener("click", signInGoogleCloud);
 $("#cloud-reset-password").addEventListener("click", resetCloudPassword);
-$("#cloud-save").addEventListener("click", () => saveCloudProfiles("Cloud profile synced"));
-$("#cloud-load").addEventListener("click", loadCloudProfiles);
 $("#cloud-copy-id").addEventListener("click", copyWaveKitId);
 $("#cloud-discord-code").addEventListener("click", createDiscordLinkCode);
 $("#cloud-sign-out").addEventListener("click", signOutCloud);
