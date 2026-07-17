@@ -3267,6 +3267,7 @@ function renderAccountOverview() {
   const healers = ownedCharacters.filter((character) => character.roles.includes("healer"));
   const helpers = ownedCharacters.filter((character) => character.roles.includes("sub") || character.roles.includes("support"));
   const unsupported = mains.filter((main) => !ownedNamedPartner(main)).slice(0, 3);
+  const ownedByRarity = raritySections(ownedCharacters.slice().sort(sortByRarityThenName), characterRarity);
   const avatarChoices = (ownedCharacters.length ? ownedCharacters : activeCharacters().filter((character) => character.slug === "rover"))
     .slice().sort((a, b) => a.name.localeCompare(b.name)).slice(0, 12);
 
@@ -3278,7 +3279,7 @@ function renderAccountOverview() {
       <div class="profile-identity-copy">
         <span>${cloud.user ? "Cloud profile synced" : "Private local profile"}</span>
         <h3>${state.profileName || "WaveKit profile"}</h3>
-        <p>${best ? `${best.main.name} currently leads your strongest complete team path.` : "Add a main damage Resonator and compatible helpers to unlock team analysis."}</p>
+        <p>${cloud.user ? "Your roster, saved teams, and upgrade targets are synced to your WaveKit account." : "Your roster, saved teams, and upgrade targets are saved privately in this browser."}</p>
         <div class="profile-identity-stats">
           <span><strong>${ownedCharacters.length}</strong><small>Resonators</small></span>
           <span><strong>${state.weapons.size}</strong><small>Weapons</small></span>
@@ -3296,34 +3297,43 @@ function renderAccountOverview() {
       <div><span>Profile theme</span><div class="profile-accent-options" aria-label="Profile theme">${Object.entries({ aero: "Tidal", gold: "Solar", glacio: "Frost", havoc: "Midnight" }).map(([accent, label]) => `<button class="profile-theme-option accent-${accent} ${state.profileAccent === accent ? "is-selected" : ""}" type="button" data-profile-accent="${accent}" aria-label="Use ${label} profile theme"><i aria-hidden="true"></i><span>${label}</span></button>`).join("")}</div></div>
     </div>
 
-    <div class="account-health-grid">
-      <article class="account-health-card">
-        <span>Strongest complete path</span>
-        ${best ? `<div class="account-team-line">${miniTeamIcons(best)}<strong>${best.members.map((member) => member.name).join(" / ")}</strong></div><p>${teamFitLabel(best)} · ${safetyLabel(best)}</p><button class="button ghost compact-button" type="button" data-open-team="${teamKey(best)}">Open team</button>` : `<strong>No complete team yet</strong><p>The helper is waiting for a coherent damage, helper, and third-slot combination.</p><a class="button ghost compact-button" href="#helper">Edit roster</a>`}
-      </article>
-      <article class="account-health-card">
-        <span>Role coverage</span>
-        <strong>${mains.length} damage · ${helpers.length} helpers · ${healers.length} healers</strong>
-        <p>${healers.length ? "Your account has real sustain available for safer teams." : "No real healer is selected, so difficult fights may offer less mistake recovery."}</p>
-      </article>
-      <article class="account-health-card">
-        <span>Account opportunity</span>
-        <strong>${accountOpportunityTitle(unsupported, healers)}</strong>
-        <p>${accountOpportunityDetail(unsupported, healers)}</p>
+    <div class="account-primary-grid">
+      <section id="account-roster" class="account-roster-panel">
+        <header>
+          <div><span>Owned Resonators</span><h3>Your roster</h3></div>
+          <a class="button ghost compact-button" href="#helper">Edit roster</a>
+        </header>
+        <div class="account-roster-groups">${ownedByRarity.map(({ rarity, items }) => `
+          <section class="account-roster-group" aria-label="${rarity}-star Resonators">
+            <h4>${rarityStars(rarity)} <span>${rarity}-star · ${items.length}</span></h4>
+            <div>${items.map(accountRosterItem).join("")}</div>
+          </section>`).join("")}</div>
+      </section>
+      <article class="account-best-team">
+        <span>Best from your roster</span>
+        ${best ? `<div class="account-best-team-cast">${best.members.map((member, index) => accountBestTeamMember(member, index)).join("")}</div><h3>${best.members.map((member) => member.name).join(" / ")}</h3><p>${teamFitLabel(best)} · ${safetyLabel(best)}</p><button class="button primary compact-button" type="button" data-open-team="${teamKey(best)}">Open team</button>` : `<h3>No complete team yet</h3><p>Add a main damage Resonator and compatible helpers to unlock a complete team path.</p><a class="button primary compact-button" href="#helper">Edit roster</a>`}
       </article>
     </div>
 
-    <div class="account-detail-grid">
-      <section class="account-plan-panel">
-        <header><div><span>Build Plan</span><h3>What you are working toward</h3></div>${state.buildPlan.length ? `<button id="calculate-materials" class="button ghost compact-button" type="button">Combine materials</button>` : ""}</header>
+    <div class="account-detail-grid account-roadmap-grid">
+      <section id="account-build-plan" class="account-plan-panel">
+        <header><div><span>Upgrade roadmap</span><h3>What you are building next</h3></div><div class="account-plan-header-actions"><a class="button ghost compact-button" href="characters/">Add target</a>${state.buildPlan.length > 1 ? `<button id="calculate-materials" class="button ghost compact-button" type="button">View total materials</button><small>Totals every target below.</small>` : ""}</div></header>
         <div class="account-plan-list">${state.buildPlan.length ? state.buildPlan.map(buildPlanItem).join("") : `<div class="account-panel-empty"><p>Add a Resonator from their character guide or plan all three members of a selected team.</p><a class="button ghost compact-button" href="characters/">Browse character guides</a></div>`}</div>
         <div id="combined-materials" class="combined-materials" hidden></div>
       </section>
-      <section class="account-saved-panel">
+      <section id="account-saved-teams" class="account-saved-panel">
         <header><div><span>Saved teams</span><h3>Your chosen versions</h3></div></header>
         <div class="account-saved-list">${state.savedTeams.length ? state.savedTeams.map(savedTeamItem).join("") : `<div class="account-panel-empty"><p>Save a suggestion or an adjusted team and it will stay here.</p><a class="button ghost compact-button" href="#results">View suggestions</a></div>`}</div>
       </section>
-    </div>`;
+    </div>
+
+    <details class="account-insights">
+      <summary><span><small>Account insights</small><strong>${accountOpportunityTitle(unsupported, healers)}</strong></span><b>View details</b></summary>
+      <div>
+        <article><span>Role coverage</span><strong>${mains.length} damage · ${helpers.length} helpers · ${healers.length} healers</strong><p>${healers.length ? "Your account has real sustain available for safer teams." : "No real healer is selected, so difficult fights may offer less mistake recovery."}</p></article>
+        <article><span>Roster opportunity</span><strong>${accountOpportunityTitle(unsupported, healers)}</strong><p>${accountOpportunityDetail(unsupported, healers)}</p></article>
+      </div>
+    </details>`;
 
   accountOverview.querySelectorAll("[data-profile-avatar]").forEach((button) => button.addEventListener("click", () => {
     state.profileAvatar = button.dataset.profileAvatar;
@@ -3344,6 +3354,13 @@ function renderAccountOverview() {
     persistImmediateProfileChange();
     renderAccountOverview();
   }));
+  accountOverview.querySelectorAll("[data-add-plan]").forEach((button) => button.addEventListener("click", () => {
+    const slug = button.dataset.addPlan;
+    if (!state.buildPlan.includes(slug)) state.buildPlan.push(slug);
+    markUnsaved();
+    persistImmediateProfileChange();
+    renderAccountOverview();
+  }));
   accountOverview.querySelectorAll("[data-remove-saved-team]").forEach((button) => button.addEventListener("click", () => {
     state.savedTeams = state.savedTeams.filter((record) => savedTeamRecordKey(record) !== button.dataset.removeSavedTeam);
     markUnsaved();
@@ -3351,6 +3368,26 @@ function renderAccountOverview() {
     renderAccountOverview();
   }));
   accountOverview.querySelector("#calculate-materials")?.addEventListener("click", renderCombinedMaterials);
+  void hydrateAccountPlanMaterials();
+}
+
+function accountRosterItem(character) {
+  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  const chain = state.owned[character.slug]?.chain || 0;
+  const plan = state.progress[character.slug]?.materialPlan;
+  const level = plan?.currentLevel ? `L${plan.currentLevel}` : "Level unset";
+  const planned = state.buildPlan.includes(character.slug);
+  const element = character.element.split("/")[0].trim().toLowerCase();
+  return `<article class="account-roster-item element-${element}">
+    <a href="characters/${character.slug}/" aria-label="Open ${character.name} guide"><img src="assets/wallpapers/${file}" alt=""><span><strong>${character.name}</strong><small>R${chain} · ${level}</small></span></a>
+    <button class="account-plan-toggle ${planned ? "is-planned" : ""}" type="button" ${planned ? "disabled" : `data-add-plan="${character.slug}"`} aria-label="${planned ? `${character.name} is in your Upgrade Roadmap` : `Add ${character.name} to Upgrade Roadmap`}">${planned ? "✓" : "+"}</button>
+  </article>`;
+}
+
+function accountBestTeamMember(member, index) {
+  const file = wallpapers.get(member.slug) || wallpapers.get("rover");
+  const labels = ["Damage", "Helper", "Sustain"];
+  return `<a href="characters/${member.slug}/"><img src="assets/wallpapers/${file}" alt=""><span>${labels[index] || "Team"}</span><strong>${member.name}</strong></a>`;
 }
 
 function ownedNamedPartner(main) {
@@ -3377,7 +3414,40 @@ function buildPlanItem(slug) {
   const file = wallpapers.get(slug) || wallpapers.get("rover");
   const plan = state.progress[slug]?.materialPlan;
   const level = plan ? `Level ${plan.currentLevel} → ${plan.targetLevel}` : "Targets not set yet";
-  return `<article><a href="characters/${slug}/"><img src="assets/wallpapers/${file}" alt=""><span><strong>${character.name}</strong><small>${level}</small></span></a><button class="icon-button" type="button" data-remove-plan="${slug}" aria-label="Remove ${character.name} from Build Plan">×</button></article>`;
+  const skillTargets = plan?.skills ? Object.values(plan.skills).filter((skill) => Number(skill.target) > Number(skill.current)) : [];
+  const skillSummary = skillTargets.length ? `${skillTargets.length} skill target${skillTargets.length === 1 ? "" : "s"} · up to ${Math.max(...skillTargets.map((skill) => Number(skill.target) || 1))}` : "Open the planner to set skill targets";
+  const progress = plan ? Math.max(4, Math.min(100, Math.round((Number(plan.currentLevel) / Math.max(1, Number(plan.targetLevel))) * 100))) : 4;
+  return `<article class="account-plan-item">
+    <div class="account-plan-character">
+      <a href="characters/${slug}/"><img src="assets/wallpapers/${file}" alt=""><span><strong>${character.name}</strong><small>${level}</small><small>${skillSummary}</small></span></a>
+      <div class="account-plan-progress" aria-hidden="true"><i style="width:${progress}%"></i></div>
+    </div>
+    <div class="account-plan-material-preview" data-plan-materials="${slug}"><small>Planned requirements</small><span>Loading material preview…</span></div>
+    <div class="account-plan-item-actions"><a class="button ghost compact-button" href="characters/${slug}/#materials">Open planner</a><button class="icon-button" type="button" data-remove-plan="${slug}" aria-label="Remove ${character.name} from Upgrade Roadmap">×</button></div>
+  </article>`;
+}
+
+async function hydrateAccountPlanMaterials() {
+  const targets = accountOverview?.querySelectorAll("[data-plan-materials]");
+  if (!targets?.length) return;
+  try {
+    const kit = await ensureMaterialKit();
+    targets.forEach((target) => {
+      const slug = target.dataset.planMaterials;
+      const record = kit.data.characters[slug];
+      if (!record) {
+        target.innerHTML = `<small>Planned requirements</small><span>Material data is still being reviewed.</span>`;
+        return;
+      }
+      const plan = state.progress[slug]?.materialPlan || defaultMaterialPlan();
+      const costs = kit.characterPlan(record, plan).costs;
+      const items = [...kit.groupedCosts(costs).values()].flat().filter((item) => Number(item.quantity) > 0).slice(0, 4);
+      target.innerHTML = `<small>Planned requirements</small><div>${items.length ? items.map((item) => `<span title="${item.name}"><img src="${item.icon}" alt=""><b>${item.name}</b><strong>x${kit.formatNumber(item.quantity)}</strong></span>`).join("") : `<span>Targets complete</span>`}</div>`;
+    });
+  } catch (error) {
+    console.error("WaveKit roadmap material previews could not load.", error);
+    targets.forEach((target) => { target.innerHTML = `<small>Planned requirements</small><span>Open the character planner for material details.</span>`; });
+  }
 }
 
 function savedTeamRecordKey(record) {
@@ -3399,7 +3469,7 @@ async function renderCombinedMaterials() {
   const output = accountOverview?.querySelector("#combined-materials");
   if (!output) return;
   output.hidden = false;
-  output.innerHTML = `<p>Preparing your combined material list...</p>`;
+  output.innerHTML = `<header><div><small>Combined farming list</small><h4>Everything needed for ${state.buildPlan.length} targets</h4></div><p>Quantities below combine every Resonator in your Upgrade Roadmap.</p></header><p>Preparing your material totals...</p>`;
   try {
     const kit = await ensureMaterialKit();
     const costs = {};
@@ -3412,7 +3482,7 @@ async function renderCombinedMaterials() {
       });
     });
     const groups = kit.groupedCosts(costs);
-    output.innerHTML = groups.size ? [...groups].map(([category, items]) => `<section><h4>${category}</h4><div>${items.map((item) => `<span><img src="${item.icon}" alt="" loading="lazy"><b>${item.name}</b><strong>x${kit.formatNumber(item.quantity)}</strong></span>`).join("")}</div></section>`).join("") : `<p>Your current Build Plan targets are already complete.</p>`;
+    output.innerHTML = groups.size ? `<header><div><small>Combined farming list</small><h4>Everything needed for ${state.buildPlan.length} targets</h4></div><p>Quantities below combine every Resonator in your Upgrade Roadmap.</p></header>${[...groups].map(([category, items]) => `<section><h4>${category}</h4><div>${items.map((item) => `<span><img src="${item.icon}" alt="" loading="lazy"><b>${item.name}</b><strong>x${kit.formatNumber(item.quantity)}</strong></span>`).join("")}</div></section>`).join("")}` : `<p>Your current Upgrade Roadmap targets are already complete.</p>`;
   } catch (error) {
     console.error("WaveKit combined material planner could not load.", error);
     output.innerHTML = `<p>The material list could not be loaded. Individual character planners still remain available.</p>`;

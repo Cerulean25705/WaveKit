@@ -7739,6 +7739,415 @@ h1 {
   justify-items: end;
 }
 
+/* My WaveKit roster and roadmap */
+.account-primary-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.65fr);
+}
+
+.account-roster-panel,
+.account-best-team,
+.account-insights {
+  border: 1px solid color-mix(in srgb, var(--profile-accent) 28%, rgba(128, 222, 231, 0.14));
+  border-radius: 8px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--profile-accent) 6%, rgba(7, 27, 34, 0.94)), rgba(7, 27, 34, 0.82));
+}
+
+.account-roster-panel {
+  overflow: hidden;
+  scroll-margin-top: calc(var(--topbar-offset) + 18px);
+}
+
+.account-roster-panel > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 15px;
+  border-bottom: 1px solid rgba(128, 222, 231, 0.14);
+}
+
+.account-roster-panel > header span,
+.account-best-team > span,
+.account-insights summary small,
+.account-plan-material-preview > small,
+.combined-materials header small {
+  color: var(--profile-accent-ink);
+  font-size: 0.68rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.account-roster-panel h3,
+.account-best-team h3 {
+  margin: 3px 0 0;
+}
+
+.account-roster-groups {
+  display: grid;
+  gap: 14px;
+  padding: 13px;
+}
+
+.account-roster-group {
+  display: grid;
+  gap: 7px;
+}
+
+.account-roster-group h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0;
+  color: var(--gold);
+  font-size: 0.72rem;
+}
+
+.account-roster-group h4 span {
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 750;
+}
+
+.account-roster-group > div {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.account-roster-item {
+  --roster-element: var(--aqua);
+  position: relative;
+  min-width: 0;
+  border-left: 3px solid var(--roster-element);
+  border-radius: 6px;
+  background: rgba(5, 19, 26, 0.72);
+  transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.account-roster-item.element-aero { --roster-element: #65e5c4; }
+.account-roster-item.element-electro { --roster-element: #bb8bff; }
+.account-roster-item.element-fusion { --roster-element: #ff8d77; }
+.account-roster-item.element-glacio { --roster-element: #8fc9ff; }
+.account-roster-item.element-havoc { --roster-element: #d18bd9; }
+.account-roster-item.element-spectro { --roster-element: #f2d778; }
+
+.account-roster-item:hover,
+.account-roster-item:focus-within {
+  background: color-mix(in srgb, var(--roster-element) 10%, rgba(7, 26, 34, 0.94));
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 16px color-mix(in srgb, var(--roster-element) 8%, transparent);
+  transform: translateY(-1px);
+}
+
+.account-roster-item > a {
+  display: grid;
+  grid-template-columns: 45px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-height: 55px;
+  padding: 5px 31px 5px 5px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.account-roster-item img {
+  width: 45px;
+  height: 45px;
+  border: 1px solid color-mix(in srgb, var(--roster-element) 48%, transparent);
+  border-radius: 5px;
+  object-fit: cover;
+  object-position: center 22%;
+}
+
+.account-roster-item a > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.account-roster-item strong {
+  overflow: hidden;
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-roster-item small {
+  color: var(--muted);
+  font-size: 0.63rem;
+}
+
+.account-plan-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--roster-element) 38%, transparent);
+  border-radius: 50%;
+  color: var(--roster-element);
+  background: rgba(2, 12, 18, 0.86);
+  cursor: pointer;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.account-plan-toggle:hover,
+.account-plan-toggle:focus-visible {
+  color: #041317;
+  background: var(--roster-element);
+}
+
+.account-plan-toggle.is-planned {
+  border-color: rgba(100, 242, 208, 0.3);
+  color: var(--mint);
+  cursor: default;
+  background: rgba(100, 242, 208, 0.08);
+}
+
+.account-best-team {
+  align-content: start;
+  display: grid;
+  gap: 11px;
+  padding: 15px;
+}
+
+.account-best-team-cast {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.account-best-team-cast a {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--profile-accent) 24%, transparent);
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  background: rgba(3, 14, 20, 0.74);
+}
+
+.account-best-team-cast img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.account-best-team-cast span {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #061219;
+  background: var(--profile-accent);
+  font-size: 0.54rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.account-best-team-cast strong {
+  padding: 6px;
+  overflow: hidden;
+  font-size: 0.67rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-best-team p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.account-best-team .button { justify-self: start; }
+
+.account-roadmap-grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(310px, 0.55fr);
+}
+
+#account-build-plan,
+#account-saved-teams {
+  scroll-margin-top: calc(var(--topbar-offset) + 18px);
+}
+
+.account-plan-header-actions {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-items: end;
+  gap: 5px 7px;
+}
+
+.account-plan-header-actions small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.62rem;
+}
+
+.account-plan-list .account-plan-item {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(260px, 1.2fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+}
+
+.account-plan-character {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.account-plan-character > a {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.account-plan-character > a img {
+  width: 58px;
+  height: 58px;
+  border-radius: 6px;
+  object-fit: cover;
+  object-position: center 22%;
+}
+
+.account-plan-character > a span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.account-plan-character small { color: var(--muted); }
+
+.account-plan-progress {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(128, 222, 231, 0.1);
+}
+
+.account-plan-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--profile-accent), var(--gold));
+}
+
+.account-plan-material-preview {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.account-plan-material-preview > span { color: var(--muted); }
+
+.account-plan-material-preview > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.account-plan-material-preview > div > span {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 4px;
+  border-radius: 5px;
+  background: rgba(9, 32, 40, 0.7);
+}
+
+.account-plan-material-preview img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.account-plan-material-preview b {
+  overflow: hidden;
+  color: var(--soft);
+  font-size: 0.62rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-plan-material-preview strong { font-size: 0.65rem; }
+
+.account-plan-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.combined-materials > header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(128, 222, 231, 0.12);
+}
+
+.combined-materials header h4 { margin-top: 3px; }
+.combined-materials header p { max-width: 460px; margin: 0; color: var(--muted); font-size: 0.72rem; }
+
+.account-saved-list article {
+  min-height: 72px;
+}
+
+.account-saved-list .mini-team img {
+  width: 34px;
+  height: 34px;
+  border: 1px solid color-mix(in srgb, var(--profile-accent) 28%, transparent);
+}
+
+.account-insights {
+  overflow: hidden;
+}
+
+.account-insights summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 15px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.account-insights summary::-webkit-details-marker { display: none; }
+.account-insights summary > span { display: grid; gap: 2px; }
+.account-insights summary > b { color: var(--profile-accent-ink); font-size: 0.72rem; }
+
+.account-insights > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid rgba(128, 222, 231, 0.14);
+}
+
+.account-insights article {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+}
+
+.account-insights article + article { border-left: 1px solid rgba(128, 222, 231, 0.12); }
+.account-insights article span { color: var(--profile-accent-ink); font-size: 0.68rem; font-weight: 850; text-transform: uppercase; }
+.account-insights article p { margin: 0; color: var(--muted); }
+
 /* Team tuning */
 .team-tuner-dialog {
   background: transparent;
@@ -7881,6 +8290,13 @@ h1 {
   .tuner-slot { grid-template-columns: 46px minmax(0, 1fr); }
   .tuner-slot img { height: 46px; width: 46px; }
   .combined-materials section > div { grid-template-columns: 1fr; }
+  .account-primary-grid,
+  .account-roadmap-grid { grid-template-columns: 1fr; }
+  .account-roster-group > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .account-plan-list .account-plan-item { grid-template-columns: 1fr; }
+  .account-plan-item-actions { justify-content: space-between; }
+  .account-insights > div { grid-template-columns: 1fr; }
+  .account-insights article + article { border-top: 1px solid rgba(128, 222, 231, 0.12); border-left: 0; }
 }
 
 @media (max-width: 430px) {
@@ -7898,6 +8314,14 @@ h1 {
   .profile-avatar-option img { height: 34px; width: 34px; }
   .account-plan-panel > header,
   .account-saved-panel > header { align-items: flex-start; flex-direction: column; }
+  .account-plan-header-actions { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: stretch; }
+  .account-plan-header-actions .button { width: 100%; }
+  .account-roster-panel > header { align-items: flex-start; }
+  .account-best-team { padding: 12px; }
+  .account-best-team h3 { font-size: 0.94rem; }
+  .account-roster-item > a { grid-template-columns: 40px minmax(0, 1fr); min-height: 50px; }
+  .account-roster-item img { width: 40px; height: 40px; }
+  .combined-materials > header { display: grid; }
   .team-tuner-header { padding: 14px; }
   .team-tuner-layout,
   .team-tuner-current { padding-left: 9px; padding-right: 9px; }
