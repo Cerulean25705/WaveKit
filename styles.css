@@ -6622,6 +6622,7 @@ h1 {
   .row-action {
     width: auto;
     flex: 1 1 82px;
+    min-height: 40px;
   }
 
   .summary-notes div {

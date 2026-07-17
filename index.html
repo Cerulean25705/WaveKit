@@ -30,7 +30,7 @@
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=my-wavekit-5">
+    <link rel="stylesheet" href="styles.css?v=my-wavekit-6">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -589,23 +589,6 @@
         </div>
       </section>
 
-      <section id="sources" class="section sources" aria-labelledby="sources-title">
-        <div class="section-heading">
-          <p class="kicker">Data notes</p>
-          <h2 id="sources-title">Built to be honest about certainty.</h2>
-          <p>
-            WaveKit is a fan-made helper shaped by released-character data, public theorycrafting, and player
-            reports. Team scoring is conservative: it prefers proven shells and sensible alternatives over risky guesses.
-          </p>
-        </div>
-        <div class="source-list data-note-list">
-          <span>Released roster only</span>
-          <span>Player reports reviewed</span>
-          <span>Patch-sensitive picks marked cautiously</span>
-          <span>No hidden paid recommendations</span>
-        </div>
-      </section>
-
       <section id="feedback" class="section feedback-section" aria-labelledby="feedback-title">
         <div class="section-heading split">
           <div>
@@ -646,7 +629,7 @@
           </label>
           <label class="field">
             <span>Feedback</span>
-            <textarea id="feedback-message" name="message" rows="5" placeholder="Example: Cartethyia suggested this team, but I expected Sanhua because..."></textarea>
+            <textarea id="feedback-message" name="message" rows="5" minlength="10" required placeholder="Example: Cartethyia suggested this team, but I expected Sanhua because..."></textarea>
           </label>
           <label class="field">
             <span>Contact, optional</span>
@@ -738,6 +721,12 @@
             <p>Team, weapon, and banner status checked on July 17, 2026. Player reports are used to tune recommendations.</p>
           </article>
         </div>
+        <div id="sources" class="source-list data-note-list" aria-label="WaveKit data principles">
+          <span>Only released Resonators enter the helper</span>
+          <span>Player reports reviewed</span>
+          <span>Patch-sensitive picks marked cautiously</span>
+          <span>No hidden paid recommendations</span>
+        </div>
         <div class="changelog-panel">
           <div class="panel-heading">
             <span>Updates</span>
@@ -782,6 +771,6 @@
     </dialog>
 
     <script src="assets/weapon-images.js?v=proper-weapons-2"></script>
-    <script src="app.js?v=my-wavekit-9"></script>
+    <script src="app.js?v=my-wavekit-10"></script>
   </body>
 </html>
