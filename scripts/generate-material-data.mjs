@@ -43,7 +43,7 @@ for (const slug of guideDirectories) {
 const manualWeaponUsers = {
   "Bloodpact's Pledge": [["rover", "Rover (Aero)"], ["brant", "Brant"]],
   "Boson Astrolabe": [["denia", "Denia"], ["lucilla", "Lucilla"], ["suisui", "Suisui"]],
-  "Freeze Frame": [["suisui", "Suisui"]],
+  "Freeze Frame": [["lucilla", "Lucilla"], ["suisui", "Suisui"]],
   "Laser Shearer": [["sanhua", "Sanhua"], ["yangyang", "Yangyang"], ["rover", "Rover (Aero)"], ["brant", "Brant"]],
   "Phasic Homogenizer": [["lynae", "Lynae"], ["rebecca", "Rebecca"], ["lucy", "Lucy"], ["galbrena", "Galbrena"], ["ciaccona", "Ciaccona"], ["carlotta", "Carlotta"]],
   "Pulsation Bracer": [["luuk-herssen", "Luuk Herssen"], ["sigrika", "Sigrika"], ["xiangli-yao", "Xiangli Yao"]],

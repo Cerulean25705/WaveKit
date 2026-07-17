@@ -41,7 +41,7 @@ const builds = Object.fromEntries([
   ["sigrika", "Echo Skill Aero DPS Build", "Solsworn Ciphers", "Sound of True Name", "Nameless Explorer", "Crit DMG or CRIT Rate / Energy Regen or ATK% / ATK%"],
   ["hiyuki", "Glacio Chafe DPS Build", "Frostburn", "Wishes of Quiet Snowfall", "Reminiscence: Threnodian - Voidborne Construct", "Crit Rate or Crit DMG / Glacio DMG or ATK% / ATK%"],
   ["denia", "Fusion Burst Sub-DPS Build", "Forged Dwarf Star", "Chromatic Foam", "Reminiscence: Denia", "Crit Rate or Crit DMG / Fusion DMG / ATK%"],
-  ["lucilla", "Glacio Sub-DPS", "Stringmaster", "Freezing Frost or Moonlit Clouds", "Nightmare: Lampylumen Myriad", "CRIT Rate or CRIT DMG / Glacio DMG or Energy Regen / ATK%"],
+  ["lucilla", "Glacio Chafe Support Build", "Freeze Frame", "Wishes of Quiet Snowfall", "Glommoth", "CRIT Rate or CRIT DMG / Glacio DMG or ATK% / ATK%"],
   ["verina", "Full Support Build", "Stellar Symphony", "Rejuvenating Glow", "Fallacy of No Return", "Healing Bonus or ATK% / Energy Regen / ATK%"],
   ["jiyan", "Liberation DPS Build", "Verdant Summit", "Sierra Gale", "Nightmare: Feilian Beringal", "CRIT Rate or CRIT DMG / Aero DMG / ATK%"],
   ["carlotta", "Glacio Main DPS Build", "The Last Dance", "Frosty Resolve", "Sentry Construct", "CRIT Rate or CRIT DMG / Glacio DMG or ATK% / ATK%"],
@@ -67,7 +67,7 @@ const builds = Object.fromEntries([
   ["xiangli-yao", "Electro DPS Build", "Verity's Handle", "Void Thunder", "Nightmare: Thundering Mephis", "CRIT Rate or CRIT DMG / Electro DMG / ATK%"],
   ["camellya", "Havoc Main DPS Build", "Red Spring", "Havoc Eclipse", "Nightmare: Crownless", "CRIT Rate or CRIT DMG / Havoc DMG / ATK%"],
   ["roccia", "Havoc Sub-DPS Build", "Tragicomedy", "Midnight Veil", "Nightmare: Impermanence Heron", "CRIT Rate or CRIT DMG / Havoc DMG or Energy Regen / ATK%"],
-  ["buling", "Full Healer Support Build", "Stellar Symphony", "Rejuvenating Glow", "Fallacy of No Return", "Healing Bonus or ATK% / Energy Regen / ATK%"],
+  ["buling", "Skill Damage Support Build", "Stringmaster", "Rejuvenating Glow", "Fallacy of No Return", "CRIT Rate or CRIT DMG / Electro DMG or Energy Regen / ATK%"],
   ["mortefi", "Coordinated ATK Sub-DPS Build", "Static Mist", "Empyrean Anthem", "Hecate", "CRIT Rate / Fusion DMG or Energy Regen / ATK%"],
   ["danjin", "Havoc DPS Build", "Blazing Brilliance", "Havoc Eclipse", "Nightmare: Crownless", "CRIT Rate or CRIT DMG / Havoc DMG / ATK%"],
   ["jianxin", "Crowd Control Sub-DPS Build", "Verity's Handle", "Moonlit Clouds", "Impermanence Heron", "CRIT Rate or CRIT DMG / Aero DMG or Energy Regen / ATK%"],
@@ -129,7 +129,8 @@ const characterWeaponAlternates = {
   shorekeeper: ["Variation", "Rectifier#25", "Comet Flare"],
   verina: ["Variation", "Rectifier#25", "Comet Flare"],
   baizhi: ["Variation", "Rectifier#25", "Comet Flare"],
-  buling: ["Variation", "Rectifier#25", "Comet Flare"],
+  buling: ["Lethean Elegy", "Rime-Draped Sprouts", "Luminous Hymn", "Cosmic Ripples", "Waltz in Masquerade"],
+  lucilla: ["Whispers of Sirens", "Stringmaster", "Lethean Elegy", "Rime-Draped Sprouts", "Augment", "Waltz in Masquerade"],
   mornye: ["Discord", "Dauntless Evernight", "Broadblade#41"],
   youhu: ["Marcato", "Originite: Type IV", "Gauntlets#21D"],
   taoqi: ["Discord", "Dauntless Evernight", "Broadblade#41"],
@@ -493,7 +494,7 @@ const knownWeaponTypes = {
 
 const characters = [
   c("shorekeeper", "Shorekeeper", "Spectro", "Rectifier", ["healer", "support"], 99, ["any"], ["crit", "sustain"], "Premium sustain. Healing, Crit support, and low-stress team flow."),
-  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 96, ["havoc"], ["havoc", "hypercarry", "current-patch"], "New version 3.5 Havoc hypercarry. Current guide references point toward Rebecca, Lynae, or Phrolova as helpers, with Chisa or Shorekeeper as support."),
+  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 100, ["havoc"], ["havoc", "heavy", "bane", "hypercarry", "current-patch"], "Version 3.5 Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, or Phrolova support her damage plan; Chisa is the premium third slot, with Mornye in Lynae teams and Verina as an accessible fallback."),
   c("verina", "Verina", "Spectro", "Rectifier", ["healer", "support"], 96, ["any"], ["atk", "sustain"], "Very forgiving healer and universal support."),
   c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main", "sub"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry/sub-DPS. Likes Havoc helpers and stable sustain."),
   c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 98, ["aero"], ["aero", "erosion", "negative"], "Aero carry with strong payoff when the team supports her Erosion mechanic."),
@@ -534,7 +535,7 @@ const characters = [
   c("lynae", "Lynae", "Spectro", "Pistols", ["sub", "support"], 94, ["spectro", "tune"], ["spectro", "tune", "rupture", "strain"], "Premium Tune sub-DPS/buffer."),
   c("denia", "Denia", "Fusion", "Rectifier", ["sub"], 90, ["fusion"], ["burst"], "Fusion Burst sub-DPS."),
   c("rebecca", "Rebecca", "Electro", "Pistols", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
-  c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 82, ["glacio", "echo-skill"], ["glacio", "echo-skill"], "Glacio and Echo Skill helper while current-patch testing matures."),
+  c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 88, ["glacio", "echo-skill", "chafe"], ["glacio", "echo-skill", "chafe"], "Flexible support for Glacio Chafe and Echo Skill teams. Her Sonata and main Echo change with the team she is supporting."),
   c("phoebe", "Phoebe", "Spectro", "Rectifier", ["main", "sub", "support"], 88, ["spectro"], ["frazzle"], "Flexible Spectro/Frazzle damage or support direction."),
   c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
   c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
@@ -542,7 +543,7 @@ const characters = [
   c("suisui", "Suisui", "Glacio", "Rectifier", ["support", "healer"], 82, ["any"], ["sustain", "upcoming"], "Unreleased Resonator. Suisui is expected on the second half of the version 3.5 banner, July 31 to August 20, 2026, so WaveKit lists her guide info but does not use her in the team helper yet."),
   c("baizhi", "Baizhi", "Glacio", "Rectifier", ["healer", "support"], 74, ["any"], ["sustain"], "Accessible healer for early accounts."),
   c("youhu", "Youhu", "Glacio", "Gauntlets", ["healer", "support"], 70, ["any"], ["sustain"], "Support healer with more specific kit management."),
-  c("buling", "Buling", "Electro", "Rectifier", ["healer", "support"], 80, ["any"], ["sustain"], "Electro healer/support entry. Good as a sustain option while team-specific testing matures."),
+  c("buling", "Buling", "Electro", "Rectifier", ["healer", "support"], 82, ["skill"], ["skill", "sustain"], "Electro support who heals while amplifying Resonance Skill damage. She is most valuable beside Skill-focused carries such as Carlotta and Phrolova."),
   c("taoqi", "Taoqi", "Havoc", "Broadblade", ["defense", "support"], 62, ["havoc"], ["shield"], "Defensive support for safer teams."),
   c("rover", "Rover", "Spectro / Havoc / Aero / Electro", "Sword", ["main", "sub", "support"], 75, ["any"], ["flexible"], "Flexible account anchor with four currently available forms.")
 ];
@@ -589,7 +590,7 @@ const carryCeilingScores = {
   aemeath: 97,
   hiyuki: 97,
   galbrena: 95,
-  "yangyang-xuanling": 96,
+  "yangyang-xuanling": 100,
   jiyan: 92,
   jinhsi: 92,
   changli: 91,
@@ -611,7 +612,7 @@ const carryCeilingScores = {
 
 const teamPreferences = {
   phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
-  "yangyang-xuanling": pref(["rebecca", "lynae", "phrolova"], ["mortefi"], ["chisa", "shorekeeper", "verina", "baizhi"], ["chisa", "shorekeeper"]),
+  "yangyang-xuanling": pref(["rebecca", "lynae", "phrolova"], ["mortefi"], ["chisa", "mornye", "verina", "shorekeeper", "baizhi"], ["chisa", "verina"]),
   cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
@@ -640,7 +641,7 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
-  "yangyang-xuanling": archetype("Havoc Hypercarry", [["rebecca", "chisa"], ["lynae", "chisa"], ["phrolova", "chisa"], ["rebecca", "shorekeeper"], ["lynae", "shorekeeper"], ["phrolova", "shorekeeper"]], "Yangyang: Xuanling is a new Havoc hypercarry. Current guide references show Rebecca, Lynae, and Phrolova as primary helper options, with Chisa or Shorekeeper as the main support paths."),
+  "yangyang-xuanling": archetype("Havoc Bane Hypercarry", [["rebecca", "chisa"], ["lynae", "mornye"], ["phrolova", "chisa"], ["lynae", "chisa"], ["rebecca", "verina"], ["phrolova", "verina"]], "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, and Phrolova are her primary helpers; Chisa is the strongest general third slot, Mornye suits the Lynae route, and Verina is the accessible fallback."),
   cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
@@ -667,15 +668,15 @@ const teamArchetypes = {
 };
 
 const dataConfidence = {
-  "yangyang-xuanling": ["review", "New release - aligned to current guide references, still watching player testing"],
+  "yangyang-xuanling": ["checked", "Guide checked for version 3.5"],
   suisui: ["review", "Unreleased - banner expected July 31 to August 20, 2026"],
-  aemeath: ["review", "Needs current patch review"],
-  hiyuki: ["review", "Needs current patch review"],
+  aemeath: ["checked", "Guide checked for version 3.5"],
+  hiyuki: ["checked", "Guide checked for version 3.5"],
   denia: ["checked", "Guide checked"],
-  lucilla: ["review", "Needs current patch review"],
+  lucilla: ["checked", "Guide checked for version 3.5"],
   lucy: ["checked", "Guide checked"],
   rebecca: ["checked", "Guide checked"],
-  buling: ["review", "Needs current patch review"],
+  buling: ["checked", "Guide checked for version 3.5"],
   sigrika: ["checked", "Guide checked"],
   galbrena: ["checked", "Guide checked"],
   "luuk-herssen": ["checked", "Guide checked"],
@@ -1433,11 +1434,12 @@ function teamSpecificAdjustment(main, sub, sustain) {
 
   if (main.slug === "yangyang-xuanling") {
     if (pair.includes("rebecca") && pair.includes("chisa")) score += 44;
-    if (pair.includes("lynae") && pair.includes("chisa")) score += 40;
+    if (pair.includes("lynae") && pair.includes("mornye")) score += 42;
     if (pair.includes("phrolova") && pair.includes("chisa")) score += 36;
-    if (pair.includes("rebecca") && pair.includes("shorekeeper")) score += 34;
-    if (pair.includes("lynae") && pair.includes("shorekeeper")) score += 30;
-    if (pair.includes("phrolova") && pair.includes("shorekeeper")) score += 28;
+    if (pair.includes("lynae") && pair.includes("chisa")) score += 34;
+    if (pair.includes("rebecca") && pair.includes("verina")) score += 24;
+    if (pair.includes("phrolova") && pair.includes("verina")) score += 22;
+    if (pair.includes("shorekeeper")) score -= 10;
     if (!pair.includes("rebecca") && !pair.includes("lynae") && !pair.includes("phrolova") && !pair.includes("mortefi")) score -= 18;
   }
 
@@ -2460,6 +2462,26 @@ function characterGuideHref(character) {
 }
 
 function buildForTeam(character, team) {
+  if (character.slug === "lucilla") {
+    if (team.main.slug === "phrolova") {
+      return {
+        ...character.build,
+        build: "Echo Skill Support Build for Phrolova",
+        sonata: "Dream of the Lost + 2-piece Reel or Moonlit Clouds",
+        echo: "Voidwing Moth",
+        stats: "CRIT Rate or CRIT DMG / Glacio DMG or ATK% / ATK%"
+      };
+    }
+    if (["sigrika", "galbrena"].includes(team.main.slug)) {
+      return {
+        ...character.build,
+        build: "Moonlit Echo Skill Support Build",
+        sonata: "Moonlit Clouds",
+        echo: "Impermanence Heron",
+        stats: "CRIT Rate or CRIT DMG / Glacio DMG or ATK% / ATK%"
+      };
+    }
+  }
   if (character.slug === "qiuyuan" && team.main.slug === "sigrika") {
     return {
       ...character.build,
@@ -2626,7 +2648,7 @@ function useNote(character, team) {
     "shorekeeper": "Shorekeeper is the premium safety net. Prioritise Energy Regen and uptime so her field, healing, and Crit support are ready before hard fights.",
     "sanhua": "Sanhua is a quick helper: use her fast setup, trigger her burst window, then hand field time back to the main damage dealer.",
     "yangyang": "Yangyang is comfort utility. Use her for grouping and Energy help when a team feels scattered or starved for rotations.",
-    "yangyang-xuanling": "Yangyang: Xuanling is a new Havoc hypercarry. Set up Rebecca, Lynae, or Phrolova first, keep Chisa or Shorekeeper ready for support, then give Xuanling the focused damage window.",
+    "yangyang-xuanling": "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Set up Rebecca, Lynae, or Phrolova first, use Chisa as the premium third slot, Mornye with Lynae, or Verina as an accessible fallback, then give Xuanling the focused damage window.",
     "jianxin": "Jianxin is a defensive comfort pick. She can smooth out rough fights with grouping, shielding, and safer pacing.",
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
