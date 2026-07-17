@@ -6978,7 +6978,54 @@ h1 {
 }
 /* My WaveKit account overview */
 .account-overview-section {
+  --profile-accent: #70e7ed;
+  --profile-accent-ink: #bdf8f5;
   position: relative;
+}
+
+.account-overview-section[data-profile-accent="gold"] {
+  --profile-accent: #f2ca70;
+  --profile-accent-ink: #ffe7aa;
+}
+
+.account-overview-section[data-profile-accent="glacio"] {
+  --profile-accent: #9bbdf5;
+  --profile-accent-ink: #d9e8ff;
+}
+
+.account-overview-section[data-profile-accent="havoc"] {
+  --profile-accent: #d18bd9;
+  --profile-accent-ink: #f1c8f4;
+}
+
+.account-overview-section::before {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--profile-accent) 8%, transparent) 32%, color-mix(in srgb, var(--profile-accent) 4%, transparent) 74%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--profile-accent) 20%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--profile-accent) 16%, transparent);
+  content: "";
+  inset: 0 calc(50% - 50vw);
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.account-overview-section .section-heading .kicker,
+.account-overview-section .profile-identity-copy > span,
+.account-overview-section .account-health-card > span,
+.account-overview-section .account-plan-panel header span,
+.account-overview-section .account-saved-panel header span {
+  color: var(--profile-accent-ink);
+}
+
+.account-overview-section .section-heading h2 {
+  text-shadow: 0 0 24px color-mix(in srgb, var(--profile-accent) 18%, transparent);
+}
+
+.account-overview-section .button.primary {
+  background: linear-gradient(135deg, var(--profile-accent), color-mix(in srgb, var(--profile-accent) 68%, #f6dd8a));
+  border-color: color-mix(in srgb, var(--profile-accent) 74%, white);
+  color: #041317;
+  box-shadow: 0 7px 22px color-mix(in srgb, var(--profile-accent) 18%, transparent);
 }
 
 .account-overview {
@@ -7021,8 +7068,7 @@ h1 {
 }
 
 .profile-identity {
-  --profile-accent: #70e7ed;
-  background: linear-gradient(105deg, rgba(6, 26, 34, 0.98), rgba(11, 41, 48, 0.92));
+  background: linear-gradient(105deg, color-mix(in srgb, var(--profile-accent) 8%, #061a22), color-mix(in srgb, var(--profile-accent) 11%, #0b2930));
   border: 1px solid color-mix(in srgb, var(--profile-accent) 42%, rgba(126, 210, 219, 0.18));
   border-radius: 8px;
   display: grid;
@@ -7118,8 +7164,8 @@ h1 {
 .profile-identity-stats small { color: var(--muted); }
 
 .profile-customiser {
-  background: rgba(7, 27, 34, 0.9);
-  border: 1px solid rgba(128, 222, 231, 0.22);
+  background: color-mix(in srgb, var(--profile-accent) 7%, rgba(7, 27, 34, 0.94));
+  border: 1px solid color-mix(in srgb, var(--profile-accent) 32%, rgba(128, 222, 231, 0.16));
   border-radius: 8px;
   display: grid;
   gap: 18px;
@@ -7165,19 +7211,38 @@ h1 {
   box-shadow: 0 0 0 2px rgba(98, 231, 239, 0.15);
 }
 
-.profile-accent-swatch {
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  border-radius: 50%;
+.profile-theme-option {
+  align-items: center;
+  background: rgba(8, 28, 35, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: var(--text);
   cursor: pointer;
-  height: 34px;
-  width: 34px;
+  display: inline-flex;
+  gap: 7px;
+  min-height: 38px;
+  padding: 5px 9px;
 }
 
-.profile-accent-swatch.accent-aero { background: #70e7ed; }
-.profile-accent-swatch.accent-gold { background: #f2ca70; }
-.profile-accent-swatch.accent-glacio { background: #9bbdf5; }
-.profile-accent-swatch.accent-havoc { background: #d18bd9; }
-.profile-accent-swatch.is-selected { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18); }
+.profile-theme-option i {
+  background: var(--theme-colour);
+  border: 1px solid color-mix(in srgb, var(--theme-colour) 68%, white);
+  border-radius: 50%;
+  height: 17px;
+  width: 17px;
+}
+
+.profile-theme-option.accent-aero { --theme-colour: #70e7ed; }
+.profile-theme-option.accent-gold { --theme-colour: #f2ca70; }
+.profile-theme-option.accent-glacio { --theme-colour: #9bbdf5; }
+.profile-theme-option.accent-havoc { --theme-colour: #d18bd9; }
+.profile-theme-option:hover,
+.profile-theme-option:focus-visible,
+.profile-theme-option.is-selected {
+  background: color-mix(in srgb, var(--theme-colour) 13%, #081c23);
+  border-color: var(--theme-colour);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-colour) 16%, transparent);
+}
 
 .account-health-grid {
   display: grid;
@@ -7188,8 +7253,8 @@ h1 {
 .account-health-card,
 .account-plan-panel,
 .account-saved-panel {
-  background: rgba(7, 27, 34, 0.82);
-  border: 1px solid rgba(128, 222, 231, 0.2);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--profile-accent) 7%, rgba(7, 27, 34, 0.94)), rgba(7, 27, 34, 0.84));
+  border: 1px solid color-mix(in srgb, var(--profile-accent) 27%, rgba(128, 222, 231, 0.14));
   border-radius: 8px;
 }
 

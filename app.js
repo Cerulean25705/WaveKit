@@ -3241,6 +3241,8 @@ function renderProfileSummary() {
 
 function renderAccountOverview() {
   if (!accountOverview) return;
+  const overviewSection = accountOverview.closest(".account-overview-section");
+  if (overviewSection) overviewSection.dataset.profileAccent = state.profileAccent;
   const hasProfile = Boolean(state.activeProfileId || workingProfileHasRosterData());
   if (!hasProfile) {
     accountOverview.innerHTML = `
@@ -3287,7 +3289,7 @@ function renderAccountOverview() {
         const file = wallpapers.get(character.slug) || wallpapers.get("rover");
         return `<button class="profile-avatar-option ${state.profileAvatar === character.slug ? "is-selected" : ""}" type="button" data-profile-avatar="${character.slug}" aria-label="Use ${character.name} as profile Resonator"><img src="assets/wallpapers/${file}" alt=""><small>${character.name}</small></button>`;
       }).join("")}</div></div>
-      <div><span>Accent</span><div class="profile-accent-options" aria-label="Profile accent">${["aero", "gold", "glacio", "havoc"].map((accent) => `<button class="profile-accent-swatch accent-${accent} ${state.profileAccent === accent ? "is-selected" : ""}" type="button" data-profile-accent="${accent}" aria-label="Use ${accent} accent"></button>`).join("")}</div></div>
+      <div><span>Profile theme</span><div class="profile-accent-options" aria-label="Profile theme">${Object.entries({ aero: "Tidal", gold: "Solar", glacio: "Frost", havoc: "Midnight" }).map(([accent, label]) => `<button class="profile-theme-option accent-${accent} ${state.profileAccent === accent ? "is-selected" : ""}" type="button" data-profile-accent="${accent}" aria-label="Use ${label} profile theme"><i aria-hidden="true"></i><span>${label}</span></button>`).join("")}</div></div>
     </div>
 
     <div class="account-health-grid">
