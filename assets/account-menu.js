@@ -2,7 +2,7 @@ const header = document.querySelector(".seo-topbar");
 const profileStorageKey = "wavekit-profiles-v1";
 
 if (header && !header.querySelector("[data-shared-account]")) {
-  const helperUrl = new URL("../#helper", import.meta.url).href;
+  const profileUrl = new URL("../#my-wavekit", import.meta.url).href;
   const account = document.createElement("div");
   account.className = "account-bar";
   account.dataset.sharedAccount = "";
@@ -24,7 +24,7 @@ if (header && !header.querySelector("[data-shared-account]")) {
           <strong data-user-label>Signed in</strong>
           <span class="account-id" data-user-id>WaveKit ID pending</span>
           <span class="account-auto-sync"><strong>Automatic sync is on</strong><small>Your helper profile syncs whenever you make changes.</small></span>
-          <a class="button primary compact-button" href="${helperUrl}">Open profile</a>
+          <a class="button primary compact-button" href="${profileUrl}">Open My WaveKit</a>
           <button class="button ghost compact-button" data-copy-id type="button">Copy ID</button>
           <button class="button ghost compact-button" data-sign-out type="button">Sign out</button>
         </div>

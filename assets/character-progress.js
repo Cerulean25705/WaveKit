@@ -85,7 +85,10 @@
         <h2>Plan your ${kit.escape(guide.name)} upgrades</h2>
         <p>See the materials at a glance, or set your current levels for an exact remaining list.</p>
       </div>
-      <strong data-material-save-status>${profile ? "Profile connected" : "Local planner"}</strong>
+      <div class="material-planner-actions">
+        <strong data-material-save-status>${profile ? "Profile connected" : "Local planner"}</strong>
+        <button class="button primary compact-button" type="button" data-build-plan-toggle>${profile?.buildPlan?.includes(guide.slug) ? "In Build Plan" : "Add to Build Plan"}</button>
+      </div>
     </header>
 
     <details class="material-section" open>
@@ -142,6 +145,7 @@
   }
 
   const saveStatus = planner.querySelector("[data-material-save-status]");
+  const buildPlanButton = planner.querySelector("[data-build-plan-toggle]");
   const readPlan = () => ({
     currentLevel: Number(planner.querySelector('[data-material-level="currentLevel"]').value),
     targetLevel: Number(planner.querySelector('[data-material-level="targetLevel"]').value),
@@ -215,6 +219,24 @@
   });
 
   planner.addEventListener("click", (event) => {
+    if (event.target.closest("[data-build-plan-toggle]")) {
+      const store = loadProfiles();
+      let currentProfile = activeProfile(store);
+      if (!currentProfile) {
+        currentProfile = { id: `profile-${Date.now()}`, profileName: "WaveKit profile", updatedAt: new Date().toISOString(), owned: {}, weapons: [], progress: {}, buildPlan: [] };
+        store.profiles.push(currentProfile);
+        store.activeProfileId = currentProfile.id;
+      }
+      const index = store.profiles.findIndex((entry) => entry.id === currentProfile.id);
+      const buildPlan = new Set(store.profiles[index].buildPlan || []);
+      buildPlan.has(guide.slug) ? buildPlan.delete(guide.slug) : buildPlan.add(guide.slug);
+      store.profiles[index] = { ...store.profiles[index], buildPlan: [...buildPlan], updatedAt: new Date().toISOString() };
+      localStorage.setItem(profileStorageKey, JSON.stringify(store));
+      buildPlanButton.textContent = buildPlan.has(guide.slug) ? "In Build Plan" : "Add to Build Plan";
+      saveStatus.textContent = buildPlan.has(guide.slug) ? "Added to Build Plan" : "Removed from Build Plan";
+      window.dispatchEvent(new CustomEvent("wavekit:profile-changed", { detail: { source: "build-plan" } }));
+      return;
+    }
     const button = event.target.closest("[data-material-preset]");
     if (!button) return;
     planner.querySelector('[data-material-level="targetLevel"]').value = "90";

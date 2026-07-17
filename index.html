@@ -30,7 +30,7 @@
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=release-audit-1">
+    <link rel="stylesheet" href="styles.css?v=my-wavekit-1">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -63,6 +63,8 @@
               "Weapon-aware build notes",
               "Character guide pages for Resonators",
               "Character and weapon material planners",
+              "Private account overview with saved teams and Build Plans",
+              "Owned-team tuning with role-safe alternatives",
               "Optional cloud sync for profiles"
             ],
             "publisher": {
@@ -151,6 +153,7 @@
       </a>
       <nav class="topnav" aria-label="Page sections">
         <a href="#how">How it works</a>
+        <a href="#my-wavekit">My WaveKit</a>
         <a href="#characters">Characters</a>
         <a href="weapons/">Weapons</a>
         <a href="#helper">Helper</a>
@@ -178,6 +181,7 @@
               <strong id="cloud-user-label">Signed in</strong>
               <span id="cloud-user-id" class="account-id">WaveKit ID pending</span>
               <span class="account-auto-sync"><strong>Automatic sync is on</strong><small>Profile changes sync as you make them.</small></span>
+              <a class="button primary compact-button" href="#my-wavekit">Open My WaveKit</a>
               <button id="cloud-copy-id" class="button ghost compact-button" type="button">Copy ID</button>
               <button id="cloud-discord-code" class="button ghost compact-button" type="button">Discord code</button>
               <button id="cloud-sign-out" class="button ghost compact-button" type="button">Sign out</button>
@@ -242,6 +246,21 @@
             <p>Newer or less-confirmed character data is marked for review instead of being presented as absolute truth.</p>
           </article>
         </div>
+      </section>
+
+      <section id="my-wavekit" class="section account-overview-section" aria-labelledby="my-wavekit-title">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Your account</p>
+            <h2 id="my-wavekit-title">My WaveKit</h2>
+            <p>Your roster, saved teams, and upgrade plans in one private overview. Everything works locally and syncs automatically when you sign in.</p>
+          </div>
+          <div class="section-inline-actions">
+            <a class="button ghost" href="#helper">Edit roster</a>
+            <button id="profile-customise" class="button primary" type="button">Customise profile</button>
+          </div>
+        </div>
+        <div id="account-overview" class="account-overview" aria-live="polite"></div>
       </section>
 
       <section id="characters" class="section character-library-section" aria-labelledby="characters-title">
@@ -720,8 +739,8 @@
             <h3>Recently improved</h3>
           </div>
           <ol class="changelog-list">
-            <li><strong>Jul 17</strong><span>Rechecked version 3.5 banners and corrected Yangyang: Xuanling, Hiyuki, Lucilla, and Buling guide data.</span></li>
-            <li><strong>Jul 15</strong><span>Added materials planning, weapon guidance, and current banner watch.</span></li>
+            <li><strong>Jul 17</strong><span>Added My WaveKit, saved teams, a combined Build Plan, and owned-team tuning.</span></li>
+            <li><strong>Jul 17</strong><span>Rechecked version 3.5 banners and corrected current character guide data.</span></li>
           </ol>
         </div>
       </section>
@@ -743,7 +762,21 @@
       <button id="flow-next-button" class="button primary" type="button">Start</button>
     </div>
 
+    <dialog id="team-tuner" class="team-tuner-dialog" aria-labelledby="team-tuner-title">
+      <form method="dialog" class="team-tuner-shell">
+        <header class="team-tuner-header">
+          <div>
+            <span class="kicker">Tune this team</span>
+            <h2 id="team-tuner-title">Adjust an owned teammate</h2>
+            <p id="team-tuner-subtitle">WaveKit only shows replacements that keep a coherent team plan.</p>
+          </div>
+          <button class="icon-button team-tuner-close" value="cancel" type="submit" aria-label="Close team tuner">×</button>
+        </header>
+        <div id="team-tuner-content"></div>
+      </form>
+    </dialog>
+
     <script src="assets/weapon-images.js?v=proper-weapons-2"></script>
-    <script src="app.js?v=release-audit-1"></script>
+    <script src="app.js?v=my-wavekit-4"></script>
   </body>
 </html>

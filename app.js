@@ -571,12 +571,18 @@ const state = {
   focus: new Set(),
   weapons: new Set(),
   progress: {},
-  weaponProgress: {}
+  weaponProgress: {},
+  profileAvatar: "rover",
+  profileAccent: "aero",
+  savedTeams: [],
+  buildPlan: []
 };
 
 let autoSaveTimer = null;
 let autoSyncRetryTimer = null;
 let autoSyncing = false;
+let teamTunerDraft = null;
+let materialKitPromise = null;
 
 const suggestionStyleOptions = ["Best Teams", "Ready Now", "Build Priority"];
 const roleFilters = ["All", "Main DPS", "Sub DPS", "Support", "Healer", "Defense"];
@@ -691,6 +697,9 @@ const buildResults = $("#build-results");
 const profileEditor = $("#profile-editor");
 const profileList = $("#profile-list");
 const profileSummary = $("#profile-summary");
+const accountOverview = $("#account-overview");
+const teamTuner = $("#team-tuner");
+const teamTunerContent = $("#team-tuner-content");
 const flowNext = $("#flow-next");
 const flowNextStep = $("#flow-next-step");
 const flowNextTitle = $("#flow-next-title");
@@ -1229,7 +1238,29 @@ function generateTeams() {
     coherentCandidates.sort((a, b) => b.score - a.score);
     teams.push(...dedupeTeams(coherentCandidates).slice(0, 3).map((team, index) => ({ ...team, mainRank: index + 1 })));
   });
-  return keepRoverVisible(teams.sort((a, b) => b.score - a.score));
+  return includeSavedTeams(keepRoverVisible(teams.sort((a, b) => b.score - a.score)));
+}
+
+function includeSavedTeams(teams) {
+  const seen = new Set(teams.map((team) => team.members.map((member) => member.slug).join("|")));
+  const saved = state.savedTeams.flatMap((record) => {
+    if (record.members.includes("rover") && record.roverForm !== state.roverForm) return [];
+    const team = teamObjectFromSlugs(record.members);
+    if (!team) return [];
+    const key = team.members.map((member) => member.slug).join("|");
+    if (seen.has(key)) return [];
+    seen.add(key);
+    return [team];
+  });
+  return [...teams, ...saved];
+}
+
+function teamObjectFromSlugs(slugs) {
+  const pool = activeCharacters();
+  const members = slugs.map((slug) => pool.find((character) => character.slug === slug));
+  if (members.some((member) => !member) || members.some((member) => !state.owned[member.slug])) return null;
+  const [main, sub, third] = members;
+  return { members, main, score: scoreTeam(main, sub, third), reason: reasonTeam(main, sub, third), custom: true };
 }
 
 function keepRoverVisible(teams) {
@@ -1616,6 +1647,34 @@ function renderResults() {
       reportTeam(button.dataset.reportTeam, teams);
     });
   });
+  teamResults.querySelectorAll("[data-tune-team]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const team = teams.find((entry) => teamKey(entry) === button.dataset.tuneTeam);
+      if (team) openTeamTuner(team);
+    });
+  });
+  teamResults.querySelectorAll("[data-save-team]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const team = teams.find((entry) => teamKey(entry) === button.dataset.saveTeam);
+      if (!team) return;
+      saveTeamRecord(team);
+      button.textContent = "Saved";
+      renderAccountOverview();
+    });
+  });
+  teamResults.querySelectorAll("[data-plan-team]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const team = teams.find((entry) => teamKey(entry) === button.dataset.planTeam);
+      if (!team) return;
+      state.buildPlan = [...new Set([...state.buildPlan, ...team.members.map((member) => member.slug)])];
+      markUnsaved();
+      button.textContent = "Added to Build Plan";
+      renderAccountOverview();
+    });
+  });
   renderBuilds(teams);
   renderFeedbackContext(teams);
   renderFlowNext(teams);
@@ -1776,6 +1835,9 @@ function selectedTeamPreview(team) {
       </div>
       <div class="team-actions">
         <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
+        <button class="button ghost" type="button" data-tune-team="${teamKey(team)}">Tune team</button>
+        <button class="button ghost" type="button" data-save-team="${teamKey(team)}">Save team</button>
+        <button class="button ghost" type="button" data-plan-team="${teamKey(team)}">Plan this team</button>
         <button class="button ghost team-report-button" type="button" data-report-team="${teamKey(team)}">Report this team</button>
       </div>
     </aside>
@@ -2008,6 +2070,129 @@ function teamCard(team, group, index) {
 
 function teamKey(team) {
   return `${state.roverForm}:${team.members.map((member) => member.slug).join("|")}`;
+}
+
+function openSavedOrSuggestedTeam(key) {
+  const [form] = key.split(":");
+  if (roverForms[form]) {
+    state.roverForm = form;
+    state.roverForms.add(form);
+  }
+  const team = generateTeams().find((entry) => teamKey(entry) === key);
+  if (!team) return;
+  state.selectedTeamKey = teamKey(team);
+  state.flowVisitedResults = true;
+  render();
+  scrollToSection("#results");
+}
+
+function saveTeamRecord(team) {
+  const record = { members: team.members.map((member) => member.slug), roverForm: state.roverForm, savedAt: new Date().toISOString() };
+  const key = savedTeamRecordKey(record);
+  state.savedTeams = [record, ...state.savedTeams.filter((entry) => savedTeamRecordKey(entry) !== key)].slice(0, 12);
+  state.selectedTeamKey = key;
+  markUnsaved();
+  return key;
+}
+
+function openTeamTuner(team) {
+  if (!teamTuner || !teamTunerContent) return;
+  teamTunerDraft = {
+    original: team.members.map((member) => member.slug),
+    members: team.members.map((member) => member.slug),
+    slot: 1
+  };
+  renderTeamTuner();
+  if (typeof teamTuner.showModal === "function") teamTuner.showModal();
+  else teamTuner.setAttribute("open", "");
+}
+
+function renderTeamTuner() {
+  if (!teamTunerDraft || !teamTunerContent) return;
+  const current = teamObjectFromSlugs(teamTunerDraft.members);
+  const original = teamObjectFromSlugs(teamTunerDraft.original);
+  if (!current || !original) {
+    teamTunerContent.innerHTML = `<div class="empty-state">This team is no longer available from the selected roster.</div>`;
+    return;
+  }
+  const slot = teamTunerDraft.slot;
+  const options = tunerCandidates(current, slot);
+  const slotName = slot === 1 ? "setup helper" : "third slot";
+  teamTunerContent.innerHTML = `
+    <div class="team-tuner-current">
+      ${current.members.map((member, index) => `<button class="tuner-slot ${slot === index ? "is-active" : ""} ${index === 0 ? "is-locked" : ""}" type="button" ${index === 0 ? "disabled" : `data-tuner-slot="${index}"`}><img src="assets/wallpapers/${wallpapers.get(member.slug) || wallpapers.get("rover")}" alt=""><span><small>${index === 0 ? "Main damage" : index === 1 ? "Setup helper" : "Third slot"}</small><strong>${member.name}</strong></span></button>`).join("")}
+    </div>
+    <div class="team-tuner-layout">
+      <section class="tuner-options">
+        <header><span>Compatible owned alternatives</span><h3>Choose the ${slotName}</h3></header>
+        <div>${options.length ? options.map((option) => tunerOption(option, current.members[slot])).join("") : `<p>No other selected Resonator preserves this team’s role and synergy requirements.</p>`}</div>
+      </section>
+      <aside class="tuner-impact">
+        <span>Adjusted team</span>
+        <h3>${current.members.map((member) => member.name).join(" / ")}</h3>
+        <dl>
+          <div><dt>Fit</dt><dd>${teamFitLabel(current)}</dd></div>
+          <div><dt>Safety</dt><dd>${safetyLabel(current)}</dd></div>
+          <div><dt>Difficulty</dt><dd>${difficultyLabel(current)}</dd></div>
+        </dl>
+        <p>${teamFitDetail(current)} ${safetyDetail(current)}</p>
+        <details class="tuner-compare">
+          <summary>Compare with original</summary>
+          <div><span><small>Original</small><strong>${original.members.map((member) => member.name).join(" / ")}</strong><em>${teamFitLabel(original)} · ${safetyLabel(original)}</em></span><span><small>Adjusted</small><strong>${current.members.map((member) => member.name).join(" / ")}</strong><em>${teamFitLabel(current)} · ${safetyLabel(current)}</em></span></div>
+        </details>
+        <div class="team-actions">
+          <button id="save-tuned-team" class="button primary" type="button">Save this version</button>
+          <button id="plan-tuned-team" class="button ghost" type="button">Add to Build Plan</button>
+        </div>
+      </aside>
+    </div>`;
+
+  teamTunerContent.querySelectorAll("[data-tuner-slot]").forEach((button) => button.addEventListener("click", () => {
+    teamTunerDraft.slot = Number(button.dataset.tunerSlot);
+    renderTeamTuner();
+  }));
+  teamTunerContent.querySelectorAll("[data-tuner-character]").forEach((button) => button.addEventListener("click", () => {
+    teamTunerDraft.members[teamTunerDraft.slot] = button.dataset.tunerCharacter;
+    renderTeamTuner();
+  }));
+  teamTunerContent.querySelector("#save-tuned-team")?.addEventListener("click", () => {
+    const tuned = teamObjectFromSlugs(teamTunerDraft.members);
+    if (!tuned) return;
+    saveTeamRecord(tuned);
+    teamTuner.close();
+    render();
+    scrollToSection("#results");
+  });
+  teamTunerContent.querySelector("#plan-tuned-team")?.addEventListener("click", (event) => {
+    state.buildPlan = [...new Set([...state.buildPlan, ...current.members.map((member) => member.slug)])];
+    markUnsaved();
+    event.currentTarget.textContent = "Added to Build Plan";
+    renderAccountOverview();
+  });
+}
+
+function tunerCandidates(team, slot) {
+  const currentSlug = team.members[slot].slug;
+  return activeCharacters().filter((character) => {
+    if (!state.owned[character.slug]) return false;
+    if (team.members.some((member, index) => index !== slot && member.slug === character.slug)) return false;
+    if (slot === 1 && !(character.roles.includes("sub") || character.roles.includes("support") || character.roles.includes("defense"))) return false;
+    if (slot === 2 && !(character.roles.includes("healer") || character.roles.includes("support") || character.roles.includes("defense"))) return false;
+    const slugs = team.members.map((member) => member.slug);
+    slugs[slot] = character.slug;
+    const candidate = teamObjectFromSlugs(slugs);
+    return Boolean(candidate && (character.slug === currentSlug || isSuggestibleTeam(candidate)));
+  }).map((character) => {
+    const slugs = team.members.map((member) => member.slug);
+    slugs[slot] = character.slug;
+    return { character, team: teamObjectFromSlugs(slugs) };
+  }).sort((a, b) => b.team.score - a.team.score).slice(0, 8);
+}
+
+function tunerOption(option, selected) {
+  const file = wallpapers.get(option.character.slug) || wallpapers.get("rover");
+  const selectedClass = selected.slug === option.character.slug ? "is-selected" : "";
+  return `<button class="tuner-option ${selectedClass}" type="button" data-tuner-character="${option.character.slug}"><img src="assets/wallpapers/${file}" alt=""><span><strong>${option.character.name}</strong><small>${teamFitLabel(option.team)} · ${safetyLabel(option.team)}</small></span><em>${selectedClass ? "Current" : "Use"}</em></button>`;
 }
 
 function selectTeam(key, jumpToBuilds) {
@@ -2731,17 +2916,21 @@ function profilePayload() {
     focus: [...state.focus],
     weapons: [...state.weapons],
     progress: state.progress,
-    weaponProgress: state.weaponProgress
+    weaponProgress: state.weaponProgress,
+    profileAvatar: state.profileAvatar,
+    profileAccent: state.profileAccent,
+    savedTeams: state.savedTeams,
+    buildPlan: state.buildPlan
   };
 }
 
 function profileHasRosterData(profile) {
   const payload = normaliseProfile(profile || {});
-  return Boolean(Object.keys(payload.owned).length || payload.focus.length || payload.weapons.length);
+  return Boolean(Object.keys(payload.owned).length || payload.focus.length || payload.weapons.length || payload.savedTeams.length || payload.buildPlan.length);
 }
 
 function workingProfileHasRosterData() {
-  return Boolean(Object.keys(state.owned).length || state.focus.size || state.weapons.size);
+  return Boolean(Object.keys(state.owned).length || state.focus.size || state.weapons.size || state.savedTeams.length || state.buildPlan.length);
 }
 
 function loadProfile() {
@@ -2794,6 +2983,10 @@ function normaliseProfile(payload) {
   const owned = Object.fromEntries(
     Object.entries(payload.owned || {}).filter(([slug]) => !upcomingCharacters.has(slug))
   );
+  const progress = normaliseProgress(payload.progress || {});
+  const plannedFromProgress = Object.entries(progress)
+    .filter(([, value]) => value.materialPlan)
+    .map(([slug]) => slug);
   return {
     profileName: payload.profileName || "",
     experience: payload.experience || "New",
@@ -2805,9 +2998,37 @@ function normaliseProfile(payload) {
     owned,
     focus: (payload.focus || payload.favorites || []).filter((slug) => !upcomingCharacters.has(slug)),
     weapons: (payload.weapons || []).filter((weapon) => !upcomingWeapons.has(weapon)),
-    progress: normaliseProgress(payload.progress || {}),
-    weaponProgress: normaliseWeaponProgress(payload.weaponProgress || {})
+    progress,
+    weaponProgress: normaliseWeaponProgress(payload.weaponProgress || {}),
+    profileAvatar: normaliseProfileAvatar(payload.profileAvatar, owned),
+    profileAccent: normaliseProfileAccent(payload.profileAccent),
+    savedTeams: normaliseSavedTeams(payload.savedTeams),
+    buildPlan: [...new Set([...(payload.buildPlan || []), ...plannedFromProgress])]
+      .filter((slug) => characters.some((character) => character.slug === slug) && !upcomingCharacters.has(slug))
   };
+}
+
+function normaliseProfileAvatar(avatar, owned) {
+  if (avatar && characters.some((character) => character.slug === avatar) && !upcomingCharacters.has(avatar)) return avatar;
+  return Object.keys(owned)[0] || "rover";
+}
+
+function normaliseProfileAccent(accent) {
+  return ["aero", "gold", "glacio", "havoc"].includes(accent) ? accent : "aero";
+}
+
+function normaliseSavedTeams(savedTeams) {
+  if (!Array.isArray(savedTeams)) return [];
+  const seen = new Set();
+  return savedTeams.flatMap((record) => {
+    const members = Array.isArray(record?.members) ? record.members.slice(0, 3) : [];
+    if (members.length !== 3 || new Set(members).size !== 3 || members.some((slug) => !characters.some((character) => character.slug === slug) || upcomingCharacters.has(slug))) return [];
+    const roverForm = roverForms[record.roverForm] ? record.roverForm : "Aero";
+    const key = `${roverForm}:${members.join("|")}`;
+    if (seen.has(key)) return [];
+    seen.add(key);
+    return [{ members, roverForm, savedAt: record.savedAt || new Date().toISOString() }];
+  }).slice(0, 12);
 }
 
 function normaliseProgress(progress) {
@@ -2885,6 +3106,10 @@ function applyProfile(profile) {
   state.weapons = new Set(payload.weapons);
   state.progress = payload.progress;
   state.weaponProgress = payload.weaponProgress;
+  state.profileAvatar = payload.profileAvatar;
+  state.profileAccent = payload.profileAccent;
+  state.savedTeams = payload.savedTeams;
+  state.buildPlan = payload.buildPlan;
   state.selectedTeamKey = "";
   state.showAllTeams = false;
   resetFlowGuide();
@@ -2909,6 +3134,10 @@ function clearWorkingProfile() {
   state.weapons = new Set();
   state.progress = {};
   state.weaponProgress = {};
+  state.profileAvatar = "rover";
+  state.profileAccent = "aero";
+  state.savedTeams = [];
+  state.buildPlan = [];
 }
 
 function resetProfile() {
@@ -3010,6 +3239,208 @@ function renderProfileSummary() {
   `;
 }
 
+function renderAccountOverview() {
+  if (!accountOverview) return;
+  const hasProfile = Boolean(state.activeProfileId || workingProfileHasRosterData());
+  if (!hasProfile) {
+    accountOverview.innerHTML = `
+      <div class="account-overview-empty">
+        <span class="profile-orbit" aria-hidden="true"><img src="assets/wavekit-mark.png" alt=""></span>
+        <div><strong>Your account overview will appear here</strong><p>Select your Resonators in the helper and WaveKit will organise your teams, plans, and account gaps automatically.</p></div>
+        <a class="button primary" href="#helper">Start profile</a>
+      </div>`;
+    return;
+  }
+
+  const teams = generateTeams();
+  const best = teams[0];
+  const avatar = characters.find((character) => character.slug === state.profileAvatar) || characters.find((character) => character.slug === "rover");
+  const avatarFile = wallpapers.get(avatar.slug) || wallpapers.get("rover");
+  const ownedCharacters = activeCharacters().filter((character) => state.owned[character.slug]);
+  const mains = ownedCharacters.filter((character) => character.roles.includes("main"));
+  const healers = ownedCharacters.filter((character) => character.roles.includes("healer"));
+  const helpers = ownedCharacters.filter((character) => character.roles.includes("sub") || character.roles.includes("support"));
+  const unsupported = mains.filter((main) => !ownedNamedPartner(main)).slice(0, 3);
+  const avatarChoices = (ownedCharacters.length ? ownedCharacters : activeCharacters().filter((character) => character.slug === "rover"))
+    .slice().sort((a, b) => a.name.localeCompare(b.name)).slice(0, 12);
+
+  accountOverview.innerHTML = `
+    <article class="profile-identity profile-accent-${state.profileAccent}">
+      <div class="profile-identity-art" style="--profile-focus:${chipFocus(avatar)}">
+        <img src="assets/wallpapers/${avatarFile}" alt="${avatar.name}">
+      </div>
+      <div class="profile-identity-copy">
+        <span>${cloud.user ? "Cloud profile synced" : "Private local profile"}</span>
+        <h3>${state.profileName || "WaveKit profile"}</h3>
+        <p>${best ? `${best.main.name} currently leads your strongest complete team path.` : "Add a main damage Resonator and compatible helpers to unlock team analysis."}</p>
+        <div class="profile-identity-stats">
+          <span><strong>${ownedCharacters.length}</strong><small>Resonators</small></span>
+          <span><strong>${state.weapons.size}</strong><small>Weapons</small></span>
+          <span><strong>${state.savedTeams.length}</strong><small>Saved teams</small></span>
+          <span><strong>${state.buildPlan.length}</strong><small>Build targets</small></span>
+        </div>
+      </div>
+    </article>
+
+    <div id="profile-customiser" class="profile-customiser" hidden>
+      <div><span>Profile Resonator</span><div class="profile-avatar-options">${avatarChoices.map((character) => {
+        const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+        return `<button class="profile-avatar-option ${state.profileAvatar === character.slug ? "is-selected" : ""}" type="button" data-profile-avatar="${character.slug}" aria-label="Use ${character.name} as profile Resonator"><img src="assets/wallpapers/${file}" alt=""><small>${character.name}</small></button>`;
+      }).join("")}</div></div>
+      <div><span>Accent</span><div class="profile-accent-options" aria-label="Profile accent">${["aero", "gold", "glacio", "havoc"].map((accent) => `<button class="profile-accent-swatch accent-${accent} ${state.profileAccent === accent ? "is-selected" : ""}" type="button" data-profile-accent="${accent}" aria-label="Use ${accent} accent"></button>`).join("")}</div></div>
+    </div>
+
+    <div class="account-health-grid">
+      <article class="account-health-card">
+        <span>Strongest complete path</span>
+        ${best ? `<div class="account-team-line">${miniTeamIcons(best)}<strong>${best.members.map((member) => member.name).join(" / ")}</strong></div><p>${teamFitLabel(best)} · ${safetyLabel(best)}</p><button class="button ghost compact-button" type="button" data-open-team="${teamKey(best)}">Open team</button>` : `<strong>No complete team yet</strong><p>The helper is waiting for a coherent damage, helper, and third-slot combination.</p><a class="button ghost compact-button" href="#helper">Edit roster</a>`}
+      </article>
+      <article class="account-health-card">
+        <span>Role coverage</span>
+        <strong>${mains.length} damage · ${helpers.length} helpers · ${healers.length} healers</strong>
+        <p>${healers.length ? "Your account has real sustain available for safer teams." : "No real healer is selected, so difficult fights may offer less mistake recovery."}</p>
+      </article>
+      <article class="account-health-card">
+        <span>Account opportunity</span>
+        <strong>${accountOpportunityTitle(unsupported, healers)}</strong>
+        <p>${accountOpportunityDetail(unsupported, healers)}</p>
+      </article>
+    </div>
+
+    <div class="account-detail-grid">
+      <section class="account-plan-panel">
+        <header><div><span>Build Plan</span><h3>What you are working toward</h3></div>${state.buildPlan.length ? `<button id="calculate-materials" class="button ghost compact-button" type="button">Combine materials</button>` : ""}</header>
+        <div class="account-plan-list">${state.buildPlan.length ? state.buildPlan.map(buildPlanItem).join("") : `<div class="account-panel-empty"><p>Add a Resonator from their character guide or plan all three members of a selected team.</p><a class="button ghost compact-button" href="characters/">Browse character guides</a></div>`}</div>
+        <div id="combined-materials" class="combined-materials" hidden></div>
+      </section>
+      <section class="account-saved-panel">
+        <header><div><span>Saved teams</span><h3>Your chosen versions</h3></div></header>
+        <div class="account-saved-list">${state.savedTeams.length ? state.savedTeams.map(savedTeamItem).join("") : `<div class="account-panel-empty"><p>Save a suggestion or an adjusted team and it will stay here.</p><a class="button ghost compact-button" href="#results">View suggestions</a></div>`}</div>
+      </section>
+    </div>`;
+
+  accountOverview.querySelectorAll("[data-profile-avatar]").forEach((button) => button.addEventListener("click", () => {
+    state.profileAvatar = button.dataset.profileAvatar;
+    markUnsaved();
+    renderAccountOverview();
+    showProfileCustomiser();
+  }));
+  accountOverview.querySelectorAll("[data-profile-accent]").forEach((button) => button.addEventListener("click", () => {
+    state.profileAccent = button.dataset.profileAccent;
+    markUnsaved();
+    renderAccountOverview();
+    showProfileCustomiser();
+  }));
+  accountOverview.querySelectorAll("[data-open-team]").forEach((button) => button.addEventListener("click", () => openSavedOrSuggestedTeam(button.dataset.openTeam)));
+  accountOverview.querySelectorAll("[data-remove-plan]").forEach((button) => button.addEventListener("click", () => {
+    state.buildPlan = state.buildPlan.filter((slug) => slug !== button.dataset.removePlan);
+    markUnsaved();
+    renderAccountOverview();
+  }));
+  accountOverview.querySelectorAll("[data-remove-saved-team]").forEach((button) => button.addEventListener("click", () => {
+    state.savedTeams = state.savedTeams.filter((record) => savedTeamRecordKey(record) !== button.dataset.removeSavedTeam);
+    markUnsaved();
+    renderAccountOverview();
+  }));
+  accountOverview.querySelector("#calculate-materials")?.addEventListener("click", renderCombinedMaterials);
+}
+
+function ownedNamedPartner(main) {
+  const preferred = new Set([...(teamPreferences[main.slug]?.core || []), ...(teamArchetypes[main.slug]?.ideal || []).flat()]);
+  if (!preferred.size) return true;
+  return [...preferred].some((slug) => state.owned[slug]);
+}
+
+function accountOpportunityTitle(unsupported, healers) {
+  if (!healers.length) return "Add a sustain option";
+  if (unsupported.length) return `${unsupported[0].name} needs a closer partner`;
+  return "Core roles are covered";
+}
+
+function accountOpportunityDetail(unsupported, healers) {
+  if (!healers.length) return "Selecting a healer such as Verina, Shorekeeper, Baizhi, Mornye, or another owned sustain unit will unlock safer recommendations.";
+  if (unsupported.length) return `${unsupported.map((character) => character.name).join(", ")} do not currently have one of their named archetype partners selected.`;
+  return "Your selected main damage characters have at least one relevant helper and a real healer available.";
+}
+
+function buildPlanItem(slug) {
+  const character = characters.find((entry) => entry.slug === slug);
+  if (!character) return "";
+  const file = wallpapers.get(slug) || wallpapers.get("rover");
+  const plan = state.progress[slug]?.materialPlan;
+  const level = plan ? `Level ${plan.currentLevel} → ${plan.targetLevel}` : "Targets not set yet";
+  return `<article><a href="characters/${slug}/"><img src="assets/wallpapers/${file}" alt=""><span><strong>${character.name}</strong><small>${level}</small></span></a><button class="icon-button" type="button" data-remove-plan="${slug}" aria-label="Remove ${character.name} from Build Plan">×</button></article>`;
+}
+
+function savedTeamRecordKey(record) {
+  return `${record.roverForm || "Aero"}:${record.members.join("|")}`;
+}
+
+function savedTeamItem(record) {
+  const names = record.members.map(characterName);
+  const members = record.members.map((slug) => characters.find((character) => character.slug === slug)).filter(Boolean);
+  return `<article><button class="account-saved-team" type="button" data-open-team="${savedTeamRecordKey(record)}"><span class="mini-team" aria-hidden="true">${members.map((member) => { const file = wallpapers.get(member.slug) || wallpapers.get("rover"); return `<img src="assets/wallpapers/${file}" alt="">`; }).join("")}</span><span><strong>${names.join(" / ")}</strong><small>${record.roverForm || "Aero"} Rover profile</small></span></button><button class="icon-button" type="button" data-remove-saved-team="${savedTeamRecordKey(record)}" aria-label="Remove saved team">×</button></article>`;
+}
+
+function showProfileCustomiser() {
+  const customiser = accountOverview?.querySelector("#profile-customiser");
+  if (customiser) customiser.hidden = false;
+}
+
+async function renderCombinedMaterials() {
+  const output = accountOverview?.querySelector("#combined-materials");
+  if (!output) return;
+  output.hidden = false;
+  output.innerHTML = `<p>Preparing your combined material list...</p>`;
+  try {
+    const kit = await ensureMaterialKit();
+    const costs = {};
+    state.buildPlan.forEach((slug) => {
+      const record = kit.data.characters[slug];
+      if (!record) return;
+      const plan = state.progress[slug]?.materialPlan || defaultMaterialPlan();
+      Object.entries(kit.characterPlan(record, plan).costs).forEach(([id, quantity]) => {
+        costs[id] = (costs[id] || 0) + Number(quantity || 0);
+      });
+    });
+    const groups = kit.groupedCosts(costs);
+    output.innerHTML = groups.size ? [...groups].map(([category, items]) => `<section><h4>${category}</h4><div>${items.map((item) => `<span><img src="${item.icon}" alt="" loading="lazy"><b>${item.name}</b><strong>x${kit.formatNumber(item.quantity)}</strong></span>`).join("")}</div></section>`).join("") : `<p>Your current Build Plan targets are already complete.</p>`;
+  } catch (error) {
+    console.error("WaveKit combined material planner could not load.", error);
+    output.innerHTML = `<p>The material list could not be loaded. Individual character planners still remain available.</p>`;
+  }
+}
+
+function defaultMaterialPlan() {
+  return { currentLevel: 1, targetLevel: 90, currentAscended: false, skills: Object.fromEntries(["normal", "skill", "forte", "liberation", "intro"].map((key) => [key, { current: 1, target: 8 }])), includePassives: false };
+}
+
+function ensureMaterialKit() {
+  if (window.WaveKitMaterials) return Promise.resolve(window.WaveKitMaterials);
+  if (materialKitPromise) return materialKitPromise;
+  materialKitPromise = loadScript("assets/material-data.js?v=my-wavekit-1")
+    .then(() => loadScript("assets/material-planner-core.js?v=my-wavekit-1"))
+    .then(() => {
+      if (!window.WaveKitMaterials) throw new Error("Material planner did not initialise.");
+      return window.WaveKitMaterials;
+    })
+    .catch((error) => {
+      materialKitPromise = null;
+      throw error;
+    });
+  return materialKitPromise;
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.append(script);
+  });
+}
+
 function renderSuggestionStyle() {
   renderSegmented("#suggestion-style-options", suggestionStyleOptions, state.suggestionStyle, (value) => {
     state.suggestionStyle = value;
@@ -3026,6 +3457,7 @@ function render() {
   $("#profile-name").value = state.profileName;
   renderProfileManager();
   renderCloudSync();
+  renderAccountOverview();
   renderSuggestionStyle();
   renderRoleFilters();
   renderCharacters();
@@ -3452,6 +3884,12 @@ $("#reset-profile").addEventListener("click", resetProfile);
 $("#new-profile").addEventListener("click", newProfile);
 $("#edit-profile").addEventListener("click", editProfile);
 $("#delete-profile").addEventListener("click", deleteProfile);
+$("#profile-customise").addEventListener("click", () => {
+  const customiser = accountOverview?.querySelector("#profile-customiser");
+  if (!customiser) return;
+  customiser.hidden = !customiser.hidden;
+  $("#profile-customise").textContent = customiser.hidden ? "Customise profile" : "Done customising";
+});
 $("#copy-feedback-context").addEventListener("click", copyFeedbackContext);
 $("form[name='wavekit-feedback']").addEventListener("submit", handleFeedbackSubmit);
 flowNextButton.addEventListener("click", handleFlowNext);
