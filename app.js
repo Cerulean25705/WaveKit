@@ -338,13 +338,23 @@ const weaponPurposeHints = {
 
 const fiveStarWeapons = new Set([
   "Abyss Surges", "Ages of Harvest", "Blazing Brilliance", "Blazing Justice", "Bloodpact's Pledge",
-  "Cosmic Ripples", "Daybreaker's Spine", "Defier's Thorn", "Emerald Sentence", "Emerald of Genesis",
-  "Everbright Polestar", "Forged Dwarf Star", "Frostburn", "Lethean Elegy", "Luminous Hymn",
-  "Lux & Umbra", "Lustrous Razor", "Moongazer's Sigil", "Red Spring", "Rime-Draped Sprouts",
+  "Boson Astrolabe", "Cosmic Ripples", "Daybreaker's Spine", "Defier's Thorn", "Emerald Sentence", "Emerald of Genesis",
+  "Everbright Polestar", "Forged Dwarf Star", "Freeze Frame", "Frostburn", "Kumokiri", "Laser Shearer",
+  "Lethean Elegy", "Luminous Hymn", "Lux & Umbra", "Lustrous Razor", "Moongazer's Sigil", "Phasic Homogenizer",
+  "Pulsation Bracer", "Radiance Cleaver", "Red Spring", "Rime-Draped Sprouts", "Skull Thrasher",
   "Solsworn Ciphers", "Spectral Trigger", "Spectrum Blaster", "Starfield Calibrator", "Static Mist",
   "Stellar Symphony", "Stringmaster", "The Last Dance", "Thunderflare Dominion", "Tragicomedy",
   "Unflickering Valor", "Verdant Summit", "Verity's Handle", "Whispers of Sirens", "Wildfire Mark",
-  "Woodland Aria", "Azure Oath", "Firstlight's Herald", "Aether Strike"
+  "Woodland Aria", "Azure Oath", "Firstlight's Herald"
+]);
+
+const threeStarWeapons = new Set([
+  "Beguiling Melody", "Broadblade of Night", "Broadblade of Voyager", "Gauntlets of Night",
+  "Gauntlets of Voyager", "Guardian Broadblade", "Guardian Gauntlets", "Guardian Pistols",
+  "Guardian Rectifier", "Guardian Sword", "Originite: Type I", "Originite: Type II",
+  "Originite: Type III", "Originite: Type IV", "Originite: Type V", "Pistols of Night",
+  "Pistols of Voyager", "Rectifier of Night", "Rectifier of Voyager", "Sword of Night",
+  "Sword of Voyager"
 ]);
 
 const fourStarResonators = new Set([
@@ -999,9 +1009,7 @@ function characterRarity(character) {
 
 function weaponRarity(weapon) {
   if (fiveStarWeapons.has(weapon)) return 5;
-  if (/^(Training|Tyro|Guardian)\s/.test(weapon)) return 3;
-  if (/(?: of Night| of Voyager|#\d+)/.test(weapon)) return 3;
-  if (/^Originite:/.test(weapon)) return 3;
+  if (threeStarWeapons.has(weapon)) return 3;
   return 4;
 }
 
