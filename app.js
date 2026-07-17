@@ -1692,6 +1692,7 @@ function bestTeamPanel(team) {
         </div>
         <div class="team-actions">
           <button class="button primary team-build-button" type="button" data-view-builds="${key}">View builds</button>
+          <button class="button ghost" type="button" data-save-team="${key}">${teamIsSaved(team) ? "Saved team" : "Save team"}</button>
           <button class="button ghost team-report-button" type="button" data-report-team="${key}">Report this team</button>
         </div>
       </div>
