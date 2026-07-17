@@ -3269,7 +3269,7 @@ function renderAccountOverview() {
   const unsupported = mains.filter((main) => !ownedNamedPartner(main)).slice(0, 3);
   const ownedByRarity = raritySections(ownedCharacters.slice().sort(sortByRarityThenName), characterRarity);
   const avatarChoices = (ownedCharacters.length ? ownedCharacters : activeCharacters().filter((character) => character.slug === "rover"))
-    .slice().sort((a, b) => a.name.localeCompare(b.name)).slice(0, 12);
+    .slice().sort((a, b) => a.name.localeCompare(b.name));
 
   accountOverview.innerHTML = `
     <article class="profile-identity profile-accent-${state.profileAccent}">
@@ -3290,7 +3290,7 @@ function renderAccountOverview() {
     </article>
 
     <div id="profile-customiser" class="profile-customiser" hidden>
-      <div><span>Profile Resonator</span><div class="profile-avatar-options">${avatarChoices.map((character) => {
+      <div class="profile-avatar-picker"><span>Profile Resonator</span><small>Choose from your owned Resonators.</small><div class="profile-avatar-options">${avatarChoices.map((character) => {
         const file = wallpapers.get(character.slug) || wallpapers.get("rover");
         return `<button class="profile-avatar-option ${state.profileAvatar === character.slug ? "is-selected" : ""}" type="button" data-profile-avatar="${character.slug}" aria-label="Use ${character.name} as profile Resonator"><img src="assets/wallpapers/${file}" alt=""><small>${character.name}</small></button>`;
       }).join("")}</div></div>

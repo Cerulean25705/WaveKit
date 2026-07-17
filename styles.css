@@ -7532,12 +7532,21 @@ h1 {
 .profile-customiser[hidden] { display: none; }
 .profile-customiser > div { display: grid; gap: 9px; }
 .profile-customiser > div > span { color: var(--muted); font-weight: 800; }
+.profile-avatar-picker > small { color: var(--muted); font-size: 0.7rem; }
 
 .profile-avatar-options,
 .profile-accent-options {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
+}
+
+.profile-avatar-options {
+  align-content: start;
+  max-height: 236px;
+  overflow: auto;
+  padding: 2px 4px 4px 2px;
+  scrollbar-color: color-mix(in srgb, var(--profile-accent) 48%, transparent) transparent;
 }
 
 .profile-avatar-option {
