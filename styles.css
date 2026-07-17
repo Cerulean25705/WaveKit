@@ -670,7 +670,8 @@ h1 {
 .character-card:active,
 .focus-toggle:active,
 .chain-row button:active,
-.rover-form-row button:active {
+.rover-form-row button:active,
+.rover-appearance-row button:active {
   transform: translateY(1px) scale(0.985);
 }
 
@@ -4656,7 +4657,7 @@ h1 {
 }
 
 .character-card.is-rover {
-  min-height: 334px;
+  min-height: 374px;
 }
 
 .character-card.is-upcoming {
@@ -4814,7 +4815,7 @@ h1 {
 }
 
 .character-card.is-rover .character-info {
-  inset: auto 0 116px;
+  inset: auto 0 158px;
 }
 
 .chain-row {
@@ -4886,6 +4887,38 @@ h1 {
   font-size: 0.54rem;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.rover-appearance-row {
+  position: absolute;
+  inset: auto 10px 122px;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 3px;
+  border: 1px solid rgba(139, 232, 255, 0.18);
+  border-radius: var(--radius);
+  background: rgba(3, 12, 19, 0.78);
+  backdrop-filter: blur(12px);
+}
+
+.rover-appearance-row button {
+  min-height: 28px;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--soft);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.rover-appearance-row button.is-active {
+  border-color: rgba(255, 215, 122, 0.42);
+  background: linear-gradient(135deg, rgba(120, 244, 255, 0.2), rgba(255, 215, 122, 0.14));
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .weapon-grid {
@@ -7097,7 +7130,7 @@ h1 {
   }
 
   .character-card.is-rover {
-    min-height: 296px;
+    min-height: 336px;
   }
 
   .character-info {
@@ -7462,7 +7495,7 @@ h1 {
   }
 
   .character-card.is-rover {
-    min-height: 254px;
+    min-height: 294px;
   }
 
   .character-grid,

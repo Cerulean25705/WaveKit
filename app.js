@@ -27,6 +27,11 @@ const wallpapers = new Map([
   wallpaper("yuanwu", "yuanwu.webp"), wallpaper("zani", "zani.webp"), wallpaper("zhezhi", "zhezhi.jpg")
 ]);
 
+const roverArtwork = {
+  Female: "rover.jpg",
+  Male: "rover-male.png"
+};
+
 const builds = Object.fromEntries([
   ["shorekeeper", "Healer-Support Build", "Stellar Symphony", "Rejuvenating Glow", "Fallacy of No Return", "Healing Bonus or CRIT DMG / Energy Regen or HP% / HP%"],
   ["yangyang-xuanling", "Current Patch Havoc DPS Build", "Azure Oath", "Song of Feathered Trace", "Thousand-Puppet Pavilion", "CRIT Rate or CRIT DMG / Havoc DMG or ATK% / ATK%"],
@@ -552,6 +557,7 @@ const state = {
   weaponTypeFilter: "All",
   roverForm: "Aero",
   roverForms: new Set(["Aero"]),
+  roverAppearance: "Female",
   selectedTeamKey: "",
   showAllTeams: false,
   flowVisitedResults: false,
@@ -834,6 +840,7 @@ function renderCharacters() {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".chain-row")) return;
       if (event.target.closest(".rover-form-row")) return;
+      if (event.target.closest(".rover-appearance-row")) return;
       if (isUpcomingCharacter(card.dataset.characterCard)) return;
       toggleCharacter(card.dataset.characterCard);
     });
@@ -845,6 +852,12 @@ function renderCharacters() {
       resetFlowGuide();
       markUnsaved();
       render();
+    });
+  });
+  characterGrid.querySelectorAll("[data-rover-appearance]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      selectRoverAppearance(button.dataset.roverAppearance);
     });
   });
   characterGrid.querySelectorAll("[data-focus-character]").forEach((button) => {
@@ -876,7 +889,7 @@ function characterCard(character) {
   const characterDetail = upcoming
     ? "Unreleased · July 31 banner"
     : isRover
-      ? `${rarityStars(characterRarity(character))} · Active: ${state.roverForm} · Forms: ${Object.keys(roverForms).join(" / ")}`
+      ? `${rarityStars(characterRarity(character))} · ${state.roverAppearance} · Active: ${state.roverForm}`
       : `${rarityStars(characterRarity(character))} · ${roleLabel(character)} · ${character.element}`;
   return `
     <article class="character-card ${owned ? "is-owned" : ""} ${focused ? "is-focused" : ""} ${upcoming ? "is-upcoming" : ""} ${isRover ? "is-rover" : ""} element-${firstElement(isRover ? state.roverForm : character.element).toLowerCase()}" data-character-card="${character.slug}">
@@ -892,7 +905,7 @@ function characterCard(character) {
       </button>
       <span class="character-owned-badge" aria-hidden="true">Owned</span>
       ${upcoming ? `<span class="upcoming-badge">Unreleased</span>` : ""}
-      ${isRover ? roverFormPicker() : ""}
+      ${isRover ? `${roverAppearancePicker()}${roverFormPicker()}` : ""}
       <div class="chain-row" aria-label="${displayName} Resonance Chain" ${upcoming ? `aria-disabled="true"` : ""}>
         <span>RC</span>
         <button type="button" data-chain-minus="${character.slug}" data-chain-action="decrease" ${upcoming ? "disabled" : ""}>-</button>
@@ -909,6 +922,26 @@ function selectRoverForm(form) {
   state.roverForms.add(form);
   state.roverForm = form;
   state.selectedTeamKey = "";
+}
+
+function selectRoverAppearance(appearance) {
+  if (!roverArtwork[appearance] || state.roverAppearance === appearance) return;
+  state.roverAppearance = appearance;
+  markUnsaved();
+  persistImmediateProfileChange();
+  render();
+}
+
+function roverAppearancePicker() {
+  return `
+    <div class="rover-appearance-row" aria-label="Rover artwork">
+      ${Object.keys(roverArtwork).map((appearance) => `
+        <button class="${state.roverAppearance === appearance ? "is-active" : ""}" type="button" data-rover-appearance="${appearance}" aria-pressed="${state.roverAppearance === appearance}">
+          ${appearance}
+        </button>
+      `).join("")}
+    </div>
+  `;
 }
 
 function roverFormPicker() {
@@ -1099,8 +1132,15 @@ function costPattern(character) {
 }
 
 function visual(character, mode = "wallpaper") {
-  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  const file = artworkFile(character);
   if (mode === "character") {
+    if (character.slug === "rover") {
+      return `
+        <span class="portrait character-art" aria-hidden="true">
+          <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
+        </span>
+      `;
+    }
     return `
       <span class="portrait character-art" aria-hidden="true">
         <img src="assets/characters/${character.slug}.webp" alt="" loading="lazy" decoding="async">
@@ -1112,6 +1152,12 @@ function visual(character, mode = "wallpaper") {
       <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
     </span>
   `;
+}
+
+function artworkFile(characterOrSlug) {
+  const slug = typeof characterOrSlug === "string" ? characterOrSlug : characterOrSlug?.slug;
+  if (slug === "rover") return roverArtwork[state.roverAppearance] || roverArtwork.Female;
+  return wallpapers.get(slug) || wallpapers.get("rover");
 }
 
 function roleLabel(character) {
@@ -1732,7 +1778,7 @@ function reasonPill(label, value) {
 }
 
 function portraitCard(character, isMain = false) {
-  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  const file = artworkFile(character);
   return `
     <span class="portrait-card ${isMain ? "main" : ""}" style="--chip-focus: ${chipFocus(character)};">
       <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
@@ -1798,7 +1844,7 @@ function miniTeamIcons(team) {
   return `
     <span class="mini-team" aria-hidden="true">
       ${team.members.map((member) => {
-        const file = wallpapers.get(member.slug) || wallpapers.get("rover");
+        const file = artworkFile(member);
         return `<img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">`;
       }).join("")}
     </span>
@@ -1841,7 +1887,7 @@ function selectedTeamPreview(team) {
 
 function selectedBuildMini(character, team) {
   const build = buildForTeam(character, team);
-  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  const file = artworkFile(character);
   return `
     <a href="${characterGuideHref(character)}" aria-label="Open ${character.name} guide">
       <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
@@ -2114,7 +2160,7 @@ function renderTeamTuner() {
   const slotName = slot === 1 ? "setup helper" : "third slot";
   teamTunerContent.innerHTML = `
     <div class="team-tuner-current">
-      ${current.members.map((member, index) => `<button class="tuner-slot ${slot === index ? "is-active" : ""} ${index === 0 ? "is-locked" : ""}" type="button" ${index === 0 ? "disabled" : `data-tuner-slot="${index}"`}><img src="assets/wallpapers/${wallpapers.get(member.slug) || wallpapers.get("rover")}" alt=""><span><small>${index === 0 ? "Main damage" : index === 1 ? "Setup helper" : "Third slot"}</small><strong>${member.name}</strong></span></button>`).join("")}
+      ${current.members.map((member, index) => `<button class="tuner-slot ${slot === index ? "is-active" : ""} ${index === 0 ? "is-locked" : ""}" type="button" ${index === 0 ? "disabled" : `data-tuner-slot="${index}"`}><img src="assets/wallpapers/${artworkFile(member)}" alt=""><span><small>${index === 0 ? "Main damage" : index === 1 ? "Setup helper" : "Third slot"}</small><strong>${member.name}</strong></span></button>`).join("")}
     </div>
     <div class="team-tuner-layout">
       <section class="tuner-options">
@@ -2185,7 +2231,7 @@ function tunerCandidates(team, slot) {
 }
 
 function tunerOption(option, selected) {
-  const file = wallpapers.get(option.character.slug) || wallpapers.get("rover");
+  const file = artworkFile(option.character);
   const selectedClass = selected.slug === option.character.slug ? "is-selected" : "";
   return `<button class="tuner-option ${selectedClass}" type="button" data-tuner-character="${option.character.slug}"><img src="assets/wallpapers/${file}" alt=""><span><strong>${option.character.name}</strong><small>${teamFitLabel(option.team)} · ${safetyLabel(option.team)}</small></span><em>${selectedClass ? "Current" : "Use"}</em></button>`;
 }
@@ -2545,7 +2591,7 @@ function memberChip(character) {
 }
 
 function memberIcon(character) {
-  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  const file = artworkFile(character);
   return `
     <span class="member-icon" style="--chip-focus: ${chipFocus(character)};" aria-hidden="true">
       <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
@@ -2729,7 +2775,7 @@ function renderFeedbackContext(teams) {
 function feedbackContext(team) {
   const ownedCount = Object.keys(state.owned).length;
   const weaponCount = state.weapons.size;
-  const roverText = `${state.roverForm} active; owned ${([...state.roverForms].sort()).join(", ")}`;
+  const roverText = `${state.roverAppearance}; ${state.roverForm} active; owned ${([...state.roverForms].sort()).join(", ")}`;
   const ownedRoster = feedbackOwnedRoster();
   const ownedWeapons = feedbackOwnedWeapons();
   const focused = [...state.focus].map(characterName).sort((a, b) => a.localeCompare(b)).join(", ") || "None";
@@ -2907,6 +2953,7 @@ function profilePayload() {
     suggestionStyle: state.suggestionStyle,
     roverForm: state.roverForm,
     roverForms: [...state.roverForms],
+    roverAppearance: state.roverAppearance,
     owned: state.owned,
     focus: [...state.focus],
     weapons: [...state.weapons],
@@ -2990,6 +3037,7 @@ function normaliseProfile(payload) {
     suggestionStyle: normaliseSuggestionStyle(payload),
     roverForm: roverForms[payload.roverForm] ? payload.roverForm : "Aero",
     roverForms: normaliseRoverForms(payload.roverForms, payload.roverForm),
+    roverAppearance: roverArtwork[payload.roverAppearance] ? payload.roverAppearance : "Female",
     owned,
     focus: (payload.focus || payload.favorites || []).filter((slug) => !upcomingCharacters.has(slug)),
     weapons: (payload.weapons || []).filter((weapon) => weaponCatalog.has(weapon) && !upcomingWeapons.has(weapon)),
@@ -3099,6 +3147,7 @@ function applyProfile(profile) {
   state.suggestionStyle = payload.suggestionStyle;
   state.roverForm = payload.roverForm;
   state.roverForms = new Set(payload.roverForms);
+  state.roverAppearance = payload.roverAppearance;
   state.owned = payload.owned;
   state.focus = new Set(payload.focus.filter((slug) => state.owned[slug]));
   state.weapons = new Set(payload.weapons);
@@ -3124,6 +3173,7 @@ function clearWorkingProfile() {
   state.weaponSearch = "";
   state.roverForm = "Aero";
   state.roverForms = new Set(["Aero"]);
+  state.roverAppearance = "Female";
   state.selectedTeamKey = "";
   state.showAllTeams = false;
   resetFlowGuide();
@@ -3230,7 +3280,7 @@ function renderProfileSummary() {
     <div class="summary-stats">
       <span>${Object.keys(state.owned).length} resonators</span>
       <span>${state.weapons.size} weapons</span>
-      <span>Rover: ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}</span>
+      <span>Rover: ${state.roverAppearance} · ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}</span>
       <span>${state.focus.size} focus</span>
     </div>
     <p>${ownedNames.length ? ownedNames.join(", ") : "No resonators selected yet."}</p>
@@ -3255,7 +3305,7 @@ function renderAccountOverview() {
   const teams = generateTeams();
   const best = teams[0];
   const avatar = characters.find((character) => character.slug === state.profileAvatar) || characters.find((character) => character.slug === "rover");
-  const avatarFile = wallpapers.get(avatar.slug) || wallpapers.get("rover");
+  const avatarFile = artworkFile(avatar);
   const ownedCharacters = activeCharacters().filter((character) => state.owned[character.slug]);
   const mains = ownedCharacters.filter((character) => character.roles.includes("main"));
   const healers = ownedCharacters.filter((character) => character.roles.includes("healer"));
@@ -3285,7 +3335,7 @@ function renderAccountOverview() {
 
     <div id="profile-customiser" class="profile-customiser" hidden>
       <div class="profile-avatar-picker"><span>Profile Resonator</span><small>Choose from your owned Resonators.</small><div class="profile-avatar-options">${avatarChoices.map((character) => {
-        const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+        const file = artworkFile(character);
         return `<button class="profile-avatar-option ${state.profileAvatar === character.slug ? "is-selected" : ""}" type="button" data-profile-avatar="${character.slug}" aria-label="Use ${character.name} as profile Resonator"><img src="assets/wallpapers/${file}" alt=""><small>${character.name}</small></button>`;
       }).join("")}</div></div>
       <div><span>Profile theme</span><div class="profile-accent-options" aria-label="Profile theme">${Object.entries({ aero: "Tidal", gold: "Solar", glacio: "Frost", havoc: "Midnight" }).map(([accent, label]) => `<button class="profile-theme-option accent-${accent} ${state.profileAccent === accent ? "is-selected" : ""}" type="button" data-profile-accent="${accent}" aria-label="Use ${label} profile theme"><i aria-hidden="true"></i><span>${label}</span></button>`).join("")}</div></div>
@@ -3366,7 +3416,7 @@ function renderAccountOverview() {
 }
 
 function accountRosterItem(character) {
-  const file = wallpapers.get(character.slug) || wallpapers.get("rover");
+  const file = artworkFile(character);
   const chain = state.owned[character.slug]?.chain || 0;
   const plan = state.progress[character.slug]?.materialPlan;
   const level = plan?.currentLevel ? `L${plan.currentLevel}` : "Level unset";
@@ -3379,7 +3429,7 @@ function accountRosterItem(character) {
 }
 
 function accountBestTeamMember(member, index) {
-  const file = wallpapers.get(member.slug) || wallpapers.get("rover");
+  const file = artworkFile(member);
   const labels = ["Damage", "Helper", "Sustain"];
   return `<a href="characters/${member.slug}/"><img src="assets/wallpapers/${file}" alt=""><span>${labels[index] || "Team"}</span><strong>${member.name}</strong></a>`;
 }
@@ -3405,7 +3455,7 @@ function accountOpportunityDetail(unsupported, healers) {
 function buildPlanItem(slug) {
   const character = characters.find((entry) => entry.slug === slug);
   if (!character) return "";
-  const file = wallpapers.get(slug) || wallpapers.get("rover");
+  const file = artworkFile(slug);
   const plan = state.progress[slug]?.materialPlan;
   const level = plan ? `Level ${plan.currentLevel} → ${plan.targetLevel}` : "Targets not set yet";
   const skillTargets = plan?.skills ? Object.values(plan.skills).filter((skill) => Number(skill.target) > Number(skill.current)) : [];
@@ -3451,7 +3501,7 @@ function savedTeamRecordKey(record) {
 function savedTeamItem(record) {
   const names = record.members.map(characterName);
   const members = record.members.map((slug) => characters.find((character) => character.slug === slug)).filter(Boolean);
-  return `<article><button class="account-saved-team" type="button" data-open-team="${savedTeamRecordKey(record)}"><span class="mini-team" aria-hidden="true">${members.map((member) => { const file = wallpapers.get(member.slug) || wallpapers.get("rover"); return `<img src="assets/wallpapers/${file}" alt="">`; }).join("")}</span><span><strong>${names.join(" / ")}</strong><small>${record.roverForm || "Aero"} Rover profile</small></span></button><button class="icon-button" type="button" data-remove-saved-team="${savedTeamRecordKey(record)}" aria-label="Remove saved team">×</button></article>`;
+  return `<article><button class="account-saved-team" type="button" data-open-team="${savedTeamRecordKey(record)}"><span class="mini-team" aria-hidden="true">${members.map((member) => { const file = artworkFile(member); return `<img src="assets/wallpapers/${file}" alt="">`; }).join("")}</span><span><strong>${names.join(" / ")}</strong><small>${record.roverForm || "Aero"} Rover profile</small></span></button><button class="icon-button" type="button" data-remove-saved-team="${savedTeamRecordKey(record)}" aria-label="Remove saved team">×</button></article>`;
 }
 
 function showProfileCustomiser() {
@@ -3898,7 +3948,7 @@ function cloudPayload() {
 }
 
 function hasProfileProgress() {
-  return Boolean(state.profileName || workingProfileHasRosterData() || state.profiles.some(profileHasRosterData));
+  return Boolean(state.profileName || state.roverAppearance !== "Female" || workingProfileHasRosterData() || state.profiles.some(profileHasRosterData));
 }
 
 async function runCloudAction(workingMessage, action, successMessage) {

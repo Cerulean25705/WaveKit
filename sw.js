@@ -1,13 +1,13 @@
-const CACHE_NAME = "wavekit-shell-v32";
+const CACHE_NAME = "wavekit-shell-v33";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/site.webmanifest",
   "/weapons/",
-  "/styles.css?v=landing-guide-1",
+  "/styles.css?v=rover-art-1",
   "/characters/",
   "/assets/characters-page.js?v=characters-directory-1",
-  "/app.js?v=my-wavekit-18",
+  "/app.js?v=my-wavekit-19",
   "/assets/mobile-navigation.js?v=landing-guide-1",
   "/assets/wavekit-hero-v2.png",
   "/assets/material-data.js?v=3.5-1",
@@ -15,6 +15,7 @@ const APP_SHELL = [
   "/assets/weapon-images.js?v=proper-weapons-2",
   "/assets/weapons-page.js?v=release-audit-1",
   "/assets/wavekit-mark.png",
+  "/assets/wallpapers/rover-male.png",
   "/assets/wavekit-icon-192.png",
   "/assets/wavekit-icon-512.png",
   "/assets/apple-touch-icon.png"
