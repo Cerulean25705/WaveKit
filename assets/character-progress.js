@@ -146,6 +146,41 @@
 
   const saveStatus = planner.querySelector("[data-material-save-status]");
   const buildPlanButton = planner.querySelector("[data-build-plan-toggle]");
+  const heroActions = document.querySelector(".character-guide-actions");
+  const heroBuildPlanButton = document.createElement("button");
+  heroBuildPlanButton.className = "button ghost";
+  heroBuildPlanButton.type = "button";
+  heroBuildPlanButton.dataset.guideBuildPlan = "";
+  heroBuildPlanButton.textContent = profile?.buildPlan?.includes(guide.slug) ? "In Build Plan" : "Add to Build Plan";
+  heroActions?.append(heroBuildPlanButton);
+
+  const updateBuildPlanButtons = (isPlanned) => {
+    const label = isPlanned ? "In Build Plan" : "Add to Build Plan";
+    buildPlanButton.textContent = label;
+    heroBuildPlanButton.textContent = label;
+    heroBuildPlanButton.classList.toggle("is-planned", isPlanned);
+  };
+
+  const toggleBuildPlan = () => {
+    const store = loadProfiles();
+    let currentProfile = activeProfile(store);
+    if (!currentProfile) {
+      currentProfile = { id: `profile-${Date.now()}`, profileName: "WaveKit profile", updatedAt: new Date().toISOString(), owned: {}, weapons: [], progress: {}, buildPlan: [] };
+      store.profiles.push(currentProfile);
+      store.activeProfileId = currentProfile.id;
+    }
+    const index = store.profiles.findIndex((entry) => entry.id === currentProfile.id);
+    const buildPlan = new Set(store.profiles[index].buildPlan || []);
+    buildPlan.has(guide.slug) ? buildPlan.delete(guide.slug) : buildPlan.add(guide.slug);
+    const isPlanned = buildPlan.has(guide.slug);
+    store.profiles[index] = { ...store.profiles[index], buildPlan: [...buildPlan], updatedAt: new Date().toISOString() };
+    localStorage.setItem(profileStorageKey, JSON.stringify(store));
+    updateBuildPlanButtons(isPlanned);
+    saveStatus.textContent = isPlanned ? "Added to Build Plan" : "Removed from Build Plan";
+    window.dispatchEvent(new CustomEvent("wavekit:profile-changed", { detail: { source: "build-plan" } }));
+  };
+
+  heroBuildPlanButton.addEventListener("click", toggleBuildPlan);
   const readPlan = () => ({
     currentLevel: Number(planner.querySelector('[data-material-level="currentLevel"]').value),
     targetLevel: Number(planner.querySelector('[data-material-level="targetLevel"]').value),
@@ -220,21 +255,7 @@
 
   planner.addEventListener("click", (event) => {
     if (event.target.closest("[data-build-plan-toggle]")) {
-      const store = loadProfiles();
-      let currentProfile = activeProfile(store);
-      if (!currentProfile) {
-        currentProfile = { id: `profile-${Date.now()}`, profileName: "WaveKit profile", updatedAt: new Date().toISOString(), owned: {}, weapons: [], progress: {}, buildPlan: [] };
-        store.profiles.push(currentProfile);
-        store.activeProfileId = currentProfile.id;
-      }
-      const index = store.profiles.findIndex((entry) => entry.id === currentProfile.id);
-      const buildPlan = new Set(store.profiles[index].buildPlan || []);
-      buildPlan.has(guide.slug) ? buildPlan.delete(guide.slug) : buildPlan.add(guide.slug);
-      store.profiles[index] = { ...store.profiles[index], buildPlan: [...buildPlan], updatedAt: new Date().toISOString() };
-      localStorage.setItem(profileStorageKey, JSON.stringify(store));
-      buildPlanButton.textContent = buildPlan.has(guide.slug) ? "In Build Plan" : "Add to Build Plan";
-      saveStatus.textContent = buildPlan.has(guide.slug) ? "Added to Build Plan" : "Removed from Build Plan";
-      window.dispatchEvent(new CustomEvent("wavekit:profile-changed", { detail: { source: "build-plan" } }));
+      toggleBuildPlan();
       return;
     }
     const button = event.target.closest("[data-material-preset]");

@@ -5048,9 +5048,11 @@ h1 {
 }
 
 .row-actions {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  justify-items: end;
+  justify-content: flex-end;
+  max-width: 205px;
 }
 
 .row-action {
@@ -6112,6 +6114,37 @@ h1 {
   }
 }
 
+@media (max-width: 1100px) {
+  .topnav {
+    gap: 4px;
+  }
+
+  .topnav a {
+    padding-inline: 5px;
+    font-size: 0.82rem;
+  }
+
+  .topnav a[href$="#how"],
+  .topnav a[href$="#results"],
+  .topnav a[href$="#builds"],
+  .topnav a[href$="#feedback"],
+  .topnav a[href$="#install"],
+  .topnav a[href$="#trust"],
+  .topnav a[href^="https://discord.gg"] {
+    display: none;
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1600px) {
+  .topnav a[href$="#how"],
+  .topnav a[href$="#results"],
+  .topnav a[href$="#builds"],
+  .topnav a[href$="#install"],
+  .topnav a[href$="#trust"] {
+    display: none;
+  }
+}
+
 @media (max-width: 760px) {
   :root {
     --topbar-offset: 112px;
@@ -6142,24 +6175,22 @@ h1 {
 
   .topnav {
     grid-column: 1 / -1;
-    justify-content: start;
-    flex-wrap: nowrap;
-    gap: 7px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
     width: 100%;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: none;
-  }
-
-  .topnav::-webkit-scrollbar {
-    display: none;
+    overflow: visible;
+    padding: 0;
   }
 
   .topnav a {
-    min-height: 31px;
-    flex: 0 0 auto;
-    padding: 0 8px;
-    font-size: 0.78rem;
+    justify-content: center;
+    min-height: 34px;
+    min-width: 0;
+    padding: 0 4px;
+    font-size: 0.72rem;
+    text-align: center;
+    white-space: nowrap;
   }
 
   .brand {
@@ -6584,11 +6615,13 @@ h1 {
 
   .row-actions {
     grid-column: 2;
-    justify-items: start;
+    justify-content: flex-start;
+    max-width: none;
   }
 
   .row-action {
-    width: 100%;
+    width: auto;
+    flex: 1 1 82px;
   }
 
   .summary-notes div {
@@ -7031,6 +7064,47 @@ h1 {
 .account-overview {
   display: grid;
   gap: 16px;
+}
+
+.account-taskbar {
+  border-block: 1px solid color-mix(in srgb, var(--profile-accent) 24%, transparent);
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 16px;
+}
+
+.account-taskbar a {
+  background: color-mix(in srgb, var(--profile-accent) 4%, transparent);
+  color: var(--text);
+  display: grid;
+  gap: 3px;
+  min-height: 68px;
+  padding: 12px 15px;
+  text-decoration: none;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.account-taskbar a + a {
+  border-left: 1px solid color-mix(in srgb, var(--profile-accent) 20%, transparent);
+}
+
+.account-taskbar a:hover,
+.account-taskbar a:focus-visible {
+  background: color-mix(in srgb, var(--profile-accent) 12%, transparent);
+  color: var(--profile-accent-ink);
+}
+
+.account-taskbar span {
+  color: var(--profile-accent-ink);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.account-taskbar strong {
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
 }
 
 .account-overview-empty {
@@ -7528,6 +7602,11 @@ h1 {
 }
 
 @media (max-width: 430px) {
+  .account-taskbar a {
+    min-height: 74px;
+    padding: 10px 8px;
+  }
+  .account-taskbar strong { font-size: 0.8rem; }
   .profile-identity { grid-template-columns: 88px minmax(0, 1fr); }
   .profile-identity-copy { padding: 14px 10px; }
   .profile-identity-copy p { font-size: 0.84rem; }

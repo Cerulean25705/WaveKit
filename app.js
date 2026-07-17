@@ -1660,7 +1660,9 @@ function renderResults() {
       const team = teams.find((entry) => teamKey(entry) === button.dataset.saveTeam);
       if (!team) return;
       saveTeamRecord(team);
-      button.textContent = "Saved";
+      teamResults.querySelectorAll(`[data-save-team="${button.dataset.saveTeam}"]`).forEach((control) => {
+        control.textContent = control.classList.contains("row-action") ? "Saved" : "Saved team";
+      });
       renderAccountOverview();
     });
   });
@@ -1671,7 +1673,10 @@ function renderResults() {
       if (!team) return;
       state.buildPlan = [...new Set([...state.buildPlan, ...team.members.map((member) => member.slug)])];
       markUnsaved();
-      button.textContent = "Added to Build Plan";
+      persistImmediateProfileChange();
+      teamResults.querySelectorAll(`[data-plan-team="${button.dataset.planTeam}"]`).forEach((control) => {
+        control.textContent = control.classList.contains("row-action") ? "Planned" : "Team planned";
+      });
       renderAccountOverview();
     });
   });
@@ -1793,7 +1798,8 @@ function teamRow(team, rank) {
       </span>
       <span class="row-actions">
         <button class="row-action" type="button" data-view-builds="${key}">View builds</button>
-        <button class="row-action muted" type="button" data-report-team="${key}">Report</button>
+        <button class="row-action" type="button" data-save-team="${key}">${teamIsSaved(team) ? "Saved" : "Save"}</button>
+        <button class="row-action muted" type="button" data-plan-team="${key}">${teamIsPlanned(team) ? "Planned" : "Plan"}</button>
       </span>
     </article>
   `;
@@ -1836,8 +1842,8 @@ function selectedTeamPreview(team) {
       <div class="team-actions">
         <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
         <button class="button ghost" type="button" data-tune-team="${teamKey(team)}">Tune team</button>
-        <button class="button ghost" type="button" data-save-team="${teamKey(team)}">Save team</button>
-        <button class="button ghost" type="button" data-plan-team="${teamKey(team)}">Plan this team</button>
+        <button class="button ghost" type="button" data-save-team="${teamKey(team)}">${teamIsSaved(team) ? "Saved team" : "Save team"}</button>
+        <button class="button ghost" type="button" data-plan-team="${teamKey(team)}">${teamIsPlanned(team) ? "Team planned" : "Plan this team"}</button>
         <button class="button ghost team-report-button" type="button" data-report-team="${teamKey(team)}">Report this team</button>
       </div>
     </aside>
@@ -1880,7 +1886,14 @@ function shouldHideFlowNext(next) {
 }
 
 function flowSuppressedBySection() {
+  if (location.hash === "#my-wavekit") return true;
   const topbarHeight = $(".topbar")?.getBoundingClientRect().height || 0;
+  const profileSection = document.querySelector("#my-wavekit");
+  if (profileSection) {
+    const profileRect = profileSection.getBoundingClientRect();
+    const flowHeight = flowNext?.getBoundingClientRect().height || 100;
+    if (profileRect.top < window.innerHeight - flowHeight && profileRect.bottom > topbarHeight) return true;
+  }
   return ["#feedback", "#trust", "#sources"].some((hash) => {
     const section = document.querySelector(hash);
     if (!section) return false;
@@ -2072,6 +2085,15 @@ function teamKey(team) {
   return `${state.roverForm}:${team.members.map((member) => member.slug).join("|")}`;
 }
 
+function teamIsSaved(team) {
+  const key = teamKey(team);
+  return state.savedTeams.some((record) => savedTeamRecordKey(record) === key);
+}
+
+function teamIsPlanned(team) {
+  return team.members.every((member) => state.buildPlan.includes(member.slug));
+}
+
 function openSavedOrSuggestedTeam(key) {
   const [form] = key.split(":");
   if (roverForms[form]) {
@@ -2092,6 +2114,7 @@ function saveTeamRecord(team) {
   state.savedTeams = [record, ...state.savedTeams.filter((entry) => savedTeamRecordKey(entry) !== key)].slice(0, 12);
   state.selectedTeamKey = key;
   markUnsaved();
+  persistImmediateProfileChange();
   return key;
 }
 
@@ -2166,6 +2189,7 @@ function renderTeamTuner() {
   teamTunerContent.querySelector("#plan-tuned-team")?.addEventListener("click", (event) => {
     state.buildPlan = [...new Set([...state.buildPlan, ...current.members.map((member) => member.slug)])];
     markUnsaved();
+    persistImmediateProfileChange();
     event.currentTarget.textContent = "Added to Build Plan";
     renderAccountOverview();
   });
@@ -3337,11 +3361,13 @@ function renderAccountOverview() {
   accountOverview.querySelectorAll("[data-remove-plan]").forEach((button) => button.addEventListener("click", () => {
     state.buildPlan = state.buildPlan.filter((slug) => slug !== button.dataset.removePlan);
     markUnsaved();
+    persistImmediateProfileChange();
     renderAccountOverview();
   }));
   accountOverview.querySelectorAll("[data-remove-saved-team]").forEach((button) => button.addEventListener("click", () => {
     state.savedTeams = state.savedTeams.filter((record) => savedTeamRecordKey(record) !== button.dataset.removeSavedTeam);
     markUnsaved();
+    persistImmediateProfileChange();
     renderAccountOverview();
   }));
   accountOverview.querySelector("#calculate-materials")?.addEventListener("click", renderCombinedMaterials);
@@ -3476,6 +3502,24 @@ function markUnsaved() {
 function scheduleAutoSave(delay = 750) {
   clearTimeout(autoSaveTimer);
   autoSaveTimer = setTimeout(autoSaveProfile, delay);
+}
+
+function persistImmediateProfileChange() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = null;
+  void autoSaveProfile();
+}
+
+function flushPendingLocalSave() {
+  if (!autoSaveTimer || !hasProfileProgress()) return;
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = null;
+  try {
+    upsertWorkingProfile();
+    persistProfiles();
+  } catch {
+    // The visible autosave status reports storage failures while the page is active.
+  }
 }
 
 async function autoSaveProfile() {
@@ -3906,6 +3950,7 @@ document.addEventListener("click", handleAccountMenuDismiss);
 document.addEventListener("keydown", handleAccountMenuDismiss);
 window.addEventListener("scroll", updateActiveNav, { passive: true });
 window.addEventListener("hashchange", () => setActiveNav(location.hash || ""));
+window.addEventListener("pagehide", flushPendingLocalSave);
 
 loadProfile();
 render();
