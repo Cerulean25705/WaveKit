@@ -491,7 +491,7 @@ const characters = [
   c("danjin", "Danjin", "Havoc", "Sword", ["main"], 76, ["havoc"], ["havoc"], "Risky but rewarding Havoc carry. Needs safety notes."),
   c("lingyang", "Lingyang", "Glacio", "Gauntlets", ["main"], 72, ["glacio"], ["glacio"], "Aerial Glacio carry. Fun but less relaxed."),
   c("chixia", "Chixia", "Fusion", "Pistols", ["main"], 68, ["fusion"], ["ranged"], "Simple ranged carry for early accounts."),
-  c("aemeath", "Aemeath", "Fusion", "Sword", ["main"], 98, ["fusion", "tune"], ["rupture", "tune", "liberation"], "Premium Tune Rupture damage entry that heavily values Lynae and Mornye."),
+  c("aemeath", "Aemeath", "Fusion", "Sword", ["main"], 98, ["fusion", "tune"], ["rupture", "tune", "liberation", "burst"], "Flexible Fusion carry with premium Tune Rupture and Denia-led Fusion Burst routes."),
   c("hiyuki", "Hiyuki", "Glacio", "Sword", ["main"], 96, ["glacio"], ["chafe"], "Newer Glacio damage entry. Keep recommendations conservative."),
   c("sigrika", "Sigrika", "Aero", "Gauntlets", ["main"], 98, ["aero", "echo-skill"], ["echo-skill"], "Premium Aero Echo Skill carry that strongly wants Qiuyuan-style support."),
   c("galbrena", "Galbrena", "Fusion", "Pistols", ["main"], 97, ["fusion", "echo-skill"], ["echo-skill", "heavy"], "Premium Fusion Echo Skill carry."),
@@ -642,7 +642,7 @@ const teamArchetypes = {
   danjin: archetype("High-risk Havoc", [["roccia", "shorekeeper"], ["cantarella", "verina"], ["taoqi", "baizhi"]], "Danjin needs the site to protect players from stress: damage is high, safety matters."),
   lingyang: archetype("Glacio Basic", [["zhezhi", "shorekeeper"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Lingyang likes Glacio or Basic Attack helpers, but comfort support should stay visible."),
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
-  aemeath: archetype("Tune Rupture", [["lynae", "mornye"], ["lynae", "chisa"], ["lupa", "mornye"], ["denia", "chisa"], ["denia", "lupa"], ["changli", "mornye"], ["brant", "mornye"], ["lynae", "shorekeeper"]], "Aemeath's premium Tune Rupture shell is Lynae plus Mornye. Tethys also highlights Chisa and Denia/Lupa paths, so WaveKit keeps those visible when owned."),
+  aemeath: archetype("Tune Rupture / Fusion Burst", [["lynae", "mornye"], ["lynae", "chisa"], ["denia", "mornye"], ["denia", "chisa"], ["lupa", "mornye"], ["denia", "lupa"], ["changli", "mornye"], ["brant", "mornye"], ["lynae", "shorekeeper"]], "Aemeath has two supported directions: Lynae plus Mornye for premium Tune Rupture, or Denia plus Mornye or Chisa for Fusion Burst. Lupa remains a useful alternative Fusion partner."),
   hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "mornye"], ["lynae", "chisa"], ["lynae", "mornye"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla/Lynae plus Chisa or Mornye treated as current-patch targets."),
   sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["lucilla", "mornye"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["lucilla", "verina"], ["qiuyuan", "mornye"], ["lucilla", "buling"], ["lucilla", "chisa"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Lucilla hypercarry shells should stay visible when owned, while Qiuyuan remains a valid premium route and can use Moonlit Clouds as Sigrika's support setup."),
   galbrena: archetype("Fusion Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["lucilla", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Galbrena is an Echo Skill carry, so Lucilla and Qiuyuan should surface before generic Fusion matching when owned."),
@@ -1456,6 +1456,7 @@ function teamSpecificAdjustment(main, sub, sustain) {
   if (main.slug === "aemeath") {
     if (pair.includes("lynae") && pair.includes("mornye")) score += 48;
     if (pair.includes("lynae") && pair.includes("chisa")) score += 32;
+    if (pair.includes("denia") && pair.includes("mornye")) score += 34;
     if (pair.includes("lupa") && pair.includes("mornye")) score += 28;
     if (pair.includes("denia") && pair.includes("chisa")) score += 28;
     if (pair.includes("denia") && pair.includes("lupa")) score += 24;
