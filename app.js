@@ -848,10 +848,10 @@ function renderCharacters() {
   characterGrid.querySelectorAll("[data-rover-form]").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
-      selectRoverForm(button.dataset.roverForm);
+      if (!selectRoverForm(button.dataset.roverForm)) return;
       resetFlowGuide();
       markUnsaved();
-      render();
+      refreshRoverForm();
     });
   });
   characterGrid.querySelectorAll("[data-rover-appearance]").forEach((button) => {
@@ -917,11 +917,37 @@ function characterCard(character) {
 }
 
 function selectRoverForm(form) {
-  if (!roverForms[form]) return;
+  if (!roverForms[form]) return false;
+  const changed = state.roverForm !== form || !state.roverForms.has(form) || !state.owned.rover;
+  if (!changed) return false;
   if (!state.owned.rover) state.owned.rover = { chain: 0 };
   state.roverForms.add(form);
   state.roverForm = form;
   state.selectedTeamKey = "";
+  return true;
+}
+
+function refreshRoverForm() {
+  const card = characterGrid.querySelector('[data-character-card="rover"]');
+  if (card) {
+    ["aero", "electro", "havoc", "spectro"].forEach((element) => card.classList.remove(`element-${element}`));
+    card.classList.add(`element-${firstElement(state.roverForm).toLowerCase()}`);
+    const detail = card.querySelector(".character-info small");
+    if (detail) detail.textContent = `${rarityStars(5)} · ${state.roverAppearance} · Active: ${state.roverForm}`;
+    card.querySelectorAll("[data-rover-form]").forEach((button) => {
+      const form = button.dataset.roverForm;
+      const active = form === state.roverForm;
+      button.classList.toggle("is-owned", state.roverForms.has(form));
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(state.roverForms.has(form)));
+      button.innerHTML = `<span>${form}</span>${active ? "<small>active</small>" : ""}`;
+    });
+  }
+
+  updateCharacterCard("rover");
+  renderProfileSummary();
+  renderResults();
+  if (location.hash === "#my-wavekit") renderAccountOverview();
 }
 
 function selectRoverAppearance(appearance) {
@@ -929,7 +955,29 @@ function selectRoverAppearance(appearance) {
   state.roverAppearance = appearance;
   markUnsaved();
   persistImmediateProfileChange();
-  render();
+  refreshRoverAppearance();
+}
+
+function refreshRoverAppearance() {
+  const file = `assets/wallpapers/${artworkFile("rover")}`;
+  document.querySelectorAll('img[src$="rover.jpg"], img[src$="rover-male.png"]').forEach((image) => {
+    if (image.getAttribute("src") !== file) image.setAttribute("src", file);
+  });
+
+  const card = characterGrid.querySelector('[data-character-card="rover"]');
+  if (card) {
+    const detail = card.querySelector(".character-info small");
+    if (detail) detail.textContent = `${rarityStars(5)} · ${state.roverAppearance} · Active: ${state.roverForm}`;
+    card.querySelectorAll("[data-rover-appearance]").forEach((button) => {
+      const active = button.dataset.roverAppearance === state.roverAppearance;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  document.querySelectorAll("[data-rover-summary]").forEach((summary) => {
+    summary.textContent = `Rover: ${state.roverAppearance} · ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}`;
+  });
 }
 
 function roverAppearancePicker() {
@@ -2160,7 +2208,7 @@ function renderTeamTuner() {
   const slotName = slot === 1 ? "setup helper" : "third slot";
   teamTunerContent.innerHTML = `
     <div class="team-tuner-current">
-      ${current.members.map((member, index) => `<button class="tuner-slot ${slot === index ? "is-active" : ""} ${index === 0 ? "is-locked" : ""}" type="button" ${index === 0 ? "disabled" : `data-tuner-slot="${index}"`}><img src="assets/wallpapers/${artworkFile(member)}" alt=""><span><small>${index === 0 ? "Main damage" : index === 1 ? "Setup helper" : "Third slot"}</small><strong>${member.name}</strong></span></button>`).join("")}
+      ${current.members.map((member, index) => `<button class="tuner-slot ${slot === index ? "is-active" : ""} ${index === 0 ? "is-locked" : ""}" type="button" ${index === 0 ? "disabled" : `data-tuner-slot="${index}"`}><img src="assets/wallpapers/${artworkFile(member)}" alt="" loading="lazy" decoding="async"><span><small>${index === 0 ? "Main damage" : index === 1 ? "Setup helper" : "Third slot"}</small><strong>${member.name}</strong></span></button>`).join("")}
     </div>
     <div class="team-tuner-layout">
       <section class="tuner-options">
@@ -2233,7 +2281,7 @@ function tunerCandidates(team, slot) {
 function tunerOption(option, selected) {
   const file = artworkFile(option.character);
   const selectedClass = selected.slug === option.character.slug ? "is-selected" : "";
-  return `<button class="tuner-option ${selectedClass}" type="button" data-tuner-character="${option.character.slug}"><img src="assets/wallpapers/${file}" alt=""><span><strong>${option.character.name}</strong><small>${teamFitLabel(option.team)} · ${safetyLabel(option.team)}</small></span><em>${selectedClass ? "Current" : "Use"}</em></button>`;
+  return `<button class="tuner-option ${selectedClass}" type="button" data-tuner-character="${option.character.slug}"><img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async"><span><strong>${option.character.name}</strong><small>${teamFitLabel(option.team)} · ${safetyLabel(option.team)}</small></span><em>${selectedClass ? "Current" : "Use"}</em></button>`;
 }
 
 function selectTeam(key, jumpToBuilds) {
@@ -3280,7 +3328,7 @@ function renderProfileSummary() {
     <div class="summary-stats">
       <span>${Object.keys(state.owned).length} resonators</span>
       <span>${state.weapons.size} weapons</span>
-      <span>Rover: ${state.roverAppearance} · ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}</span>
+      <span data-rover-summary>Rover: ${state.roverAppearance} · ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}</span>
       <span>${state.focus.size} focus</span>
     </div>
     <p>${ownedNames.length ? ownedNames.join(", ") : "No resonators selected yet."}</p>
@@ -3318,7 +3366,7 @@ function renderAccountOverview() {
   accountOverview.innerHTML = `
     <article class="profile-identity profile-accent-${state.profileAccent}">
       <div class="profile-identity-art" style="--profile-focus:${chipFocus(avatar)}">
-        <img src="assets/wallpapers/${avatarFile}" alt="${avatar.name}">
+        <img src="assets/wallpapers/${avatarFile}" alt="${avatar.name}" loading="lazy" decoding="async">
       </div>
       <div class="profile-identity-copy">
         <span>${cloud.user ? "Cloud profile synced" : "Private local profile"}</span>
@@ -3336,7 +3384,7 @@ function renderAccountOverview() {
     <div id="profile-customiser" class="profile-customiser" hidden>
       <div class="profile-avatar-picker"><span>Profile Resonator</span><small>Choose from your owned Resonators.</small><div class="profile-avatar-options">${avatarChoices.map((character) => {
         const file = artworkFile(character);
-        return `<button class="profile-avatar-option ${state.profileAvatar === character.slug ? "is-selected" : ""}" type="button" data-profile-avatar="${character.slug}" aria-label="Use ${character.name} as profile Resonator"><img src="assets/wallpapers/${file}" alt=""><small>${character.name}</small></button>`;
+        return `<button class="profile-avatar-option ${state.profileAvatar === character.slug ? "is-selected" : ""}" type="button" data-profile-avatar="${character.slug}" aria-label="Use ${character.name} as profile Resonator"><img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async"><small>${character.name}</small></button>`;
       }).join("")}</div></div>
       <div><span>Profile theme</span><div class="profile-accent-options" aria-label="Profile theme">${Object.entries({ aero: "Tidal", gold: "Solar", glacio: "Frost", havoc: "Midnight" }).map(([accent, label]) => `<button class="profile-theme-option accent-${accent} ${state.profileAccent === accent ? "is-selected" : ""}" type="button" data-profile-accent="${accent}" aria-label="Use ${label} profile theme"><i aria-hidden="true"></i><span>${label}</span></button>`).join("")}</div></div>
     </div>
@@ -3423,7 +3471,7 @@ function accountRosterItem(character) {
   const planned = state.buildPlan.includes(character.slug);
   const element = character.element.split("/")[0].trim().toLowerCase();
   return `<article class="account-roster-item element-${element}">
-    <a href="characters/${character.slug}/" aria-label="Open ${character.name} guide"><img src="assets/wallpapers/${file}" alt=""><span><strong>${character.name}</strong><small>R${chain} · ${level}</small></span></a>
+    <a href="characters/${character.slug}/" aria-label="Open ${character.name} guide"><img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async"><span><strong>${character.name}</strong><small>R${chain} · ${level}</small></span></a>
     <button class="account-plan-toggle ${planned ? "is-planned" : ""}" type="button" ${planned ? "disabled" : `data-add-plan="${character.slug}"`} aria-label="${planned ? `${character.name} is in your Upgrade Roadmap` : `Add ${character.name} to Upgrade Roadmap`}">${planned ? "✓" : "+"}</button>
   </article>`;
 }
@@ -3431,7 +3479,7 @@ function accountRosterItem(character) {
 function accountBestTeamMember(member, index) {
   const file = artworkFile(member);
   const labels = ["Damage", "Helper", "Sustain"];
-  return `<a href="characters/${member.slug}/"><img src="assets/wallpapers/${file}" alt=""><span>${labels[index] || "Team"}</span><strong>${member.name}</strong></a>`;
+  return `<a href="characters/${member.slug}/"><img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async"><span>${labels[index] || "Team"}</span><strong>${member.name}</strong></a>`;
 }
 
 function ownedNamedPartner(main) {
@@ -3463,7 +3511,7 @@ function buildPlanItem(slug) {
   const progress = plan ? Math.max(4, Math.min(100, Math.round((Number(plan.currentLevel) / Math.max(1, Number(plan.targetLevel))) * 100))) : 4;
   return `<article class="account-plan-item">
     <div class="account-plan-character">
-      <a href="characters/${slug}/"><img src="assets/wallpapers/${file}" alt=""><span><strong>${character.name}</strong><small>${level}</small><small>${skillSummary}</small></span></a>
+      <a href="characters/${slug}/"><img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async"><span><strong>${character.name}</strong><small>${level}</small><small>${skillSummary}</small></span></a>
       <div class="account-plan-progress" aria-hidden="true"><i style="width:${progress}%"></i></div>
     </div>
     <div class="account-plan-material-preview" data-plan-materials="${slug}"><small>Planned requirements</small><span>Loading material preview…</span></div>
@@ -3486,7 +3534,7 @@ async function hydrateAccountPlanMaterials() {
       const plan = state.progress[slug]?.materialPlan || defaultMaterialPlan();
       const costs = kit.characterPlan(record, plan).costs;
       const items = [...kit.groupedCosts(costs).values()].flat().filter((item) => Number(item.quantity) > 0).slice(0, 4);
-      target.innerHTML = `<small>Planned requirements</small><div>${items.length ? items.map((item) => `<span title="${item.name}"><img src="${item.icon}" alt=""><b>${item.name}</b><strong>x${kit.formatNumber(item.quantity)}</strong></span>`).join("") : `<span>Targets complete</span>`}</div>`;
+      target.innerHTML = `<small>Planned requirements</small><div>${items.length ? items.map((item) => `<span title="${item.name}"><img src="${item.icon}" alt="" loading="lazy" decoding="async"><b>${item.name}</b><strong>x${kit.formatNumber(item.quantity)}</strong></span>`).join("") : `<span>Targets complete</span>`}</div>`;
     });
   } catch (error) {
     console.error("WaveKit roadmap material previews could not load.", error);
@@ -3501,7 +3549,7 @@ function savedTeamRecordKey(record) {
 function savedTeamItem(record) {
   const names = record.members.map(characterName);
   const members = record.members.map((slug) => characters.find((character) => character.slug === slug)).filter(Boolean);
-  return `<article><button class="account-saved-team" type="button" data-open-team="${savedTeamRecordKey(record)}"><span class="mini-team" aria-hidden="true">${members.map((member) => { const file = artworkFile(member); return `<img src="assets/wallpapers/${file}" alt="">`; }).join("")}</span><span><strong>${names.join(" / ")}</strong><small>${record.roverForm || "Aero"} Rover profile</small></span></button><button class="icon-button" type="button" data-remove-saved-team="${savedTeamRecordKey(record)}" aria-label="Remove saved team">×</button></article>`;
+  return `<article><button class="account-saved-team" type="button" data-open-team="${savedTeamRecordKey(record)}"><span class="mini-team" aria-hidden="true">${members.map((member) => { const file = artworkFile(member); return `<img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">`; }).join("")}</span><span><strong>${names.join(" / ")}</strong><small>${record.roverForm || "Aero"} Rover profile</small></span></button><button class="icon-button" type="button" data-remove-saved-team="${savedTeamRecordKey(record)}" aria-label="Remove saved team">×</button></article>`;
 }
 
 function showProfileCustomiser() {

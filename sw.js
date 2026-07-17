@@ -1,4 +1,4 @@
-const CACHE_NAME = "wavekit-shell-v33";
+const CACHE_NAME = "wavekit-shell-v34";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -7,7 +7,7 @@ const APP_SHELL = [
   "/styles.css?v=rover-art-1",
   "/characters/",
   "/assets/characters-page.js?v=characters-directory-1",
-  "/app.js?v=my-wavekit-19",
+  "/app.js?v=my-wavekit-20",
   "/assets/mobile-navigation.js?v=landing-guide-1",
   "/assets/wavekit-hero-v2.png",
   "/assets/material-data.js?v=3.5-1",
