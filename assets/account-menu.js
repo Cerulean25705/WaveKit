@@ -1,4 +1,4 @@
-import "./mobile-navigation.js?v=mobile-nav-1";
+import "./mobile-navigation.js?v=landing-guide-1";
 
 const header = document.querySelector(".seo-topbar");
 const profileStorageKey = "wavekit-profiles-v1";

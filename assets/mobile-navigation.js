@@ -20,7 +20,6 @@ if (header && primaryNavigation && !primaryNavigation.querySelector("[data-mobil
   };
 
   const destinations = [
-    ["How it works", rootLink("how")],
     ["Teams", rootLink("results")],
     ["Builds", rootLink("builds")],
     ["Feedback", rootLink("feedback")],

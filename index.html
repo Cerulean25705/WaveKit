@@ -15,22 +15,25 @@
     <meta property="og:url" content="https://wavekit.net/">
     <meta property="og:title" content="WaveKit - Wuthering Waves Team Helper">
     <meta property="og:description" content="Build Wuthering Waves teams from the Resonators and weapons you actually own.">
-    <meta property="og:image" content="https://wavekit.net/assets/wavekit-mark.png">
-    <meta property="og:image:alt" content="WaveKit logo for a Wuthering Waves team helper">
+    <meta property="og:image" content="https://wavekit.net/assets/wavekit-hero-v2.png">
+    <meta property="og:image:width" content="1672">
+    <meta property="og:image:height" content="941">
+    <meta property="og:image:alt" content="WaveKit Wuthering Waves team helper interface artwork">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="WaveKit - Wuthering Waves Team Helper">
     <meta name="twitter:description" content="Practical WuWa team suggestions, builds, and Resonator guidance based on your account.">
-    <meta name="twitter:image" content="https://wavekit.net/assets/wavekit-mark.png">
-    <meta name="twitter:image:alt" content="WaveKit logo for a Wuthering Waves team helper">
+    <meta name="twitter:image" content="https://wavekit.net/assets/wavekit-hero-v2.png">
+    <meta name="twitter:image:alt" content="WaveKit Wuthering Waves team helper interface artwork">
     <link rel="alternate" type="application/rss+xml" title="WaveKit Wuthering Waves Guides" href="./feed.xml">
     <meta name="theme-color" content="#061827">
     <link rel="icon" href="assets/wavekit-mark.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
+    <link rel="preload" as="image" href="assets/wavekit-hero-v2.png" fetchpriority="high">
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=mobile-nav-1">
+    <link rel="stylesheet" href="styles.css?v=landing-guide-1">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -152,7 +155,6 @@
         <span>WaveKit</span>
       </a>
       <nav class="topnav" aria-label="Page sections">
-        <a href="#how">How it works</a>
         <a href="#my-wavekit">My WaveKit</a>
         <a href="#characters">Characters</a>
         <a href="weapons/">Weapons</a>
@@ -238,7 +240,7 @@
 
     <main>
       <section id="home" class="hero" aria-labelledby="hero-title">
-        <img class="hero-image" src="assets/wavekit-hero-v2.png" alt="">
+        <img class="hero-image" src="assets/wavekit-hero-v2.png" alt="" fetchpriority="high" decoding="async">
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="kicker">Wuthering Waves team helper</p>
@@ -251,45 +253,30 @@
             <a class="button primary" href="#helper">Start team helper</a>
             <a class="button" href="#results">View suggestions</a>
           </div>
-        </div>
-      </section>
-
-      <section id="how" class="section how-section" aria-labelledby="how-title">
-        <div class="section-heading split">
-          <div>
-            <p class="kicker">How WaveKit works</p>
-            <h2 id="how-title">Suggestions with context, not pressure.</h2>
-            <p>
-              WaveKit looks at the Resonators and weapons you mark as owned, then builds teams around known
-              archetypes, role coverage, safety, and realistic substitutions.
-            </p>
+          <div class="hero-quickstart" aria-label="How to use WaveKit">
+            <ol class="hero-steps">
+              <li>
+                <span>01</span>
+                <div><strong>Choose what you own</strong><small>Mark your Resonators and weapons.</small></div>
+              </li>
+              <li>
+                <span>02</span>
+                <div><strong>Pick your direction</strong><small>Prioritise best teams, balance, or comfort.</small></div>
+              </li>
+              <li>
+                <span>03</span>
+                <div><strong>Open your team plan</strong><small>Compare suggestions, builds, Echoes, and replacements.</small></div>
+              </li>
+            </ol>
+            <details class="hero-method">
+              <summary>How suggestions work <span aria-hidden="true">+</span></summary>
+              <p>
+                WaveKit starts with known team archetypes, then checks your ownership, Resonance Chains, weapons,
+                role coverage, and preferred play style. Premium shells appear when you own them; otherwise it looks
+                for compatible replacements and clearly marks lower-confidence options.
+              </p>
+            </details>
           </div>
-          <div class="save-card trust-card how-status-card">
-            <strong>3 steps</strong>
-            <span>Mark ownership, review teams, then open focused builds.</span>
-          </div>
-        </div>
-        <div class="trust-grid">
-          <article class="trust-panel">
-            <span>01</span>
-            <h3>Account-aware</h3>
-            <p>Suggestions come from what you actually own, not a perfect account that expects every premium unit.</p>
-          </article>
-          <article class="trust-panel">
-            <span>02</span>
-            <h3>Archetype-first</h3>
-            <p>Teams are weighted by mechanics like Aero Erosion, Spectro Frazzle, Echo Skill, Heavy Attack, and Tune shells.</p>
-          </article>
-          <article class="trust-panel">
-            <span>03</span>
-            <h3>Comfort-aware</h3>
-            <p>Real healers and defensive picks are treated differently from utility supports, so risky teams are easier to spot.</p>
-          </article>
-          <article class="trust-panel">
-            <span>04</span>
-            <h3>Honest data</h3>
-            <p>Newer or less-confirmed character data is marked for review instead of being presented as absolute truth.</p>
-          </article>
         </div>
       </section>
 
@@ -778,7 +765,7 @@
     </dialog>
 
     <script src="assets/weapon-images.js?v=proper-weapons-2"></script>
-    <script type="module" src="assets/mobile-navigation.js?v=mobile-nav-1"></script>
+    <script type="module" src="assets/mobile-navigation.js?v=landing-guide-1"></script>
     <script src="app.js?v=my-wavekit-18"></script>
   </body>
 </html>
