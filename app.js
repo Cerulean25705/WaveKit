@@ -1891,18 +1891,9 @@ function syncFlowNextVisibility() {
 }
 
 function nextFlowAction({ ownedCount, selectedTeam, teams }) {
-  if (!state.activeProfileId && !workingProfileHasRosterData() && !state.profileName) {
-    return {
-      step: "Step 1 of 4",
-      title: "Start setup",
-      detail: "Choose a profile name if you want one, then start tapping the Resonators you own.",
-      button: "Start",
-      target: "profile"
-    };
-  }
   if (ownedCount < 3) {
     return {
-      step: "Step 2 of 4",
+      step: "Step 1 of 3",
       title: `${ownedCount}/3 Resonators selected`,
       detail: "Tap the characters you own. Three is enough to start seeing team ideas.",
       button: "Choose Resonators",
@@ -1911,7 +1902,7 @@ function nextFlowAction({ ownedCount, selectedTeam, teams }) {
   }
   if (!state.weapons.size) {
     return {
-      step: "Step 3 of 4",
+      step: "Step 2 of 3",
       title: "Add weapons when ready",
       detail: "This is optional, but owned weapons make build advice more accurate.",
       button: "Add weapons",
@@ -1920,7 +1911,7 @@ function nextFlowAction({ ownedCount, selectedTeam, teams }) {
   }
   if (!teams.length) {
     return {
-      step: "Step 4 of 4",
+      step: "Step 3 of 3",
       title: "Choose a main damage dealer",
       detail: "You have enough picks, but WaveKit needs a usable team shell to score.",
       button: "Check Resonators",
@@ -1929,7 +1920,7 @@ function nextFlowAction({ ownedCount, selectedTeam, teams }) {
   }
   if (!state.flowVisitedResults || !selectedTeam) {
     return {
-      step: "Step 4 of 4",
+      step: "Step 3 of 3",
       title: `${teams.length} team ideas ready`,
       detail: "Open the suggestions and pick the team you want to build first.",
       button: "View teams",
@@ -1947,15 +1938,6 @@ function nextFlowAction({ ownedCount, selectedTeam, teams }) {
 
 function handleFlowNext() {
   const target = flowNext.dataset.target;
-  if (target === "save") {
-    saveProfile();
-    requestAnimationFrame(() => scrollToSection("#helper"));
-    return;
-  }
-  if (target === "profile") {
-    scrollToSection("#helper", ".profile-panel");
-    return;
-  }
   if (target === "roster") {
     scrollToSection("#helper", ".roster-panel");
     return;
@@ -3999,6 +3981,14 @@ $("#cloud-reset-password").addEventListener("click", resetCloudPassword);
 $("#cloud-copy-id").addEventListener("click", copyWaveKitId);
 $("#cloud-discord-code").addEventListener("click", createDiscordLinkCode);
 $("#cloud-sign-out").addEventListener("click", signOutCloud);
+document.querySelectorAll("[data-open-profile-manager]").forEach((button) => button.addEventListener("click", () => {
+  closeAccountMenu();
+  $("#profile-manager-dialog")?.showModal();
+}));
+$("#close-profile-manager").addEventListener("click", () => $("#profile-manager-dialog").close());
+$("#profile-manager-dialog").addEventListener("click", (event) => {
+  if (event.target === $("#profile-manager-dialog")) $("#profile-manager-dialog").close();
+});
 document.addEventListener("click", handleAccountMenuDismiss);
 document.addEventListener("keydown", handleAccountMenuDismiss);
 window.addEventListener("scroll", updateActiveNav, { passive: true });

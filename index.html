@@ -30,7 +30,7 @@
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=mobile-teams-1">
+    <link rel="stylesheet" href="styles.css?v=homepage-polish-1">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -176,12 +176,14 @@
               <button id="cloud-create-account" class="button ghost compact-button" type="button">Create</button>
               <button id="cloud-google" class="button ghost compact-button" type="button">Google</button>
               <button id="cloud-reset-password" class="button ghost compact-button" type="button">Reset</button>
+              <button class="button ghost compact-button account-profile-button" type="button" data-open-profile-manager>Manage local profiles</button>
             </div>
             <div id="cloud-signed-in" class="account-actions" hidden>
               <strong id="cloud-user-label">Signed in</strong>
               <span id="cloud-user-id" class="account-id">WaveKit ID pending</span>
               <span class="account-auto-sync"><strong>Automatic sync is on</strong><small>Profile changes sync as you make them.</small></span>
               <a class="button primary compact-button" href="#my-wavekit">Open My WaveKit</a>
+              <button class="button ghost compact-button account-profile-button" type="button" data-open-profile-manager>Manage profiles</button>
               <button id="cloud-copy-id" class="button ghost compact-button" type="button">Copy ID</button>
               <button id="cloud-discord-code" class="button ghost compact-button" type="button">Discord code</button>
               <button id="cloud-sign-out" class="button ghost compact-button" type="button">Sign out</button>
@@ -190,6 +192,49 @@
         </details>
       </div>
     </header>
+
+    <dialog id="profile-manager-dialog" class="profile-manager-dialog" aria-labelledby="profile-manager-title">
+      <div class="profile-manager-shell">
+        <header>
+          <div>
+            <span class="kicker">WaveKit account</span>
+            <h2 id="profile-manager-title">Manage profiles</h2>
+            <p>Create, rename, switch, or remove a local profile. Signed-in profiles continue syncing automatically.</p>
+          </div>
+          <button id="close-profile-manager" class="icon-button" type="button" aria-label="Close profile manager">×</button>
+        </header>
+        <section class="panel profile-panel" aria-labelledby="profile-title">
+          <div class="panel-heading">
+            <span>Profiles</span>
+            <h3 id="profile-title">Your saved setups</h3>
+          </div>
+          <div class="profile-save-state" aria-live="polite">
+            <span class="profile-save-icon" aria-hidden="true">✓</span>
+            <span>
+              <strong id="profile-save-title">Saved automatically</strong>
+              <small id="profile-save-detail">Resonators and weapons stay saved on this device as you select them.</small>
+            </span>
+          </div>
+          <div id="profile-list" class="profile-list" aria-label="Saved profiles"></div>
+          <div id="profile-summary" class="profile-summary" aria-live="polite"></div>
+          <div class="profile-actions compact">
+            <button id="new-profile" class="button ghost" type="button">Add profile</button>
+            <button id="edit-profile" class="button ghost" type="button">Rename</button>
+            <button id="delete-profile" class="button ghost danger" type="button">Delete</button>
+          </div>
+          <div id="profile-editor" class="profile-editor">
+            <label class="field">
+              <span>Profile name <small>optional</small></span>
+              <input id="profile-name" type="text" placeholder="For example: Main account">
+            </label>
+            <div class="profile-actions profile-editor-actions">
+              <button id="save-profile" class="button primary" type="button">Done</button>
+              <button id="reset-profile" class="button ghost" type="button">Close</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </dialog>
 
     <main>
       <section id="home" class="hero" aria-labelledby="hero-title">
@@ -219,9 +264,9 @@
               archetypes, role coverage, safety, and realistic substitutions.
             </p>
           </div>
-          <div class="save-card trust-card">
-            <strong>Local</strong>
-            <span>Your profiles stay in this browser.</span>
+          <div class="save-card trust-card how-status-card">
+            <strong>3 steps</strong>
+            <span>Mark ownership, review teams, then open focused builds.</span>
           </div>
         </div>
         <div class="trust-grid">
@@ -282,7 +327,7 @@
               <a class="button ghost" href="#helper">Use team helper</a>
             </div>
           </div>
-          <div class="save-card trust-card">
+          <div class="save-card trust-card guide-count-card">
             <strong>53</strong>
             <span>character guides</span>
           </div>
@@ -412,10 +457,10 @@
         <div class="section-heading split">
           <div>
             <p class="kicker">Team helper</p>
-            <h2 id="helper-title">A calmer setup flow.</h2>
+            <h2 id="helper-title">Tell WaveKit what you own.</h2>
             <p>
-              Choose a profile, tap what you own, and WaveKit saves your progress automatically while it builds
-              teams around your strongest damage dealers.
+              Tap your Resonators, optionally add weapons, and WaveKit saves each change automatically while it
+              builds teams around your strongest damage dealers.
             </p>
           </div>
           <div class="save-card" aria-live="polite">
@@ -425,10 +470,9 @@
         </div>
 
         <div class="flow-guide" aria-label="Setup steps">
-          <span><strong>1</strong> Choose profile</span>
-          <span><strong>2</strong> Tap owned Resonators</span>
-          <span><strong>3</strong> Tap owned weapons</span>
-          <span><strong>4</strong> Pick a team to build</span>
+          <span><strong>1</strong><i>Roster</i><small>Tap owned Resonators</small></span>
+          <span><strong>2</strong><i>Weapons</i><small>Add the ones you use</small></span>
+          <span><strong>3</strong><i>Teams</i><small>Pick a team to build</small></span>
         </div>
 
         <div class="starter-note">
@@ -436,47 +480,10 @@
           <p>Tap each Resonator once to mark RC0 owned. Use + only when you want to add Resonance Chain levels. Weapons are optional, but make build readiness more accurate.</p>
         </div>
 
-        <div class="starter-helper-grid" aria-label="Beginner helper notes">
-          <span><strong>Not sure?</strong><small>Start with Resonators only. You can come back for weapons later.</small></span>
-          <span><strong>Tap once</strong><small>A selected card glows. Tap again to remove it from your profile.</small></span>
-          <span><strong>Pick a team</strong><small>Open builds after choosing the team that looks most useful to you.</small></span>
-        </div>
-
         <div class="helper-grid">
-          <section class="panel profile-panel" aria-labelledby="profile-title">
-            <div class="panel-heading">
-              <span>Step 1</span>
-              <h3 id="profile-title">Your profile</h3>
-            </div>
-            <div class="profile-save-state" aria-live="polite">
-              <span class="profile-save-icon" aria-hidden="true">✓</span>
-              <span>
-                <strong id="profile-save-title">Saved automatically</strong>
-                <small id="profile-save-detail">Resonators and weapons stay saved on this device as you select them.</small>
-              </span>
-            </div>
-            <div id="profile-list" class="profile-list" aria-label="Saved profiles"></div>
-            <div id="profile-summary" class="profile-summary" aria-live="polite"></div>
-            <div class="profile-actions compact">
-              <button id="new-profile" class="button ghost" type="button">Add profile</button>
-              <button id="edit-profile" class="button ghost" type="button">Rename</button>
-              <button id="delete-profile" class="button ghost danger" type="button">Delete</button>
-            </div>
-            <div id="profile-editor" class="profile-editor">
-              <label class="field">
-                <span>Profile name <small>optional</small></span>
-                <input id="profile-name" type="text" placeholder="For example: Main account">
-              </label>
-              <div class="profile-actions profile-editor-actions">
-                <button id="save-profile" class="button primary" type="button">Done</button>
-                <button id="reset-profile" class="button ghost" type="button">Close</button>
-              </div>
-            </div>
-          </section>
-
           <section class="panel roster-panel" aria-labelledby="roster-title">
             <div class="panel-heading">
-              <span>Step 2</span>
+              <span>Step 1</span>
               <h3 id="roster-title">Owned Resonators</h3>
             </div>
             <div class="toolbar">
@@ -495,7 +502,7 @@
 
           <section class="panel weapon-panel" aria-labelledby="weapon-title">
             <div class="panel-heading">
-              <span>Step 3</span>
+              <span>Step 2 · Optional</span>
               <h3 id="weapon-title">Weapons you own</h3>
             </div>
             <p>
@@ -733,7 +740,7 @@
             <h3>Recently improved</h3>
           </div>
           <ol class="changelog-list">
-            <li><strong>Jul 17</strong><span>Added My WaveKit, saved teams, a combined Build Plan, and owned-team tuning.</span></li>
+            <li><strong>Jul 17</strong><span>Added My WaveKit, saved teams, the Upgrade Roadmap, and owned-team tuning.</span></li>
             <li><strong>Jul 17</strong><span>Rechecked version 3.5 banners and corrected current character guide data.</span></li>
           </ol>
         </div>
@@ -771,6 +778,6 @@
     </dialog>
 
     <script src="assets/weapon-images.js?v=proper-weapons-2"></script>
-    <script src="app.js?v=my-wavekit-14"></script>
+    <script src="app.js?v=my-wavekit-15"></script>
   </body>
 </html>

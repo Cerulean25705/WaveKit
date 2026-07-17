@@ -7501,6 +7501,397 @@ h1 {
     min-height: 38px;
   }
 }
+/* Homepage information polish */
+.how-section .section-heading,
+.character-library-section .section-heading,
+.helper-shell .section-heading,
+.trust-section .section-heading {
+  position: relative;
+  padding: 18px 0;
+  border-top: 1px solid rgba(128, 222, 231, 0.14);
+  border-bottom: 1px solid rgba(128, 222, 231, 0.14);
+  background: linear-gradient(90deg, rgba(112, 231, 237, 0.055), transparent 55%, rgba(242, 202, 112, 0.045));
+}
+
+.how-section .section-heading::before,
+.character-library-section .section-heading::before,
+.helper-shell .section-heading::before,
+.trust-section .section-heading::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -14px;
+  width: 3px;
+  background: linear-gradient(180deg, var(--aqua), var(--gold));
+  box-shadow: 0 0 18px rgba(112, 231, 237, 0.28);
+}
+
+.how-status-card,
+.guide-count-card {
+  border: 1px solid rgba(128, 222, 231, 0.18);
+  border-radius: 7px;
+  background: rgba(7, 27, 34, 0.72);
+}
+
+.how-section .trust-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.how-section .trust-panel {
+  min-height: 154px;
+  padding: 15px;
+  border-radius: 7px;
+  box-shadow: none;
+  background: linear-gradient(145deg, rgba(112, 231, 237, 0.055), rgba(7, 27, 34, 0.78));
+}
+
+.how-section .trust-panel span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 13px;
+  border: 1px solid rgba(242, 202, 112, 0.3);
+  border-radius: 50%;
+  background: rgba(242, 202, 112, 0.08);
+  font-size: 0.65rem;
+}
+
+.how-section .trust-panel h3 {
+  font-size: 1rem;
+}
+
+.how-section .trust-panel p {
+  margin-top: 7px;
+  font-size: 0.78rem;
+  line-height: 1.46;
+}
+
+.character-library-section .character-hub-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.character-library-section .character-hub-card {
+  min-height: 246px;
+  border-radius: 7px;
+  box-shadow: none;
+}
+
+.character-library-section .character-hub-card:first-child {
+  grid-column: span 2;
+}
+
+.character-library-section .character-hub-card span {
+  padding: 13px;
+}
+
+.character-library-section .character-hub-card strong {
+  font-size: 1.05rem;
+}
+
+.helper-shell .helper-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "roster"
+    "weapons";
+  gap: 14px;
+}
+
+.helper-shell .flow-guide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(128, 222, 231, 0.17);
+  border-radius: 7px;
+  background: rgba(7, 27, 34, 0.65);
+}
+
+.helper-shell .flow-guide span {
+  min-height: 70px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-content: center;
+  gap: 2px 10px;
+  padding: 10px 13px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(135deg, rgba(112, 231, 237, 0.055), transparent 62%);
+}
+
+.helper-shell .flow-guide span + span {
+  border-left: 1px solid rgba(128, 222, 231, 0.14);
+}
+
+.helper-shell .flow-guide strong {
+  grid-row: 1 / 3;
+  width: 30px;
+  height: 30px;
+}
+
+.helper-shell .flow-guide i,
+.helper-shell .flow-guide small {
+  display: block;
+  min-width: 0;
+  font-style: normal;
+}
+
+.helper-shell .flow-guide i {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.helper-shell .flow-guide small {
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
+.helper-shell .starter-note {
+  margin-bottom: 14px;
+  border-radius: 7px;
+  box-shadow: none;
+}
+
+.helper-shell .roster-panel,
+.helper-shell .weapon-panel {
+  border-radius: 7px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.2);
+}
+
+.helper-shell .panel-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(128, 222, 231, 0.13);
+}
+
+.helper-shell .panel-heading h3 {
+  margin: 0;
+  font-size: 1.18rem;
+}
+
+.trust-section .status-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.trust-section .status-panel {
+  min-height: 132px;
+  padding: 14px;
+  border-radius: 7px;
+  box-shadow: none;
+  background: linear-gradient(145deg, rgba(112, 231, 237, 0.045), rgba(7, 27, 34, 0.74));
+}
+
+.trust-section .status-panel.verified { border-top: 2px solid rgba(100, 242, 208, 0.72); }
+.trust-section .status-panel.review { border-top: 2px solid rgba(242, 202, 112, 0.72); }
+.trust-section .status-panel.local { border-top: 2px solid rgba(143, 201, 255, 0.72); }
+.trust-section .status-panel.fan { border-top: 2px solid rgba(209, 139, 217, 0.72); }
+
+.trust-section .status-panel span {
+  margin-bottom: 7px;
+  font-size: 0.66rem;
+}
+
+.trust-section .status-panel p {
+  margin-top: 0;
+  font-size: 0.76rem;
+  line-height: 1.48;
+}
+
+.trust-section .data-note-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.trust-section .data-note-list span {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 9px 11px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+}
+
+.profile-manager-dialog {
+  width: min(720px, calc(100% - 24px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 0;
+  color: var(--text);
+  background: transparent;
+}
+
+.profile-manager-dialog::backdrop {
+  background: rgba(0, 9, 13, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.profile-manager-shell {
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  border: 1px solid rgba(128, 222, 231, 0.28);
+  border-radius: 8px;
+  background: linear-gradient(145deg, rgba(14, 42, 50, 0.98), rgba(4, 17, 24, 0.98));
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
+}
+
+.profile-manager-shell > header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px;
+  border-bottom: 1px solid rgba(128, 222, 231, 0.15);
+  background: rgba(5, 20, 27, 0.94);
+  backdrop-filter: blur(16px);
+}
+
+.profile-manager-shell > header h2 {
+  margin: 3px 0 5px;
+  font-size: 1.65rem;
+}
+
+.profile-manager-shell > header p {
+  max-width: 540px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.profile-manager-shell .profile-panel {
+  margin: 12px;
+  border-radius: 7px;
+  box-shadow: none;
+}
+
+.account-profile-button {
+  flex-basis: 100%;
+}
+
+@media (max-width: 760px) {
+  .how-section .section-heading,
+  .character-library-section .section-heading,
+  .helper-shell .section-heading,
+  .trust-section .section-heading {
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  .how-section .trust-grid,
+  .trust-section .status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .character-library-section .character-hub-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .character-library-section .character-hub-card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .character-library-section .character-hub-card {
+    min-height: 210px;
+  }
+
+  .helper-shell .flow-guide {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .helper-shell .flow-guide span {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding: 9px 8px;
+  }
+
+  .helper-shell .flow-guide strong {
+    width: 26px;
+    height: 26px;
+  }
+
+  .trust-section .data-note-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .how-section .trust-grid,
+  .trust-section .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .how-section .trust-panel,
+  .trust-section .status-panel {
+    min-height: 0;
+  }
+
+  .character-library-section .character-hub-card {
+    min-height: 174px;
+  }
+
+  .character-library-section .character-hub-card:first-child {
+    min-height: 224px;
+  }
+
+  .helper-shell .flow-guide span {
+    min-height: 76px;
+    align-content: start;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 9px 7px;
+  }
+
+  .helper-shell .flow-guide strong {
+    grid-row: auto;
+  }
+
+  .helper-shell .flow-guide i {
+    font-size: 0.72rem;
+  }
+
+  .helper-shell .flow-guide small {
+    font-size: 0.6rem;
+  }
+
+  .helper-shell .roster-panel,
+  .helper-shell .weapon-panel {
+    padding: 12px;
+  }
+
+  .profile-manager-dialog {
+    width: calc(100% - 12px);
+    max-height: calc(100dvh - 12px);
+  }
+
+  .profile-manager-shell {
+    max-height: calc(100dvh - 12px);
+  }
+
+  .profile-manager-shell > header {
+    padding: 14px;
+  }
+
+  .profile-manager-shell > header h2 {
+    font-size: 1.35rem;
+  }
+
+  .profile-manager-shell .profile-panel {
+    margin: 7px;
+    padding: 12px;
+  }
+}
+
 /* My WaveKit account overview */
 .account-overview-section {
   --profile-accent: #70e7ed;
