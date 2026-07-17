@@ -87,7 +87,7 @@ export async function saveCloudProfiles(payload) {
   await setDoc(profileDoc(auth.currentUser.uid), {
     app: "WaveKit",
     version: 1,
-    ...payload,
+    ...sanitiseForFirestore(payload),
     updatedAt: serverTimestamp()
   }, { merge: true });
 }
@@ -123,6 +123,16 @@ function serialiseUser(user) {
     displayName: user.displayName || "",
     emailVerified: Boolean(user.emailVerified)
   };
+}
+
+function sanitiseForFirestore(value) {
+  if (Array.isArray(value)) {
+    return value.filter((item) => item !== undefined).map(sanitiseForFirestore);
+  }
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value)
+    .filter(([, item]) => item !== undefined)
+    .map(([key, item]) => [key, sanitiseForFirestore(item)]));
 }
 
 function ensureReady() {

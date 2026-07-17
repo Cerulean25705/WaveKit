@@ -272,7 +272,7 @@ if (header && !header.querySelector("[data-shared-account]")) {
 
   try {
     const config = await import("./firebase-config.js");
-    api = await import("./firebase-sync.js");
+    api = await import("./firebase-sync.js?v=undefined-values-1");
     configured = Boolean(config.firebaseEnabled && api.isCloudConfigured());
     if (!configured) {
       authResolved = true;

@@ -3039,16 +3039,19 @@ function normaliseProgress(progress) {
   if (!progress || typeof progress !== "object") return {};
   return Object.fromEntries(Object.entries(progress)
     .filter(([slug]) => !upcomingCharacters.has(slug))
-    .map(([slug, value]) => [slug, {
-      characterLevel: cleanProgressNumber(value?.characterLevel, 1, 90),
-      weaponLevel: cleanProgressNumber(value?.weaponLevel, 1, 90),
-      forteLevel: cleanProgressNumber(value?.forteLevel, 1, 10),
-      skillLevel: cleanProgressNumber(value?.skillLevel, 1, 10),
-      liberationLevel: cleanProgressNumber(value?.liberationLevel, 1, 10),
-      echoReady: Boolean(value?.echoReady),
-      notes: String(value?.notes || "").slice(0, 400),
-      materialPlan: normaliseMaterialPlan(value?.materialPlan)
-    }]));
+    .map(([slug, value]) => {
+      const materialPlan = normaliseMaterialPlan(value?.materialPlan);
+      return [slug, {
+        characterLevel: cleanProgressNumber(value?.characterLevel, 1, 90),
+        weaponLevel: cleanProgressNumber(value?.weaponLevel, 1, 90),
+        forteLevel: cleanProgressNumber(value?.forteLevel, 1, 10),
+        skillLevel: cleanProgressNumber(value?.skillLevel, 1, 10),
+        liberationLevel: cleanProgressNumber(value?.liberationLevel, 1, 10),
+        echoReady: Boolean(value?.echoReady),
+        notes: String(value?.notes || "").slice(0, 400),
+        ...(materialPlan ? { materialPlan } : {})
+      }];
+    }));
 }
 
 function normaliseMaterialPlan(plan) {
@@ -3623,7 +3626,7 @@ async function initCloudSync() {
       renderCloudSync();
       return;
     }
-    cloud.api = await import("./assets/firebase-sync.js");
+    cloud.api = await import("./assets/firebase-sync.js?v=undefined-values-1");
     cloud.configured = cloud.api.isCloudConfigured();
     if (!cloud.configured) {
       clearTimeout(timeout);
