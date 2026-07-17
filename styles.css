@@ -4871,7 +4871,7 @@ h1 {
     0 0 18px rgba(255, 215, 122, 0.22);
 }
 
-.weapon-search {
+.search-box.weapon-search {
   margin: 16px 0 12px;
 }
 
