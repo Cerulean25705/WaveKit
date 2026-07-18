@@ -2053,7 +2053,9 @@ function finderIsVisible() {
 
 function syncFlowNextVisibility() {
   if (!flowNext) return;
-  flowNext.hidden = !finderIsVisible();
+  const visible = finderIsVisible();
+  flowNext.hidden = !visible;
+  document.body.classList.toggle("has-finder-dock", visible);
   const activeTarget = activeFinderTarget();
   finderDockButtons.forEach((button) => {
     const active = button.dataset.finderTarget === activeTarget;
@@ -3416,8 +3418,8 @@ function renderAccountOverview() {
         <div class="profile-identity-stats">
           <span><strong>${ownedCharacters.length}</strong><small>Resonators</small></span>
           <span><strong>${state.weapons.size}</strong><small>Weapons</small></span>
-          <span><strong>${state.savedTeams.length}</strong><small>Saved teams</small></span>
-          <span><strong>${state.buildPlan.length}</strong><small>Build targets</small></span>
+          <span data-account-stat="saved-teams"><strong>${state.savedTeams.length}</strong><small>Saved teams</small></span>
+          <span data-account-stat="build-plan"><strong>${state.buildPlan.length}</strong><small>Build targets</small></span>
         </div>
       </div>
     </article>
@@ -3450,13 +3452,10 @@ function renderAccountOverview() {
 
     <div class="account-detail-grid account-roadmap-grid">
       <section id="account-build-plan" class="account-plan-panel">
-        <header><div><span>Upgrade roadmap</span><h3>What you are building next</h3></div><div class="account-plan-header-actions"><a class="button ghost compact-button" href="characters/">Add target</a>${state.buildPlan.length > 1 ? `<button id="calculate-materials" class="button ghost compact-button" type="button">View total materials</button><small>Totals every target below.</small>` : ""}</div></header>
-        <div class="account-plan-list">${state.buildPlan.length ? state.buildPlan.map(buildPlanItem).join("") : `<div class="account-panel-empty"><p>Add a Resonator from their character guide or plan all three members of a selected team.</p><a class="button ghost compact-button" href="characters/">Browse character guides</a></div>`}</div>
-        <div id="combined-materials" class="combined-materials" hidden></div>
+        ${accountRoadmapPanelHtml()}
       </section>
       <section id="account-saved-teams" class="account-saved-panel">
-        <header><div><span>Saved teams</span><h3>Your chosen versions</h3></div></header>
-        <div class="account-saved-list">${state.savedTeams.length ? state.savedTeams.map(savedTeamItem).join("") : `<div class="account-panel-empty"><p>Save a suggestion or an adjusted team and it will stay here.</p><a class="button ghost compact-button" href="#results">View suggestions</a></div>`}</div>
+        ${accountSavedTeamsPanelHtml()}
       </section>
     </div>
 
@@ -3480,28 +3479,89 @@ function renderAccountOverview() {
     renderAccountOverview();
     showProfileCustomiser();
   }));
-  accountOverview.querySelectorAll("[data-open-team]").forEach((button) => button.addEventListener("click", () => openSavedOrSuggestedTeam(button.dataset.openTeam)));
-  accountOverview.querySelectorAll("[data-remove-plan]").forEach((button) => button.addEventListener("click", () => {
-    state.buildPlan = state.buildPlan.filter((slug) => slug !== button.dataset.removePlan);
-    markUnsaved();
-    persistImmediateProfileChange();
-    renderAccountOverview();
-  }));
+  accountOverview.querySelector(".account-best-team [data-open-team]")?.addEventListener("click", (event) => openSavedOrSuggestedTeam(event.currentTarget.dataset.openTeam));
   accountOverview.querySelectorAll("[data-add-plan]").forEach((button) => button.addEventListener("click", () => {
     const slug = button.dataset.addPlan;
     if (!state.buildPlan.includes(slug)) state.buildPlan.push(slug);
     markUnsaved();
     persistImmediateProfileChange();
-    renderAccountOverview();
+    button.classList.add("is-planned");
+    button.disabled = true;
+    button.removeAttribute("data-add-plan");
+    button.textContent = "✓";
+    const character = characters.find((entry) => entry.slug === slug);
+    button.setAttribute("aria-label", `${character?.name || slug} is in your Upgrade Roadmap`);
+    refreshAccountRoadmapPanel();
   }));
-  accountOverview.querySelectorAll("[data-remove-saved-team]").forEach((button) => button.addEventListener("click", () => {
+  bindAccountRoadmapActions();
+  bindAccountSavedTeamActions();
+}
+
+function accountRoadmapPanelHtml() {
+  return `<header><div><span>Upgrade roadmap</span><h3>What you are building next</h3></div><div class="account-plan-header-actions"><a class="button ghost compact-button" href="characters/">Add target</a>${state.buildPlan.length > 1 ? `<button id="calculate-materials" class="button ghost compact-button" type="button">View total materials</button><small>Totals every target below.</small>` : ""}</div></header>
+    <div class="account-plan-list">${state.buildPlan.length ? state.buildPlan.map(buildPlanItem).join("") : `<div class="account-panel-empty"><p>Add a Resonator from their character guide or plan all three members of a selected team.</p><a class="button ghost compact-button" href="characters/">Browse character guides</a></div>`}</div>
+    <div id="combined-materials" class="combined-materials" hidden></div>`;
+}
+
+function accountSavedTeamsPanelHtml() {
+  return `<header><div><span>Saved teams</span><h3>Your chosen versions</h3></div></header>
+    <div class="account-saved-list">${state.savedTeams.length ? state.savedTeams.map(savedTeamItem).join("") : `<div class="account-panel-empty"><p>Save a suggestion or an adjusted team and it will stay here.</p><a class="button ghost compact-button" href="#results">View suggestions</a></div>`}</div>`;
+}
+
+function setAccountOverviewStat(name, value) {
+  const output = accountOverview?.querySelector(`[data-account-stat="${name}"] strong`);
+  if (output) output.textContent = value;
+}
+
+function bindAccountRoadmapActions() {
+  const panel = accountOverview?.querySelector("#account-build-plan");
+  if (!panel) return;
+  panel.querySelectorAll("[data-remove-plan]").forEach((button) => button.addEventListener("click", () => {
+    const slug = button.dataset.removePlan;
+    const character = characters.find((entry) => entry.slug === slug);
+    state.buildPlan = state.buildPlan.filter((entry) => entry !== slug);
+    markUnsaved();
+    persistImmediateProfileChange();
+    const rosterButton = accountOverview.querySelector(`.account-roster-item a[href="characters/${slug}/"]`)?.closest(".account-roster-item")?.querySelector(".account-plan-toggle");
+    if (rosterButton) {
+      rosterButton.classList.remove("is-planned");
+      rosterButton.disabled = false;
+      rosterButton.dataset.addPlan = slug;
+      rosterButton.textContent = "+";
+      rosterButton.setAttribute("aria-label", `Add ${character?.name || slug} to Upgrade Roadmap`);
+    }
+    refreshAccountRoadmapPanel();
+  }));
+  panel.querySelector("#calculate-materials")?.addEventListener("click", renderCombinedMaterials);
+  void hydrateAccountPlanMaterials();
+}
+
+function bindAccountSavedTeamActions() {
+  const panel = accountOverview?.querySelector("#account-saved-teams");
+  if (!panel) return;
+  panel.querySelectorAll("[data-open-team]").forEach((button) => button.addEventListener("click", () => openSavedOrSuggestedTeam(button.dataset.openTeam)));
+  panel.querySelectorAll("[data-remove-saved-team]").forEach((button) => button.addEventListener("click", () => {
     state.savedTeams = state.savedTeams.filter((record) => savedTeamRecordKey(record) !== button.dataset.removeSavedTeam);
     markUnsaved();
     persistImmediateProfileChange();
-    renderAccountOverview();
+    refreshAccountSavedTeamsPanel();
   }));
-  accountOverview.querySelector("#calculate-materials")?.addEventListener("click", renderCombinedMaterials);
-  void hydrateAccountPlanMaterials();
+}
+
+function refreshAccountRoadmapPanel() {
+  const panel = accountOverview?.querySelector("#account-build-plan");
+  if (!panel) return;
+  panel.innerHTML = accountRoadmapPanelHtml();
+  setAccountOverviewStat("build-plan", state.buildPlan.length);
+  bindAccountRoadmapActions();
+}
+
+function refreshAccountSavedTeamsPanel() {
+  const panel = accountOverview?.querySelector("#account-saved-teams");
+  if (!panel) return;
+  panel.innerHTML = accountSavedTeamsPanelHtml();
+  setAccountOverviewStat("saved-teams", state.savedTeams.length);
+  bindAccountSavedTeamActions();
 }
 
 function accountRosterItem(character) {

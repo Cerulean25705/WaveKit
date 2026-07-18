@@ -135,6 +135,9 @@
   directory.addEventListener("toggle", (event) => {
     const card = event.target.closest(".weapon-card");
     if (!card?.open) return;
+    directory.querySelectorAll(".weapon-card[open]").forEach((openCard) => {
+      if (openCard !== card) openCard.open = false;
+    });
     const weapon = kit.data.weapons[card.dataset.weaponName];
     if (weapon) renderPlan(card, weapon);
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
