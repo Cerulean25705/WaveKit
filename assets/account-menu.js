@@ -1,4 +1,5 @@
 import "./mobile-navigation.js?v=landing-guide-1";
+import "./wavecat.js?v=wavecat-rest-4";
 
 const header = document.querySelector(".seo-topbar");
 const profileStorageKey = "wavekit-profiles-v1";
