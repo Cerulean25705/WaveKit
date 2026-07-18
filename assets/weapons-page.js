@@ -77,7 +77,7 @@
     return `
       <details class="weapon-card ${owned.has(weapon.name) ? "is-owned" : ""}" data-weapon-name="${kit.escape(weapon.name)}" data-rarity="${weapon.rarity}" id="weapon-${kit.escape(weapon.slug)}" style="--weapon-image: url('${kit.escape(image)}')">
         <summary>
-          <div class="weapon-card-art rarity-${weapon.rarity}"><img src="${kit.escape(image)}" alt="${kit.escape(weapon.name)} weapon icon" loading="lazy" decoding="async"></div>
+          <div class="weapon-card-art rarity-${weapon.rarity}"><img src="${kit.escape(image)}" alt="${kit.escape(weapon.name)} weapon icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='../assets/weapons/${kit.escape(weapon.type.toLowerCase())}.svg'"></div>
           <div class="weapon-card-copy">
             <span>${weapon.rarity}-star ${kit.escape(weapon.type)}</span>
             <h2>${kit.escape(weapon.name)}</h2>
@@ -137,6 +137,8 @@
     if (!card?.open) return;
     const weapon = kit.data.weapons[card.dataset.weaponName];
     if (weapon) renderPlan(card, weapon);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() => card.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" }));
   }, true);
   directory.addEventListener("change", (event) => {
     if (!event.target.matches("[data-weapon-current], [data-weapon-target], [data-weapon-ascended]")) return;

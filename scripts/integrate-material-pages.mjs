@@ -9,7 +9,7 @@ const directories = (await fs.readdir(characterRoot, { withFileTypes: true })).f
 for (const directory of directories) {
   const file = path.join(characterRoot, directory.name, "index.html");
   let html = await fs.readFile(file, "utf8");
-  html = html.replace(/styles\.css\?v=[^\"']+/g, "styles.css?v=echo-guides-1");
+  html = html.replace(/styles\.css\?v=[^\"']+/g, "styles.css?v=release-20260718-2");
   if (!html.includes('href="../../weapons/"')) {
     html = html.replace('<a href="../">Characters</a>', '<a href="../">Characters</a>\n        <a href="../../weapons/">Weapons</a>');
   }
@@ -18,8 +18,8 @@ for (const directory of directories) {
   }
   if (!html.includes("material-data.js")) {
     html = html.replace(
-      '<script src="../../assets/character-progress.js?v=planner-sync-1"></script>',
-      '<script src="../../assets/material-data.js?v=3.5-1"></script>\n    <script src="../../assets/material-planner-core.js?v=materials-1"></script>\n    <script src="../../assets/character-progress.js?v=materials-1"></script>'
+      '<script src="../../assets/character-progress.js?v=release-20260718-2"></script>',
+      '<script src="../../assets/material-data.js?v=3.5-1"></script>\n    <script src="../../assets/material-planner-core.js?v=materials-1"></script>\n    <script src="../../assets/character-progress.js?v=release-20260718-2"></script>'
     );
   }
   await fs.writeFile(file, html);

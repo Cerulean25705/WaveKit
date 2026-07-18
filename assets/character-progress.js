@@ -91,8 +91,8 @@
       </div>
     </header>
 
-    <details class="material-section" open>
-      <summary><span>Quick materials</span><small>What to farm</small></summary>
+    <details class="material-section">
+      <summary><span>Material overview</span><small>Quick reference</small></summary>
       <div class="material-quick-grid">
         ${kit.quickMaterials(record).map((item) => itemHtml(item)).join("")}
       </div>

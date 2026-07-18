@@ -137,7 +137,7 @@ for (const slug of slugs) {
     }).join("")}</div>`;
   });
   html = html.slice(0, teammatesStart) + upgraded + html.slice(end);
-  html = html.replace(/styles\.css\?v=[^\"']+/g, "styles.css?v=echo-guides-1");
+  html = html.replace(/styles\.css\?v=[^\"']+/g, "styles.css?v=release-20260718-2");
   html = html.replace(/[ \t]+$/gm, "");
   await fs.writeFile(file, html);
 }

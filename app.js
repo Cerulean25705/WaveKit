@@ -499,7 +499,7 @@ const characters = [
   c("carlotta", "Carlotta", "Glacio", "Pistols", ["main"], 91, ["glacio"], ["glacio"], "Glacio carry with precise damage windows."),
   c("jiyan", "Jiyan", "Aero", "Broadblade", ["main"], 89, ["aero"], ["heavy"], "Readable Aero carry, friendly for players who like clear burst windows."),
   c("xiangli-yao", "Xiangli Yao", "Electro", "Gauntlets", ["main"], 88, ["electro"], ["liberation"], "Electro carry with a clear core loop."),
-  c("changli", "Changli", "Fusion", "Sword", ["main", "support"], 88, ["fusion"], ["fusion"], "Fusion damage with hybrid support value."),
+  c("changli", "Changli", "Fusion", "Sword", ["main", "sub"], 88, ["fusion"], ["fusion", "quickswap"], "Fusion hybrid DPS who is strongest in dual-DPS and quickswap teams."),
   c("lupa", "Lupa", "Fusion", "Broadblade", ["main", "support"], 87, ["fusion"], ["fusion"], "Fusion enabler who can anchor or improve Fusion teams."),
   c("encore", "Encore", "Fusion", "Rectifier", ["main"], 82, ["fusion"], ["fusion"], "Comfortable ranged Fusion carry."),
   c("calcharo", "Calcharo", "Electro", "Broadblade", ["main"], 78, ["electro"], ["electro"], "High commitment Electro carry. Better for players comfortable with timing."),
@@ -514,7 +514,7 @@ const characters = [
   c("luuk-herssen", "Luuk Herssen", "Spectro", "Gauntlets", ["main"], 85, ["spectro"], ["basic"], "Spectro basic-attack damage entry."),
   c("cantarella", "Cantarella", "Havoc", "Rectifier", ["sub", "support"], 94, ["havoc"], ["havoc", "utility"], "Havoc helper for damage and utility."),
   c("qiuyuan", "Qiuyuan", "Aero", "Sword", ["sub", "support"], 95, ["aero", "echo-skill"], ["echo", "echo-skill"], "Premium Echo Skill buffer/sub-DPS."),
-  c("ciaccona", "Ciaccona", "Aero", "Pistols", ["sub"], 95, ["aero"], ["erosion", "negative"], "Premium Aero Erosion sub-DPS."),
+  c("ciaccona", "Ciaccona", "Aero", "Pistols", ["sub", "support"], 95, ["aero"], ["erosion", "negative"], "Premium Aero Erosion sub-DPS and support specialist."),
   c("yinlin", "Yinlin", "Electro", "Rectifier", ["sub"], 88, ["electro"], ["coordinated"], "Electro off-field pressure and coordinated damage."),
   c("zhezhi", "Zhezhi", "Glacio", "Rectifier", ["sub", "support"], 87, ["glacio"], ["skill"], "Glacio helper and support."),
   c("sanhua", "Sanhua", "Glacio", "Sword", ["sub", "support"], 84, ["glacio"], ["basic"], "Excellent low-cost helper, especially for Basic Attack teams."),
@@ -531,8 +531,8 @@ const characters = [
   c("rebecca", "Rebecca", "Electro", "Pistols", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
   c("lucilla", "Lucilla", "Glacio", "Rectifier", ["sub"], 88, ["glacio", "echo-skill", "chafe"], ["glacio", "echo-skill", "chafe"], "Flexible support for Glacio Chafe and Echo Skill teams. Her Sonata and main Echo change with the team she is supporting."),
   c("phoebe", "Phoebe", "Spectro", "Rectifier", ["main", "sub", "support"], 88, ["spectro"], ["frazzle"], "Flexible Spectro/Frazzle damage or support direction."),
-  c("brant", "Brant", "Fusion", "Sword", ["support", "main"], 86, ["fusion"], ["fusion", "comfort"], "Fusion support/hybrid with comfort value."),
-  c("chisa", "Chisa", "Havoc", "Broadblade", ["support", "healer"], 86, ["havoc"], ["bane"], "Havoc support with sustain utility."),
+  c("brant", "Brant", "Fusion", "Sword", ["main", "sub"], 86, ["fusion"], ["fusion", "comfort", "sustain"], "Fusion hybrid and dual-DPS partner with shielding, healing, and team buffs."),
+  c("chisa", "Chisa", "Havoc", "Broadblade", ["support"], 86, ["havoc"], ["bane", "sustain"], "Havoc support with sustain utility. She can help recovery, but WaveKit does not classify her as a dedicated healer."),
   c("mornye", "Mornye", "Spectro", "Broadblade", ["healer", "support"], 98, ["any", "tune"], ["sustain", "def", "tune"], "Premium DEF-based healer support for Tune shells and safer rotations."),
   c("suisui", "Suisui", "Glacio", "Rectifier", ["support", "healer"], 82, ["any"], ["sustain", "upcoming"], "Unreleased Resonator. Suisui is expected on the second half of the version 3.5 banner, July 31 to August 20, 2026, so WaveKit lists her guide info but does not use her in the team helper yet."),
   c("baizhi", "Baizhi", "Glacio", "Rectifier", ["healer", "support"], 74, ["any"], ["sustain"], "Accessible healer for early accounts."),
@@ -557,6 +557,7 @@ const state = {
   weaponTypeFilter: "All",
   roverForm: "Aero",
   roverForms: new Set(["Aero"]),
+  roverChains: { Spectro: 0, Havoc: 0, Aero: 0, Electro: 0 },
   roverAppearance: "Female",
   selectedTeamKey: "",
   showAllTeams: false,
@@ -565,6 +566,7 @@ const state = {
   owned: {},
   focus: new Set(),
   weapons: new Set(),
+  weaponRanks: {},
   progress: {},
   weaponProgress: {},
   profileAvatar: "rover",
@@ -579,8 +581,7 @@ let autoSyncing = false;
 let teamTunerDraft = null;
 let materialKitPromise = null;
 
-const suggestionStyleOptions = ["Best Teams", "Ready Now", "Build Priority"];
-const roleFilters = ["All", "Main DPS", "Sub DPS", "Support", "Healer", "Defense"];
+const roleFilters = ["All", "Main DPS", "Sub DPS", "Support"];
 const weaponTypeFilters = ["All", "Sword", "Broadblade", "Gauntlets", "Pistols", "Rectifier"];
 
 const carryCeilingScores = {
@@ -693,16 +694,24 @@ const profileEditor = $("#profile-editor");
 const profileList = $("#profile-list");
 const profileSummary = $("#profile-summary");
 const accountOverview = $("#account-overview");
+const accountOverviewSection = $("#my-wavekit");
+const accountOverviewNav = $('.topnav a[href="#my-wavekit"]');
+const heroPrimaryAction = $("#hero-primary-action");
+const heroSecondaryAction = $("#hero-secondary-action");
+const heroProfileState = $("#hero-profile-state");
+const heroProfileLabel = $("#hero-profile-label");
+const heroProfileTitle = $("#hero-profile-title");
+const heroProfileDetail = $("#hero-profile-detail");
 const teamTuner = $("#team-tuner");
 const teamTunerContent = $("#team-tuner-content");
 const flowNext = $("#flow-next");
-const flowNextStep = $("#flow-next-step");
-const flowNextTitle = $("#flow-next-title");
-const flowNextDetail = $("#flow-next-detail");
-const flowNextButton = $("#flow-next-button");
+const finderDockButtons = [...document.querySelectorAll("[data-finder-target]")];
 const navLinks = [...document.querySelectorAll(".topnav a[href^='#']")];
 const navSections = navLinks.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
 let currentSectionHash = "#home";
+const initialLandingCanRedirect = !location.hash || location.hash === "#home";
+let signedInLandingHandled = false;
+let initialAccountAnchorAligned = false;
 const profileStorageKey = "wavekit-profiles-v1";
 const legacyProfileKey = "tacet-team-helper-profile";
 const legacyProfilesKey = "tacet-team-helper-profiles-v2";
@@ -812,9 +821,7 @@ function characterMatches(character) {
   const roleMatch = state.roleFilter === "All"
     || (state.roleFilter === "Main DPS" && displayCharacter.roles.includes("main"))
     || (state.roleFilter === "Sub DPS" && displayCharacter.roles.includes("sub"))
-    || (state.roleFilter === "Support" && displayCharacter.roles.includes("support"))
-    || (state.roleFilter === "Healer" && displayCharacter.roles.includes("healer"))
-    || (state.roleFilter === "Defense" && displayCharacter.roles.includes("defense"));
+    || (state.roleFilter === "Support" && (displayCharacter.roles.includes("support") || displayCharacter.roles.includes("healer") || displayCharacter.roles.includes("defense")));
   const roverText = character.slug === "rover" ? `rover ${Object.keys(roverForms).join(" ")}` : "";
   const text = `${displayCharacter.name} ${roverText} ${displayCharacter.element} ${displayCharacter.roles.join(" ")} ${displayCharacter.tags.join(" ")}`.toLowerCase();
   return roleMatch && (!query || text.includes(query));
@@ -824,7 +831,7 @@ function renderCharacters() {
   const visible = characters
     .filter(characterMatches)
     .map((character) => character.slug === "rover" ? activeRover() : character)
-    .sort(sortByRarityThenName);
+    .sort((a, b) => a.slug === "rover" ? -1 : b.slug === "rover" ? 1 : sortByRarityThenName(a, b));
   characterGrid.innerHTML = raritySections(visible, characterRarity).map(({ rarity, items }) => `
     <section class="selection-rarity-group rarity-${rarity}">
       <header class="selection-rarity-heading">
@@ -841,6 +848,7 @@ function renderCharacters() {
       if (event.target.closest(".chain-row")) return;
       if (event.target.closest(".rover-form-row")) return;
       if (event.target.closest(".rover-appearance-row")) return;
+      if (event.target.closest("[data-character-guide]")) return;
       if (isUpcomingCharacter(card.dataset.characterCard)) return;
       toggleCharacter(card.dataset.characterCard);
     });
@@ -866,16 +874,16 @@ function renderCharacters() {
       toggleFocus(button.dataset.focusCharacter);
     });
   });
-  characterGrid.querySelectorAll("[data-chain-minus]").forEach((button) => {
-    button.addEventListener("click", (event) => {
+  characterGrid.querySelectorAll("[data-chain-slider]").forEach((slider) => {
+    slider.addEventListener("click", (event) => event.stopPropagation());
+    slider.addEventListener("input", (event) => {
       event.stopPropagation();
-      changeChain(button.dataset.chainMinus, -1);
+      previewChain(slider.dataset.chainSlider, Number(slider.value));
+      updateChainSlider(slider);
     });
-  });
-  characterGrid.querySelectorAll("[data-chain-plus]").forEach((button) => {
-    button.addEventListener("click", (event) => {
+    slider.addEventListener("change", (event) => {
       event.stopPropagation();
-      changeChain(button.dataset.chainPlus, 1);
+      setChain(slider.dataset.chainSlider, Number(slider.value));
     });
   });
 }
@@ -885,6 +893,7 @@ function characterCard(character) {
   const owned = upcoming ? false : state.owned[character.slug];
   const focused = upcoming ? false : state.focus.has(character.slug);
   const isRover = character.slug === "rover";
+  const chain = chainForSlug(character.slug);
   const displayName = isRover ? "Rover" : character.name;
   const characterDetail = upcoming
     ? "Unreleased · July 31 banner"
@@ -905,12 +914,13 @@ function characterCard(character) {
       </button>
       <span class="character-owned-badge" aria-hidden="true">Owned</span>
       ${upcoming ? `<span class="upcoming-badge">Unreleased</span>` : ""}
+      <a class="character-guide-link" href="characters/${character.slug}/" data-character-guide aria-label="Open ${displayName} guide" title="Open character guide">Guide</a>
       ${isRover ? `${roverAppearancePicker()}${roverFormPicker()}` : ""}
       <div class="chain-row" aria-label="${displayName} Resonance Chain" ${upcoming ? `aria-disabled="true"` : ""}>
-        <span>RC</span>
-        <button type="button" data-chain-minus="${character.slug}" data-chain-action="decrease" ${upcoming ? "disabled" : ""}>-</button>
-        <strong>${owned?.chain ?? 0}</strong>
-        <button type="button" data-chain-plus="${character.slug}" data-chain-action="increase" ${upcoming ? "disabled" : ""}>+</button>
+        <output for="chain-${character.slug}" data-chain-output="${character.slug}">R${chain}</output>
+        <div class="chain-slider-shell" style="--chain-progress:${(chain / 6) * 100}%">
+          <input id="chain-${character.slug}" type="range" min="0" max="6" step="1" value="${chain}" data-chain-slider="${character.slug}" aria-label="${displayName} Resonance Chain, R${chain}" ${upcoming ? "disabled" : ""}>
+        </div>
       </div>
     </article>
   `;
@@ -920,9 +930,10 @@ function selectRoverForm(form) {
   if (!roverForms[form]) return false;
   const changed = state.roverForm !== form || !state.roverForms.has(form) || !state.owned.rover;
   if (!changed) return false;
-  if (!state.owned.rover) state.owned.rover = { chain: 0 };
+  if (!state.owned.rover) state.owned.rover = { chain: state.roverChains[form] || 0 };
   state.roverForms.add(form);
   state.roverForm = form;
+  state.owned.rover.chain = state.roverChains[form] || 0;
   state.selectedTeamKey = "";
   return true;
 }
@@ -940,7 +951,7 @@ function refreshRoverForm() {
       button.classList.toggle("is-owned", state.roverForms.has(form));
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-pressed", String(state.roverForms.has(form)));
-      button.innerHTML = `<span>${form}</span>${active ? "<small>active</small>" : ""}`;
+      button.innerHTML = `<span>${form}</span><small>R${state.roverChains[form] || 0}${active ? " · active" : ""}</small>`;
     });
   }
 
@@ -976,7 +987,7 @@ function refreshRoverAppearance() {
   }
 
   document.querySelectorAll("[data-rover-summary]").forEach((summary) => {
-    summary.textContent = `Rover: ${state.roverAppearance} · ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}`;
+    summary.textContent = `Rover: ${state.roverAppearance} · ${state.roverForm} R${chainForSlug("rover")} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}`;
   });
 }
 
@@ -996,9 +1007,9 @@ function roverFormPicker() {
   return `
     <div class="rover-form-row" aria-label="Rover form">
       ${Object.keys(roverForms).map((form) => `
-        <button class="${state.roverForms.has(form) ? "is-owned" : ""} ${state.roverForm === form ? "is-active" : ""}" type="button" data-rover-form="${form}" aria-pressed="${state.roverForms.has(form)}">
+        <button class="${state.roverForms.has(form) ? "is-owned" : ""} ${state.roverForm === form ? "is-active" : ""}" type="button" data-rover-form="${form}" aria-pressed="${state.roverForms.has(form)}" aria-label="${form} Rover, R${state.roverChains[form] || 0}${state.roverForm === form ? ", active" : ""}">
           <span>${form}</span>
-          ${state.roverForm === form ? "<small>active</small>" : ""}
+          <small>R${state.roverChains[form] || 0}${state.roverForm === form ? " · active" : ""}</small>
         </button>
       `).join("")}
     </div>
@@ -1027,27 +1038,48 @@ function renderWeapons() {
       </div>
     </section>
   `).join("");
-  weaponGrid.querySelectorAll("[data-weapon]").forEach((button) => {
+  weaponGrid.querySelectorAll("[data-weapon-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
-      const weapon = button.dataset.weapon;
-      state.weapons.has(weapon) ? state.weapons.delete(weapon) : state.weapons.add(weapon);
+      const weapon = button.dataset.weaponToggle;
+      if (state.weapons.has(weapon)) {
+        state.weapons.delete(weapon);
+        delete state.weaponRanks[weapon];
+      } else {
+        state.weapons.add(weapon);
+        state.weaponRanks[weapon] = 1;
+      }
       resetFlowGuide();
       markUnsaved();
       render();
     });
   });
+  weaponGrid.querySelectorAll("[data-weapon-rank]").forEach((select) => {
+    select.addEventListener("click", (event) => event.stopPropagation());
+    select.addEventListener("change", (event) => {
+      event.stopPropagation();
+      const weapon = select.dataset.weaponRank;
+      state.weapons.add(weapon);
+      state.weaponRanks[weapon] = Math.max(1, Math.min(5, Number(select.value) || 1));
+      markUnsaved();
+      renderWeapons();
+      renderProfileSummary();
+    });
+  });
 }
 
 function weaponCard(weapon) {
+  const owned = state.weapons.has(weapon);
   return `
-    <button class="weapon-card ${state.weapons.has(weapon) ? "is-owned" : ""}" type="button" data-weapon="${weapon}">
-      ${weaponVisual(weapon)}
-      <span class="weapon-copy">
-        <strong>${weapon}</strong>
-        <small>${rarityStars(weaponRarity(weapon))} · ${weaponTypeFor(weapon)} · ${weaponHint(weapon)}</small>
-      </span>
-      <span class="owned-badge">${state.weapons.has(weapon) ? "Owned" : "Tap to add"}</span>
-    </button>
+    <article class="weapon-card ${owned ? "is-owned" : ""}" title="${weaponHint(weapon)}">
+      <button class="weapon-card-toggle" type="button" data-weapon-toggle="${weapon}" aria-pressed="${owned}">
+        ${weaponVisual(weapon)}
+        <span class="weapon-copy">
+          <strong>${weapon}</strong>
+          <small>${rarityStars(weaponRarity(weapon))} · ${weaponTypeFor(weapon)} · ${weaponHint(weapon)}</small>
+        </span>
+      </button>
+      <span class="weapon-owned-row"><button class="owned-badge" type="button" data-weapon-toggle="${weapon}">${owned ? "Owned" : "Tap to add"}</button>${owned ? `<label class="weapon-rank" title="Weapon refinement rank"><span>Rank</span><select data-weapon-rank="${weapon}" aria-label="${weapon} refinement rank">${[1, 2, 3, 4, 5].map((rank) => `<option value="${rank}" ${(state.weaponRanks[weapon] || 1) === rank ? "selected" : ""}>R${rank}</option>`).join("")}</select></label>` : ""}</span>
+    </article>
   `;
 }
 
@@ -1055,7 +1087,7 @@ function selectableWeapons() {
   return [...new Set([
     ...weaponCatalog.keys(),
     ...activeCharacters().flatMap((character) => [character.build.weapon, ...alternateWeapons(character)]).filter(Boolean)
-  ])].filter(isSelectableWeapon).sort();
+  ])].filter((weapon) => !upcomingWeapons.has(weapon) && isSelectableWeapon(weapon)).sort();
 }
 
 function setFourStarWeapons(owned) {
@@ -1064,8 +1096,10 @@ function setFourStarWeapons(owned) {
     .forEach((weapon) => {
       if (owned) {
         state.weapons.add(weapon);
+        if (!state.weaponRanks[weapon]) state.weaponRanks[weapon] = 1;
       } else {
         state.weapons.delete(weapon);
+        delete state.weaponRanks[weapon];
       }
     });
   markUnsaved();
@@ -1126,7 +1160,7 @@ function weaponHint(weapon) {
   const alternates = activeCharacters().filter((character) => alternateWeapons(character).includes(weapon)).map((character) => character.name);
   if (alternates.length) return `Good for ${alternates.slice(0, 2).join(", ")}`;
   const inferred = inferredWeaponUsers(weapon);
-  if (inferred.length) return `Good for ${inferred.slice(0, 2).join(", ")}`;
+  if (inferred.length) return `Can be used by ${inferred.slice(0, 2).join(", ")}`;
   return weaponPurposeHints[weapon] || `${weaponTypeFor(weapon)} flexible option`;
 }
 
@@ -1218,13 +1252,51 @@ function roleLabel(character) {
   return "Utility";
 }
 
+function accountRole(character) {
+  if (character.roles.includes("main")) return "dps";
+  if (character.roles.includes("sub")) return "sub";
+  return "support";
+}
+
+function chainForSlug(slug) {
+  if (slug === "rover") return state.roverChains[state.roverForm] || 0;
+  return state.owned[slug]?.chain || 0;
+}
+
+function writeChain(slug, chain) {
+  const nextChain = Math.max(0, Math.min(6, Number(chain) || 0));
+  if (!state.owned[slug]) state.owned[slug] = { chain: nextChain };
+  state.owned[slug].chain = nextChain;
+  if (slug === "rover") {
+    state.roverForms.add(state.roverForm);
+    state.roverChains[state.roverForm] = nextChain;
+  }
+  return nextChain;
+}
+
+function previewChain(slug, chain) {
+  if (isUpcomingCharacter(slug)) return;
+  writeChain(slug, chain);
+  updateCharacterCard(slug);
+}
+
+function updateChainSlider(slider) {
+  if (!slider) return;
+  const chain = Math.max(0, Math.min(6, Number(slider.value) || 0));
+  slider.closest(".chain-slider-shell")?.style.setProperty("--chain-progress", `${(chain / 6) * 100}%`);
+  slider.setAttribute("aria-valuetext", `R${chain}`);
+  const output = slider.closest(".chain-row")?.querySelector("[data-chain-output]");
+  if (output) output.textContent = `R${chain}`;
+}
+
 function toggleCharacter(slug) {
   if (isUpcomingCharacter(slug)) return;
   if (state.owned[slug]) {
     delete state.owned[slug];
     state.focus.delete(slug);
   } else {
-    state.owned[slug] = { chain: 0 };
+    state.owned[slug] = { chain: chainForSlug(slug) };
+    if (slug === "rover") state.roverForms.add(state.roverForm);
   }
   markUnsaved();
   resetFlowGuide();
@@ -1251,8 +1323,16 @@ function setFourStarResonators(owned) {
 function changeChain(slug, delta) {
   if (isUpcomingCharacter(slug)) return;
   if (!state.owned[slug] && delta < 1) return;
-  if (!state.owned[slug]) state.owned[slug] = { chain: 0 };
-  state.owned[slug].chain = Math.max(0, Math.min(6, state.owned[slug].chain + delta));
+  writeChain(slug, chainForSlug(slug) + delta);
+  markUnsaved();
+  resetFlowGuide();
+  updateCharacterCard(slug);
+  refreshRosterSelection();
+}
+
+function setChain(slug, chain) {
+  if (isUpcomingCharacter(slug)) return;
+  writeChain(slug, chain);
   markUnsaved();
   resetFlowGuide();
   updateCharacterCard(slug);
@@ -1272,8 +1352,22 @@ function updateCharacterCard(slug) {
     focusButton.textContent = focused ? "★" : "☆";
     focusButton.setAttribute("aria-pressed", String(focused));
   }
-  const chainValue = card.querySelector(".chain-row strong");
-  if (chainValue) chainValue.textContent = owned?.chain ?? 0;
+  const chainValue = card.querySelector("[data-chain-slider]");
+  if (chainValue) {
+    chainValue.value = String(chainForSlug(slug));
+    updateChainSlider(chainValue);
+  }
+  if (slug === "rover") {
+    card.querySelectorAll("[data-rover-form]").forEach((button) => {
+      const form = button.dataset.roverForm;
+      const active = form === state.roverForm;
+      button.classList.toggle("is-owned", state.roverForms.has(form));
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(state.roverForms.has(form)));
+      button.setAttribute("aria-label", `${form} Rover, R${state.roverChains[form] || 0}${active ? ", active" : ""}`);
+      button.innerHTML = `<span>${form}</span><small>R${state.roverChains[form] || 0}${active ? " · active" : ""}</small>`;
+    });
+  }
 }
 
 function toggleFocus(slug) {
@@ -1388,7 +1482,6 @@ function carryInvestmentTeamScore(character) {
 }
 
 function scoreTeam(main, sub, sustain) {
-  const style = state.suggestionStyle || "Best Teams";
   let score = scoreCharacter(main) * 1.12 + sub.score * 0.55 + sustain.score * 0.62;
   score += synergyScore(main, sub) + synergyScore(main, sustain);
   score += preferredTeamScore(main, sub, sustain);
@@ -1398,19 +1491,10 @@ function scoreTeam(main, sub, sustain) {
   score += carryInvestmentTeamScore(main);
   if (main.score >= 90) score += 12;
   if (main.score < 75) score -= 8;
-  if (sustain.roles.includes("healer")) score += style === "Ready Now" ? 16 : 9;
+  if (sustain.roles.includes("healer")) score += 9;
   if (sub.roles.includes("support")) score += 4;
-  if (style === "Best Teams" && sub.roles.includes("sub")) score += 7;
-  if (style === "Best Teams" && teamFitLabel({ main, members: [main, sub, sustain] }) === "Archetype fit") score += 8;
-  if (style === "Ready Now" && sustain.roles.includes("healer") && sub.roles.includes("sub")) score += 5;
-  if (style === "Ready Now" && (sustain.roles.includes("healer") || sustain.roles.includes("defense"))) score += 8;
-  if (style === "Ready Now" && state.weapons.has(main.build.weapon)) score += 7;
-  if (style === "Build Priority" && main.score >= 88) score += 10;
-  if (style === "Build Priority" && state.focus.has(main.slug)) score += 12;
-  if (style === "Build Priority" && teamFitLabel({ main, members: [main, sub, sustain] }) === "Archetype fit") score += 5;
-  if (style !== "Best Teams" && !sustain.roles.includes("healer") && !sustain.roles.includes("defense")) score -= 10;
-  if (style === "Ready Now" && !sustain.roles.includes("healer")) score -= 8;
-  if (main.roles.includes("main") && sustain.roles.includes("defense") && style === "Ready Now") score += 4;
+  if (sub.roles.includes("sub")) score += 7;
+  if (teamFitLabel({ main, members: [main, sub, sustain] }) === "Archetype fit") score += 8;
   if (sub.roles.includes("healer") && sustain.roles.includes("healer")) score -= 34;
   if (sub.roles.includes("healer") && preferredRank(main, sub, "sub") < 18) score -= 12;
   if (sustain.roles.includes("support") && !sustain.roles.includes("healer") && preferredRank(main, sustain, "sustain") < 18) score -= 6;
@@ -1947,117 +2031,54 @@ function selectedBuildMini(character, team) {
   `;
 }
 
-function renderFlowNext(teams = generateTeams()) {
-  const ownedCount = Object.keys(state.owned).length;
-  const selectedTeam = teams.find((team) => teamKey(team) === state.selectedTeamKey);
-  const next = nextFlowAction({ ownedCount, selectedTeam, teams });
-  if (shouldHideFlowNext(next)) {
-    flowNext.hidden = true;
-    return;
-  }
-  flowNext.hidden = false;
-  flowNext.dataset.target = next.target;
-  flowNextStep.textContent = next.step;
-  flowNextTitle.textContent = next.title;
-  flowNextDetail.textContent = next.detail;
-  flowNextButton.textContent = next.button;
+function renderFlowNext() {
+  syncFlowNextVisibility();
 }
 
-function shouldHideFlowNext(next) {
-  if (flowSuppressedBySection()) return true;
-  return next.target === "builds" && state.flowBuildsOpened;
+function activeFinderTarget() {
+  const marker = ($(".topbar")?.getBoundingClientRect().height || 0) + Math.min(180, window.innerHeight * 0.28);
+  if ($("#builds")?.getBoundingClientRect().top <= marker) return "builds";
+  if ($("#results")?.getBoundingClientRect().top <= marker) return "results";
+  if ($("#finder-weapons")?.getBoundingClientRect().top <= marker) return "weapons";
+  return "roster";
 }
 
-function flowSuppressedBySection() {
-  if (location.hash === "#my-wavekit") return true;
+function finderIsVisible() {
   const topbarHeight = $(".topbar")?.getBoundingClientRect().height || 0;
-  const profileSection = document.querySelector("#my-wavekit");
-  if (profileSection) {
-    const profileRect = profileSection.getBoundingClientRect();
-    const flowHeight = flowNext?.getBoundingClientRect().height || 100;
-    if (profileRect.top < window.innerHeight - flowHeight && profileRect.bottom > topbarHeight) return true;
-  }
-  return ["#feedback", "#trust", "#sources"].some((hash) => {
-    const section = document.querySelector(hash);
-    if (!section) return false;
-    const rect = section.getBoundingClientRect();
-    return rect.top <= topbarHeight + 80 && rect.bottom > topbarHeight + 80;
+  return ["#helper", "#results", "#builds"].some((selector) => {
+    const rect = $(selector)?.getBoundingClientRect();
+    return rect && rect.bottom > topbarHeight + 24 && rect.top < window.innerHeight - 24;
   });
 }
 
 function syncFlowNextVisibility() {
-  if (flowSuppressedBySection()) {
-    flowNext.hidden = true;
-  } else if (flowNext.hidden) {
-    renderFlowNext();
-  }
+  if (!flowNext) return;
+  flowNext.hidden = !finderIsVisible();
+  const activeTarget = activeFinderTarget();
+  finderDockButtons.forEach((button) => {
+    const active = button.dataset.finderTarget === activeTarget;
+    button.classList.toggle("is-active", active);
+    if (active) button.setAttribute("aria-current", "step");
+    else button.removeAttribute("aria-current");
+  });
 }
 
-function nextFlowAction({ ownedCount, selectedTeam, teams }) {
-  if (ownedCount < 3) {
-    return {
-      step: "Step 1 of 3",
-      title: `${ownedCount}/3 Resonators selected`,
-      detail: "Tap the characters you own. Three is enough to start seeing team ideas.",
-      button: "Choose Resonators",
-      target: "roster"
-    };
-  }
-  if (!state.weapons.size) {
-    return {
-      step: "Step 2 of 3",
-      title: "Add weapons when ready",
-      detail: "This is optional, but owned weapons make build advice more accurate.",
-      button: "Add weapons",
-      target: "weapons"
-    };
-  }
-  if (!teams.length) {
-    return {
-      step: "Step 3 of 3",
-      title: "Choose a main damage dealer",
-      detail: "You have enough picks, but WaveKit needs a usable team shell to score.",
-      button: "Check Resonators",
-      target: "roster"
-    };
-  }
-  if (!state.flowVisitedResults || !selectedTeam) {
-    return {
-      step: "Step 3 of 3",
-      title: `${teams.length} team ideas ready`,
-      detail: "Open the suggestions and pick the team you want to build first.",
-      button: "View teams",
-      target: "results"
-    };
-  }
-  return {
-    step: "Ready",
-    title: `${selectedTeam.main.name} team selected`,
-    detail: "View focused build cards, then send feedback if anything looks off.",
-    button: "View builds",
-    target: "builds"
-  };
-}
-
-function handleFlowNext() {
-  const target = flowNext.dataset.target;
+function handleFinderNavigation(target) {
   if (target === "roster") {
-    scrollToSection("#helper", ".roster-panel");
+    scrollToSection("#helper", "#finder-roster");
     return;
   }
   if (target === "weapons") {
-    scrollToSection("#helper", ".weapon-panel");
+    scrollToSection("#helper", "#finder-weapons");
     return;
   }
   if (target === "results") {
     state.flowVisitedResults = true;
-    renderFlowNext();
     scrollToSection("#results");
     return;
   }
   if (target === "builds") {
     state.flowBuildsOpened = true;
-    renderFlowNext();
     scrollToSection("#builds");
     return;
   }
@@ -2164,6 +2185,7 @@ function openSavedOrSuggestedTeam(key) {
   if (roverForms[form]) {
     state.roverForm = form;
     state.roverForms.add(form);
+    if (state.owned.rover) state.owned.rover.chain = state.roverChains[form] || 0;
   }
   const team = generateTeams().find((entry) => teamKey(entry) === key);
   if (!team) return;
@@ -2404,8 +2426,6 @@ function teamPurpose(team) {
 }
 
 function bestFor(team) {
-  if (state.suggestionStyle === "Ready Now") return "Story, bosses, and lower-stress learning";
-  if (state.suggestionStyle === "Build Priority") return "Characters worth investing into next";
   if (team.members[2].roles.includes("healer")) return "General play and clean boss practice";
   return "General play and focused DPS practice";
 }
@@ -2817,20 +2837,22 @@ function renderFeedbackContext(teams) {
   const input = $("#feedback-context");
   const preview = $("#feedback-context-preview");
   if (input) input.value = context;
-  if (preview) preview.textContent = context;
+  if (preview) preview.textContent = selected
+    ? `The selected team, your ${Object.keys(state.owned).length} owned Resonators, ${state.weapons.size} weapons, Rover forms, and ranking context will be attached automatically.`
+    : `Your ${Object.keys(state.owned).length} owned Resonators, ${state.weapons.size} weapons, Rover forms, and ranking context will be attached automatically.`;
 }
 
 function feedbackContext(team) {
   const ownedCount = Object.keys(state.owned).length;
   const weaponCount = state.weapons.size;
-  const roverText = `${state.roverAppearance}; ${state.roverForm} active; owned ${([...state.roverForms].sort()).join(", ")}`;
+  const roverText = `${state.roverAppearance}; ${state.roverForm} R${chainForSlug("rover")} active; owned ${([...state.roverForms].sort()).map((form) => `${form} R${state.roverChains[form] || 0}`).join(", ")}`;
   const ownedRoster = feedbackOwnedRoster();
   const ownedWeapons = feedbackOwnedWeapons();
   const focused = [...state.focus].map(characterName).sort((a, b) => a.localeCompare(b)).join(", ") || "None";
   if (!team) {
     return [
       "No team selected.",
-      `Suggestion style: ${state.suggestionStyle}`,
+      "Ranking: roster-aware best teams",
       `Owned Resonators: ${ownedCount}`,
       `Owned roster: ${ownedRoster}`,
       `Focused DPS: ${focused}`,
@@ -2846,7 +2868,7 @@ function feedbackContext(team) {
     `Confidence: ${teamConfidence(team).label}`,
     `Roster logic: ${missingAlternativeNote(team)}`,
     `Best-shell reference: ${bestShellDetail(team)}`,
-    `Suggestion style: ${state.suggestionStyle}`,
+    "Ranking: roster-aware best teams",
     `Owned Resonators: ${ownedCount}`,
     `Owned roster: ${ownedRoster}`,
     `Focused DPS: ${focused}`,
@@ -2870,7 +2892,7 @@ function feedbackOwnedRoster() {
 
 function feedbackOwnedWeapons() {
   const weapons = [...state.weapons].sort((a, b) => a.localeCompare(b));
-  return weapons.length ? weapons.join(", ") : "None";
+  return weapons.length ? weapons.map((weapon) => `${weapon} R${state.weaponRanks[weapon] || 1}`).join(", ") : "None";
 }
 
 function copyFeedbackContext() {
@@ -3001,10 +3023,12 @@ function profilePayload() {
     suggestionStyle: state.suggestionStyle,
     roverForm: state.roverForm,
     roverForms: [...state.roverForms],
+    roverChains: { ...state.roverChains },
     roverAppearance: state.roverAppearance,
     owned: state.owned,
     focus: [...state.focus],
     weapons: [...state.weapons],
+    weaponRanks: Object.fromEntries([...state.weapons].map((weapon) => [weapon, state.weaponRanks[weapon] || 1])),
     progress: state.progress,
     weaponProgress: state.weaponProgress,
     profileAvatar: state.profileAvatar,
@@ -3073,6 +3097,10 @@ function normaliseProfile(payload) {
   const owned = Object.fromEntries(
     Object.entries(payload.owned || {}).filter(([slug]) => !upcomingCharacters.has(slug))
   );
+  const roverForm = roverForms[payload.roverForm] ? payload.roverForm : "Aero";
+  const selectedRoverForms = normaliseRoverForms(payload.roverForms, roverForm);
+  const roverChains = normaliseRoverChains(payload.roverChains, roverForm, owned);
+  if (owned.rover) owned.rover = { ...owned.rover, chain: roverChains[roverForm] };
   const progress = normaliseProgress(payload.progress || {});
   const plannedFromProgress = Object.entries(progress)
     .filter(([, value]) => value.materialPlan)
@@ -3083,12 +3111,14 @@ function normaliseProfile(payload) {
     priority: payload.priority === "Power" ? "DPS" : payload.priority || "Balanced",
     goal: payload.goal || "General play",
     suggestionStyle: normaliseSuggestionStyle(payload),
-    roverForm: roverForms[payload.roverForm] ? payload.roverForm : "Aero",
-    roverForms: normaliseRoverForms(payload.roverForms, payload.roverForm),
+    roverForm,
+    roverForms: selectedRoverForms,
+    roverChains,
     roverAppearance: roverArtwork[payload.roverAppearance] ? payload.roverAppearance : "Female",
     owned,
     focus: (payload.focus || payload.favorites || []).filter((slug) => !upcomingCharacters.has(slug)),
     weapons: (payload.weapons || []).filter((weapon) => weaponCatalog.has(weapon) && !upcomingWeapons.has(weapon)),
+    weaponRanks: Object.fromEntries((payload.weapons || []).filter((weapon) => weaponCatalog.has(weapon) && !upcomingWeapons.has(weapon)).map((weapon) => [weapon, Math.max(1, Math.min(5, Number(payload.weaponRanks?.[weapon]) || 1))])),
     progress,
     weaponProgress: normaliseWeaponProgress(payload.weaponProgress || {}),
     profileAvatar: normaliseProfileAvatar(payload.profileAvatar, owned),
@@ -3172,9 +3202,6 @@ function cleanProgressNumber(value, min, max) {
 }
 
 function normaliseSuggestionStyle(payload) {
-  if (suggestionStyleOptions.includes(payload.suggestionStyle)) return payload.suggestionStyle;
-  if (payload.priority === "Comfort") return "Ready Now";
-  if (payload.priority === "DPS" || payload.priority === "Power") return "Best Teams";
   return "Best Teams";
 }
 
@@ -3185,6 +3212,15 @@ function normaliseRoverForms(forms, activeForm) {
   return selected.length ? selected : ["Aero"];
 }
 
+function normaliseRoverChains(chains, activeForm, owned) {
+  const legacyChain = Math.max(0, Math.min(6, Number(owned?.rover?.chain) || 0));
+  return Object.fromEntries(Object.keys(roverForms).map((form) => {
+    const saved = Number(chains?.[form]);
+    const value = Number.isFinite(saved) ? saved : form === activeForm ? legacyChain : 0;
+    return [form, Math.max(0, Math.min(6, Math.round(value)))];
+  }));
+}
+
 function applyProfile(profile) {
   const payload = normaliseProfile(profile);
   state.activeProfileId = profile.id || "";
@@ -3192,13 +3228,15 @@ function applyProfile(profile) {
   state.experience = payload.experience;
   state.priority = payload.priority;
   state.goal = payload.goal;
-  state.suggestionStyle = payload.suggestionStyle;
+  state.suggestionStyle = "Best Teams";
   state.roverForm = payload.roverForm;
   state.roverForms = new Set(payload.roverForms);
+  state.roverChains = { ...payload.roverChains };
   state.roverAppearance = payload.roverAppearance;
   state.owned = payload.owned;
   state.focus = new Set(payload.focus.filter((slug) => state.owned[slug]));
   state.weapons = new Set(payload.weapons);
+  state.weaponRanks = payload.weaponRanks;
   state.progress = payload.progress;
   state.weaponProgress = payload.weaponProgress;
   state.profileAvatar = payload.profileAvatar;
@@ -3221,6 +3259,7 @@ function clearWorkingProfile() {
   state.weaponSearch = "";
   state.roverForm = "Aero";
   state.roverForms = new Set(["Aero"]);
+  state.roverChains = { Spectro: 0, Havoc: 0, Aero: 0, Electro: 0 };
   state.roverAppearance = "Female";
   state.selectedTeamKey = "";
   state.showAllTeams = false;
@@ -3228,6 +3267,7 @@ function clearWorkingProfile() {
   state.owned = {};
   state.focus = new Set();
   state.weapons = new Set();
+  state.weaponRanks = {};
   state.progress = {};
   state.weaponProgress = {};
   state.profileAvatar = "rover";
@@ -3323,12 +3363,12 @@ function renderProfileSummary() {
   profileSummary.innerHTML = `
     <div>
       <strong>${state.profileName || (state.activeProfileId ? "WaveKit profile" : "New profile")}</strong>
-      <span>${state.suggestionStyle} suggestions</span>
+      <span>Roster-aware team suggestions</span>
     </div>
     <div class="summary-stats">
       <span>${Object.keys(state.owned).length} resonators</span>
       <span>${state.weapons.size} weapons</span>
-      <span data-rover-summary>Rover: ${state.roverAppearance} · ${state.roverForm} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}</span>
+      <span data-rover-summary>Rover: ${state.roverAppearance} · ${state.roverForm} R${chainForSlug("rover")} active · ${state.roverForms.size} form${state.roverForms.size === 1 ? "" : "s"}</span>
       <span>${state.focus.size} focus</span>
     </div>
     <p>${ownedNames.length ? ownedNames.join(", ") : "No resonators selected yet."}</p>
@@ -3355,9 +3395,10 @@ function renderAccountOverview() {
   const avatar = characters.find((character) => character.slug === state.profileAvatar) || characters.find((character) => character.slug === "rover");
   const avatarFile = artworkFile(avatar);
   const ownedCharacters = activeCharacters().filter((character) => state.owned[character.slug]);
-  const mains = ownedCharacters.filter((character) => character.roles.includes("main"));
-  const healers = ownedCharacters.filter((character) => character.roles.includes("healer"));
-  const helpers = ownedCharacters.filter((character) => character.roles.includes("sub") || character.roles.includes("support"));
+  const mains = ownedCharacters.filter((character) => accountRole(character) === "dps");
+  const subDps = ownedCharacters.filter((character) => accountRole(character) === "sub");
+  const supports = ownedCharacters.filter((character) => accountRole(character) === "support");
+  const healers = supports.filter((character) => character.roles.includes("healer"));
   const unsupported = mains.filter((main) => !ownedNamedPartner(main)).slice(0, 3);
   const ownedByRarity = raritySections(ownedCharacters.slice().sort(sortByRarityThenName), characterRarity);
   const avatarChoices = (ownedCharacters.length ? ownedCharacters : activeCharacters().filter((character) => character.slug === "rover"))
@@ -3422,7 +3463,7 @@ function renderAccountOverview() {
     <details class="account-insights">
       <summary><span><small>Account insights</small><strong>${accountOpportunityTitle(unsupported, healers)}</strong></span><b>View details</b></summary>
       <div>
-        <article><span>Role coverage</span><strong>${mains.length} damage · ${helpers.length} helpers · ${healers.length} healers</strong><p>${healers.length ? "Your account has real sustain available for safer teams." : "No real healer is selected, so difficult fights may offer less mistake recovery."}</p></article>
+        <article><span>Role coverage</span><strong>${mains.length} DPS · ${subDps.length} Sub DPS · ${supports.length} Support</strong><p>${healers.length ? "Your Support roster includes real sustain for safer teams." : "Your Support roster has no full healer selected, so difficult fights may offer less mistake recovery."}</p></article>
         <article><span>Roster opportunity</span><strong>${accountOpportunityTitle(unsupported, healers)}</strong><p>${accountOpportunityDetail(unsupported, healers)}</p></article>
       </div>
     </details>`;
@@ -3465,7 +3506,7 @@ function renderAccountOverview() {
 
 function accountRosterItem(character) {
   const file = artworkFile(character);
-  const chain = state.owned[character.slug]?.chain || 0;
+  const chain = chainForSlug(character.slug);
   const plan = state.progress[character.slug]?.materialPlan;
   const level = plan?.currentLevel ? `L${plan.currentLevel}` : "Level unset";
   const planned = state.buildPlan.includes(character.slug);
@@ -3515,7 +3556,7 @@ function buildPlanItem(slug) {
       <div class="account-plan-progress" aria-hidden="true"><i style="width:${progress}%"></i></div>
     </div>
     <div class="account-plan-material-preview" data-plan-materials="${slug}"><small>Planned requirements</small><span>Loading material preview…</span></div>
-    <div class="account-plan-item-actions"><a class="button ghost compact-button" href="characters/${slug}/#materials">Open planner</a><button class="icon-button" type="button" data-remove-plan="${slug}" aria-label="Remove ${character.name} from Upgrade Roadmap">×</button></div>
+    <div class="account-plan-item-actions"><a class="button ghost compact-button" href="characters/${slug}/#materials">Open planner</a><button class="button danger compact-button" type="button" data-remove-plan="${slug}" aria-label="Remove ${character.name} from Upgrade Roadmap">Remove</button></div>
   </article>`;
 }
 
@@ -3611,29 +3652,75 @@ function loadScript(src) {
   });
 }
 
-function renderSuggestionStyle() {
-  renderSegmented("#suggestion-style-options", suggestionStyleOptions, state.suggestionStyle, (value) => {
-    state.suggestionStyle = value;
-    resetFlowGuide();
-    markUnsaved();
-    renderProfileSummary();
-    renderSuggestionStyle();
-    renderResults();
-  });
-}
-
 function render() {
   document.body.classList.toggle("is-profile-view", !state.editMode);
   $("#profile-name").value = state.profileName;
   renderProfileManager();
   renderCloudSync();
   renderAccountOverview();
-  renderSuggestionStyle();
   renderRoleFilters();
   renderCharacters();
   renderWeaponTypeFilters();
   renderWeapons();
   renderResults();
+  applyAdaptiveLanding();
+}
+
+function applyAdaptiveLanding({ allowSignedInRedirect = false } = {}) {
+  const hasLocalProfile = Boolean(
+    state.activeProfileId
+    || workingProfileHasRosterData()
+    || state.profiles.some(profileHasRosterData)
+  );
+  const mode = cloud.user ? "signed-in" : hasLocalProfile ? "returning" : "guest";
+  const ownedCount = Object.keys(state.owned).length;
+  const profileName = state.profileName || "Your WaveKit profile";
+
+  document.body.dataset.landingMode = mode;
+  if (accountOverviewSection) accountOverviewSection.hidden = mode === "guest";
+  if (accountOverviewNav) accountOverviewNav.hidden = mode === "guest";
+
+  if (mode === "guest") {
+    if (heroPrimaryAction) {
+      heroPrimaryAction.textContent = "Find my teams";
+      heroPrimaryAction.href = "#helper";
+    }
+    if (heroSecondaryAction) {
+      heroSecondaryAction.textContent = "Browse characters";
+      heroSecondaryAction.href = "characters/";
+    }
+    if (heroProfileState) heroProfileState.hidden = true;
+    return;
+  }
+
+  if (heroPrimaryAction) {
+    heroPrimaryAction.textContent = mode === "signed-in" ? "Open My WaveKit" : "Continue with your profile";
+    heroPrimaryAction.href = "#my-wavekit";
+  }
+  if (heroSecondaryAction) {
+    heroSecondaryAction.textContent = mode === "signed-in" ? "Find teams" : "Update roster";
+    heroSecondaryAction.href = "#helper";
+  }
+  if (heroProfileState) heroProfileState.hidden = false;
+  if (heroProfileLabel) heroProfileLabel.textContent = mode === "signed-in" ? "Cloud profile ready" : "Welcome back";
+  if (heroProfileTitle) heroProfileTitle.textContent = profileName;
+  if (heroProfileDetail) {
+    heroProfileDetail.textContent = `${ownedCount} Resonator${ownedCount === 1 ? "" : "s"} and ${state.weapons.size} weapon${state.weapons.size === 1 ? "" : "s"} saved${mode === "signed-in" ? " and synced to your account" : " on this device"}.`;
+  }
+
+  if (location.hash === "#my-wavekit" && !initialAccountAnchorAligned) {
+    initialAccountAnchorAligned = true;
+    requestAnimationFrame(() => accountOverviewSection?.scrollIntoView({ block: "start" }));
+  }
+
+  if (allowSignedInRedirect && mode === "signed-in" && initialLandingCanRedirect && !signedInLandingHandled) {
+    signedInLandingHandled = true;
+    requestAnimationFrame(() => {
+      history.replaceState(null, "", "#my-wavekit");
+      accountOverviewSection?.scrollIntoView({ block: "start" });
+      setActiveNav("#my-wavekit");
+    });
+  }
 }
 
 function markUnsaved() {
@@ -3669,6 +3756,7 @@ async function autoSaveProfile() {
   try {
     upsertWorkingProfile();
     persistProfiles();
+    applyAdaptiveLanding();
     $("#save-status").textContent = cloud.user ? "Autosaved locally. Syncing..." : "Autosaved locally";
     renderProfileManager();
     await silentCloudSync();
@@ -3713,6 +3801,7 @@ async function initCloudSync() {
       cloud.authResolved = true;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
+      applyAdaptiveLanding();
       return;
     }
     cloud.api = await import("./assets/firebase-sync.js?v=undefined-values-1");
@@ -3723,6 +3812,7 @@ async function initCloudSync() {
       cloud.authResolved = true;
       setCloudStatus("Cloud sync needs Firebase setup.");
       renderCloudSync();
+      applyAdaptiveLanding();
       return;
     }
     clearTimeout(timeout);
@@ -3736,6 +3826,7 @@ async function initCloudSync() {
         cloud.loadedForUid = "";
         setCloudStatus("Signed out. Local profiles still work.");
         renderCloudSync();
+        applyAdaptiveLanding();
         return;
       }
       setCloudStatus("Signed in. Loading cloud profile...");
@@ -3746,6 +3837,7 @@ async function initCloudSync() {
       cloud.user = null;
       setCloudStatus(cleanCloudError(error));
       renderCloudSync();
+      applyAdaptiveLanding();
     });
   } catch {
     clearTimeout(timeout);
@@ -3753,6 +3845,7 @@ async function initCloudSync() {
     cloud.authResolved = true;
     setCloudStatus("Cloud sync could not load.");
     renderCloudSync();
+    applyAdaptiveLanding();
   }
 }
 
@@ -3965,6 +4058,7 @@ async function autoLoadCloudProfiles() {
   } finally {
     cloud.busy = false;
     renderCloudSync();
+    applyAdaptiveLanding({ allowSignedInRedirect: true });
   }
 }
 
@@ -4080,7 +4174,7 @@ $("#profile-customise").addEventListener("click", () => {
 });
 $("#copy-feedback-context").addEventListener("click", copyFeedbackContext);
 $("form[name='wavekit-feedback']").addEventListener("submit", handleFeedbackSubmit);
-flowNextButton.addEventListener("click", handleFlowNext);
+finderDockButtons.forEach((button) => button.addEventListener("click", () => handleFinderNavigation(button.dataset.finderTarget)));
 $("#cloud-sign-in").addEventListener("click", signInCloud);
 $("#cloud-create-account").addEventListener("click", createCloudAccount);
 $("#cloud-google").addEventListener("click", signInGoogleCloud);
@@ -4099,10 +4193,14 @@ $("#profile-manager-dialog").addEventListener("click", (event) => {
 document.addEventListener("click", handleAccountMenuDismiss);
 document.addEventListener("keydown", handleAccountMenuDismiss);
 window.addEventListener("scroll", updateActiveNav, { passive: true });
-window.addEventListener("hashchange", () => setActiveNav(location.hash || ""));
+window.addEventListener("resize", updateActiveNav, { passive: true });
+window.addEventListener("hashchange", updateActiveNav);
+window.addEventListener("load", updateActiveNav);
 window.addEventListener("pagehide", flushPendingLocalSave);
 
 loadProfile();
 render();
 updateActiveNav();
+window.requestAnimationFrame(updateActiveNav);
+window.setTimeout(updateActiveNav, 120);
 initCloudSync();

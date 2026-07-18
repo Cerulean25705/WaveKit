@@ -33,7 +33,7 @@
     <meta name="apple-mobile-web-app-title" content="WaveKit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="styles.css?v=wavecat-rest-4">
+    <link rel="stylesheet" href="styles.css?v=release-20260718-2">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -155,16 +155,15 @@
         <span>WaveKit</span>
       </a>
       <nav class="topnav" aria-label="Page sections">
-        <a href="#my-wavekit">My WaveKit</a>
-        <a href="#characters">Characters</a>
+        <a href="#my-wavekit" hidden>My WaveKit</a>
+        <a href="characters/">Characters</a>
         <a href="weapons/">Weapons</a>
-        <a href="#helper">Helper</a>
+        <a href="#helper">Team Finder</a>
         <a href="#results">Teams</a>
         <a href="#builds">Builds</a>
         <a href="#feedback">Feedback</a>
         <a href="#install">Install</a>
         <a href="#trust">Trust</a>
-        <a href="https://discord.gg/wgGaqt6pvD" target="_blank" rel="noopener">Discord</a>
       </nav>
       <div class="account-bar" aria-live="polite">
         <span id="cloud-sync-status">Cloud sync connecting...</span>
@@ -250,8 +249,13 @@
             strongest archetypes first, sensible backups included, and build notes that explain why each slot works.
           </p>
           <div class="hero-actions" aria-label="Primary actions">
-            <a class="button primary" href="#helper">Start team helper</a>
-            <a class="button" href="#results">View suggestions</a>
+            <a id="hero-primary-action" class="button primary" href="#helper">Find my teams</a>
+            <a id="hero-secondary-action" class="button" href="characters/">Browse characters</a>
+          </div>
+          <div id="hero-profile-state" class="hero-profile-state" aria-live="polite" hidden>
+            <span id="hero-profile-label">Welcome back</span>
+            <strong id="hero-profile-title">Your WaveKit profile is ready.</strong>
+            <small id="hero-profile-detail">Continue with the Resonators and weapons already saved on this device.</small>
           </div>
           <div class="hero-quickstart" aria-label="How to use WaveKit">
             <ol class="hero-steps">
@@ -272,7 +276,7 @@
               <summary>How suggestions work <span aria-hidden="true">+</span></summary>
               <p>
                 WaveKit starts with known team archetypes, then checks your ownership, Resonance Chains, weapons,
-                role coverage, and preferred play style. Premium shells appear when you own them; otherwise it looks
+                role coverage, Resonance Chains, weapons, and known team compatibility. Premium shells appear when you own them; otherwise it looks
                 for compatible replacements and clearly marks lower-confidence options.
               </p>
             </details>
@@ -280,7 +284,7 @@
         </div>
       </section>
 
-      <section id="my-wavekit" class="section account-overview-section" aria-labelledby="my-wavekit-title">
+      <section id="my-wavekit" class="section account-overview-section" aria-labelledby="my-wavekit-title" hidden>
         <div class="section-heading split">
           <div>
             <p class="kicker">Your account</p>
@@ -311,7 +315,7 @@
             </p>
             <div class="section-inline-actions">
               <a class="button primary" href="characters/">Open character guides</a>
-              <a class="button ghost" href="#helper">Use team helper</a>
+              <a class="button ghost" href="#helper">Find teams from my roster</a>
             </div>
           </div>
           <div class="save-card trust-card guide-count-card">
@@ -369,7 +373,7 @@
                   <small>New · Havoc Sword</small>
                   <strong>Yangyang: Xuanling</strong>
                   <span class="banner-weapon">
-                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21020096.webp" alt="" loading="lazy" decoding="async">
+                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21020096.webp" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/weapons/sword.svg'">
                     <span><small>Signature weapon</small>Azure Oath</span>
                   </span>
                 </span>
@@ -380,7 +384,7 @@
                   <small>Rerun · Spectro Pistols</small>
                   <strong>Lynae</strong>
                   <span class="banner-weapon">
-                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21030046.webp" alt="" loading="lazy" decoding="async">
+                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21030046.webp" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/weapons/pistols.svg'">
                     <span><small>Signature weapon</small>Spectrum Blaster</span>
                   </span>
                 </span>
@@ -391,7 +395,7 @@
                   <small>Rerun · Spectro Gauntlets</small>
                   <strong>Luuk Herssen</strong>
                   <span class="banner-weapon">
-                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21040056.webp" alt="" loading="lazy" decoding="async">
+                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21040056.webp" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/weapons/gauntlets.svg'">
                     <span><small>Signature weapon</small>Daybreaker's Spine</span>
                   </span>
                 </span>
@@ -418,7 +422,7 @@
                   <small>New · Glacio Rectifier</small>
                   <strong>Suisui</strong>
                   <span class="banner-weapon compact">
-                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21050096.webp" alt="" loading="lazy" decoding="async">
+                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21050096.webp" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/weapons/rectifier.svg'">
                     <span><small>Signature</small>Firstlight's Herald</span>
                   </span>
                 </span>
@@ -429,7 +433,7 @@
                   <small>Rerun · Fusion Sword</small>
                   <strong>Aemeath</strong>
                   <span class="banner-weapon compact">
-                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21020076.webp" alt="" loading="lazy" decoding="async">
+                    <img src="https://cdn.prydwen.gg/images/wuthering-waves/weapons/21020076.webp" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/weapons/sword.svg'">
                     <span><small>Signature</small>Everbright Polestar</span>
                   </span>
                 </span>
@@ -464,11 +468,11 @@
 
         <div class="starter-note">
           <strong>Start simple</strong>
-          <p>Tap each Resonator once to mark RC0 owned. Use + only when you want to add Resonance Chain levels. Weapons are optional, but make build readiness more accurate.</p>
+          <p>Tap each Resonator once to mark RC0 owned. Rover is pinned first, and every card can open its full guide. Use the RC menu or + and - for Resonance Chains. Weapons are optional, but make build readiness more accurate.</p>
         </div>
 
         <div class="helper-grid">
-          <section class="panel roster-panel" aria-labelledby="roster-title">
+          <section id="finder-roster" class="panel roster-panel" aria-labelledby="roster-title">
             <div class="panel-heading">
               <span>Step 1</span>
               <h3 id="roster-title">Owned Resonators</h3>
@@ -487,14 +491,14 @@
             <div id="character-grid" class="character-grid" aria-label="Selectable characters"></div>
           </section>
 
-          <section class="panel weapon-panel" aria-labelledby="weapon-title">
+          <section id="finder-weapons" class="panel weapon-panel" aria-labelledby="weapon-title">
             <div class="panel-heading">
               <span>Step 2 · Optional</span>
               <h3 id="weapon-title">Weapons you own</h3>
             </div>
             <p>
-              Mark signature or strong weapons you own. If you skip this, teams still work; the helper will use
-              safer generic build advice.
+              Mark signature or strong weapons you own, then set R1-R5 for any refinements. If you skip this,
+              teams still work; the helper will use safer generic build advice. Upcoming weapons stay locked until release.
             </p>
             <label class="search-box weapon-search">
               <span>Search weapons</span>
@@ -528,14 +532,6 @@
         <div id="empty-results" class="empty-state">
           Select a main damage character and matching helpers. If nothing appears, WaveKit is avoiding a weak
           filler team because your current roster is missing a sensible synergy piece.
-        </div>
-        <div class="suggestion-style-panel" aria-label="Suggestion style">
-          <div>
-            <span>Suggestion style</span>
-            <strong>Choose how WaveKit sorts your owned teams.</strong>
-            <p>Best Teams favours premium archetypes, Ready Now favours safer comfortable teams, and Build Priority highlights the strongest accounts to invest into next.</p>
-          </div>
-          <div id="suggestion-style-options" class="segmented suggestion-style-options"></div>
         </div>
         <div id="team-results" class="team-results"></div>
       </section>
@@ -632,7 +628,7 @@
           </label>
           <div class="feedback-preview">
             <strong>Included context</strong>
-            <p id="feedback-context-preview">No team selected yet.</p>
+            <p id="feedback-context-preview">Your roster and settings will be attached automatically.</p>
           </div>
           <div class="feedback-actions">
             <button class="button primary" type="submit">Send feedback</button>
@@ -738,13 +734,19 @@
       </p>
     </footer>
 
-    <div id="flow-next" class="flow-next" aria-live="polite">
-      <div class="flow-next-copy">
-        <span id="flow-next-step">Step 1 of 4</span>
-        <strong id="flow-next-title">Start setup</strong>
-        <small id="flow-next-detail">Begin with the player profile section, then choose your roster.</small>
-      </div>
-      <button id="flow-next-button" class="button primary" type="button">Start</button>
+    <nav id="flow-next" class="flow-next finder-dock" aria-label="Team Finder sections" hidden>
+      <button type="button" data-finder-target="roster" aria-label="Go to owned Resonators">
+        <span aria-hidden="true">1</span><strong>Resonators</strong>
+      </button>
+      <button type="button" data-finder-target="weapons" aria-label="Go to owned weapons">
+        <span aria-hidden="true">2</span><strong>Weapons</strong>
+      </button>
+      <button type="button" data-finder-target="results" aria-label="Go to team suggestions">
+        <span aria-hidden="true">3</span><strong>Teams</strong>
+      </button>
+      <button type="button" data-finder-target="builds" aria-label="Go to selected team builds">
+        <span aria-hidden="true">4</span><strong>Builds</strong>
+      </button>
     </div>
 
     <dialog id="team-tuner" class="team-tuner-dialog" aria-labelledby="team-tuner-title">
@@ -762,8 +764,8 @@
     </dialog>
 
     <script src="assets/weapon-images.js?v=proper-weapons-2"></script>
-    <script type="module" src="assets/mobile-navigation.js?v=landing-guide-1"></script>
+    <script type="module" src="assets/mobile-navigation.js?v=release-20260718-2"></script>
     <script type="module" src="assets/wavecat.js?v=wavecat-rest-4"></script>
-    <script src="app.js?v=my-wavekit-20"></script>
+    <script src="app.js?v=release-20260718-2"></script>
   </body>
 </html>
