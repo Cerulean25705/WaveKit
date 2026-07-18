@@ -42,7 +42,7 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   padding-top: var(--topbar-offset);
-  padding-bottom: 16px;
+  padding-bottom: 0;
   color: var(--text);
   background:
     radial-gradient(ellipse at 50% -24%, rgba(120, 244, 255, 0.23) 0, rgba(10, 41, 57, 0.18) 28%, transparent 62%),
@@ -6608,20 +6608,20 @@ button.owned-badge {
 }
 
 .footer.footer-with-wavecat {
-  padding-bottom: 20px;
+  padding-bottom: 0;
 }
 
 .wavecat-footer-stage {
   position: relative;
-  height: 112px;
-  margin-top: 12px;
+  height: 104px;
+  margin-top: 8px;
   overflow: visible;
   isolation: isolate;
 }
 
 .wavecat-floor-line {
   position: absolute;
-  inset: auto 0 8px;
+  inset: auto 0 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(92, 232, 230, 0.34) 20%, rgba(242, 202, 112, 0.3) 78%, transparent);
   box-shadow: 0 0 12px rgba(68, 224, 224, 0.15);
@@ -6650,7 +6650,7 @@ button.owned-badge {
 .wavecat-footer-idle {
   z-index: 2;
   right: clamp(6px, 2vw, 28px);
-  bottom: 6px;
+  bottom: 0;
   opacity: 1;
   transform: translateY(0) scale(1);
 }
@@ -6666,7 +6666,7 @@ button.owned-badge {
 .wavecat-footer-transition {
   z-index: 3;
   right: clamp(6px, 2vw, 28px);
-  bottom: 6px;
+  bottom: 0;
   visibility: hidden;
 }
 
@@ -7139,7 +7139,7 @@ button.owned-badge {
   }
 
   body {
-    padding-bottom: 18px;
+    padding-bottom: 0;
   }
 
   body.has-finder-dock {
@@ -7904,7 +7904,7 @@ button.owned-badge {
   }
 
   body {
-    padding-bottom: 18px;
+    padding-bottom: 0;
   }
 
   body.has-finder-dock {
@@ -8483,7 +8483,7 @@ button.owned-badge {
 .footer.footer-with-wavecat > .footer-discord-link {
   position: absolute;
   right: clamp(124px, calc(2vw + 118px), 150px);
-  bottom: 38px;
+  bottom: 18px;
   z-index: 4;
   width: 52px;
   height: 52px;
@@ -8545,7 +8545,7 @@ button.owned-badge {
 
   .footer.footer-with-wavecat > .footer-discord-link {
     right: 94px;
-    bottom: 31px;
+    bottom: 14px;
     width: 46px;
     height: 46px;
     min-height: 46px;

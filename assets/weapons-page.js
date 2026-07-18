@@ -75,7 +75,7 @@
     const goodFor = weapon.goodFor || [];
     const image = window.weaponImageMap?.[weapon.name] || weapon.icon;
     return `
-      <details class="weapon-card ${owned.has(weapon.name) ? "is-owned" : ""}" data-weapon-name="${kit.escape(weapon.name)}" data-rarity="${weapon.rarity}" id="weapon-${kit.escape(weapon.slug)}" style="--weapon-image: url('${kit.escape(image)}')">
+      <details name="wavekit-weapon-directory" class="weapon-card ${owned.has(weapon.name) ? "is-owned" : ""}" data-weapon-name="${kit.escape(weapon.name)}" data-rarity="${weapon.rarity}" id="weapon-${kit.escape(weapon.slug)}" style="--weapon-image: url('${kit.escape(image)}')">
         <summary>
           <div class="weapon-card-art rarity-${weapon.rarity}"><img src="${kit.escape(image)}" alt="${kit.escape(weapon.name)} weapon icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='../assets/weapons/${kit.escape(weapon.type.toLowerCase())}.svg'"></div>
           <div class="weapon-card-copy">
@@ -131,6 +131,14 @@
 
   document.querySelectorAll("[data-weapon-search], [data-weapon-type], [data-weapon-rarity], [data-weapon-owned]").forEach((control) => {
     control.addEventListener(control.type === "search" ? "input" : "change", render);
+  });
+  directory.addEventListener("click", (event) => {
+    const summary = event.target.closest("summary");
+    const card = summary?.closest(".weapon-card");
+    if (!card || card.open) return;
+    directory.querySelectorAll(".weapon-card[open]").forEach((openCard) => {
+      if (openCard !== card) openCard.open = false;
+    });
   });
   directory.addEventListener("toggle", (event) => {
     const card = event.target.closest(".weapon-card");
