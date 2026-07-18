@@ -292,9 +292,27 @@ textarea {
 }
 
 .footer-support-link {
-  margin-right: 7px;
+  width: 36px;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
   border-color: rgba(255, 215, 122, 0.2);
   background: rgba(255, 215, 122, 0.055);
+}
+
+.footer-support-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  margin-right: 7px;
+}
+
+.footer-support-copy {
+  color: var(--soft);
+  font-size: 0.78rem;
+  font-weight: 820;
+  white-space: nowrap;
 }
 
 .footer-support-link:hover,
@@ -8521,16 +8539,22 @@ button.owned-badge {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.footer.footer-with-wavecat > .footer-support-link {
+.footer.footer-with-wavecat > .footer-support-group {
   position: absolute;
   right: clamp(184px, calc(2vw + 178px), 210px);
   bottom: 18px;
   z-index: 4;
-  width: 140px;
+  gap: 9px;
+  min-height: 52px;
+  margin: 0;
+}
+
+.footer.footer-with-wavecat > .footer-support-group > .footer-support-link {
+  width: 52px;
   height: 52px;
   min-height: 52px;
   margin: 0;
-  padding: 0 14px;
+  padding: 0;
   justify-content: center;
   border-color: rgba(255, 215, 122, 0.3);
   border-radius: 12px;
@@ -8556,15 +8580,13 @@ button.owned-badge {
   height: 21px;
 }
 
-.footer.footer-with-wavecat > .footer-support-link .footer-support-icon {
+.footer.footer-with-wavecat > .footer-support-group > .footer-support-link .footer-support-icon {
   flex: 0 0 auto;
-  order: 2;
   font-size: 1.55rem;
 }
 
-.footer.footer-with-wavecat > .footer-support-link > span:last-child {
-  order: 1;
-  white-space: nowrap;
+.footer.footer-with-wavecat > .footer-support-group > .footer-support-copy {
+  font-size: 0.78rem;
 }
 
 @media (max-width: 700px) {
@@ -8604,15 +8626,22 @@ button.owned-badge {
     border-radius: 11px;
   }
 
-  .footer.footer-with-wavecat > .footer-support-link {
+  .footer.footer-with-wavecat > .footer-support-group {
     right: 148px;
     bottom: 14px;
-    width: 124px;
+    gap: 8px;
+    min-height: 46px;
+  }
+
+  .footer.footer-with-wavecat > .footer-support-group > .footer-support-link {
+    width: 46px;
     height: 46px;
     min-height: 46px;
-    padding-inline: 10px;
     border-radius: 11px;
-    font-size: 0.72rem;
+  }
+
+  .footer.footer-with-wavecat > .footer-support-group > .footer-support-copy {
+    font-size: 0.66rem;
   }
 }
 

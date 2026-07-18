@@ -162,15 +162,21 @@ if (header && primaryNavigation && !primaryNavigation.querySelector("[data-mobil
   updateActiveDestination();
 
   const footer = document.querySelector(".footer");
-  if (footer && !footer.querySelector(".footer-support-link")) {
+  if (footer && !footer.querySelector(".footer-support-group")) {
+    const footerSupportGroup = document.createElement("span");
+    footerSupportGroup.className = "footer-support-group";
+    const footerSupportCopy = document.createElement("span");
+    footerSupportCopy.className = "footer-support-copy";
+    footerSupportCopy.textContent = "Support WaveKit";
     const footerSupport = document.createElement("a");
     footerSupport.className = "footer-support-link";
     footerSupport.href = "https://ko-fi.com/wavekit";
     footerSupport.target = "_blank";
     footerSupport.rel = "noopener";
     footerSupport.setAttribute("aria-label", "Support WaveKit on Ko-fi");
-    footerSupport.innerHTML = '<span class="footer-support-icon" aria-hidden="true">&#9829;</span><span>Support WaveKit</span>';
-    footer.append(footerSupport);
+    footerSupport.innerHTML = '<span class="footer-support-icon" aria-hidden="true">&#9829;</span>';
+    footerSupportGroup.append(footerSupportCopy, footerSupport);
+    footer.append(footerSupportGroup);
   }
   if (footer && !footer.querySelector(".footer-discord-link")) {
     const footerDiscord = document.createElement("a");

@@ -1,4 +1,4 @@
-import "./mobile-navigation.js?v=release-20260718-4";
+import "./mobile-navigation.js?v=release-20260718-5";
 import "./wavecat.js?v=wavecat-rest-4";
 
 const header = document.querySelector(".seo-topbar");
