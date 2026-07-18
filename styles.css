@@ -8526,11 +8526,11 @@ button.owned-badge {
   right: clamp(184px, calc(2vw + 178px), 210px);
   bottom: 18px;
   z-index: 4;
-  width: 52px;
+  width: 140px;
   height: 52px;
   min-height: 52px;
   margin: 0;
-  padding: 0;
+  padding: 0 14px;
   justify-content: center;
   border-color: rgba(255, 215, 122, 0.3);
   border-radius: 12px;
@@ -8540,8 +8540,7 @@ button.owned-badge {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.footer.footer-with-wavecat > .footer-discord-link > span:last-child,
-.footer.footer-with-wavecat > .footer-support-link > span:last-child {
+.footer.footer-with-wavecat > .footer-discord-link > span:last-child {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -8558,7 +8557,12 @@ button.owned-badge {
 }
 
 .footer.footer-with-wavecat > .footer-support-link .footer-support-icon {
-  font-size: 1.55rem;
+  flex: 0 0 auto;
+  font-size: 1.25rem;
+}
+
+.footer.footer-with-wavecat > .footer-support-link > span:last-child {
+  white-space: nowrap;
 }
 
 @media (max-width: 700px) {
@@ -8601,10 +8605,12 @@ button.owned-badge {
   .footer.footer-with-wavecat > .footer-support-link {
     right: 148px;
     bottom: 14px;
-    width: 46px;
+    width: 124px;
     height: 46px;
     min-height: 46px;
+    padding-inline: 10px;
     border-radius: 11px;
+    font-size: 0.72rem;
   }
 }
 
