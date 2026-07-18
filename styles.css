@@ -263,7 +263,8 @@ textarea {
   display: none;
 }
 
-.footer-discord-link {
+.footer-discord-link,
+.footer-support-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -281,11 +282,32 @@ textarea {
 }
 
 .footer-discord-link:hover,
-.footer-discord-link:focus-visible {
+.footer-discord-link:focus-visible,
+.footer-support-link:hover,
+.footer-support-link:focus-visible {
   color: var(--text);
   border-color: rgba(139, 232, 255, 0.38);
   background: rgba(120, 244, 255, 0.1);
   transform: translateY(-1px);
+}
+
+.footer-support-link {
+  margin-right: 7px;
+  border-color: rgba(255, 215, 122, 0.2);
+  background: rgba(255, 215, 122, 0.055);
+}
+
+.footer-support-link:hover,
+.footer-support-link:focus-visible {
+  border-color: rgba(255, 215, 122, 0.42);
+  background: rgba(255, 215, 122, 0.11);
+}
+
+.footer-support-icon {
+  color: #ffe08a;
+  font-size: 1rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 7px rgba(255, 215, 122, 0.3));
 }
 
 .footer-discord-icon {
@@ -8499,7 +8521,27 @@ button.owned-badge {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.footer.footer-with-wavecat > .footer-discord-link > span:last-child {
+.footer.footer-with-wavecat > .footer-support-link {
+  position: absolute;
+  right: clamp(184px, calc(2vw + 178px), 210px);
+  bottom: 18px;
+  z-index: 4;
+  width: 52px;
+  height: 52px;
+  min-height: 52px;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  border-color: rgba(255, 215, 122, 0.3);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(255, 215, 122, 0.14), rgba(120, 244, 255, 0.07)),
+    rgba(5, 19, 28, 0.9);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.footer.footer-with-wavecat > .footer-discord-link > span:last-child,
+.footer.footer-with-wavecat > .footer-support-link > span:last-child {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -8513,6 +8555,10 @@ button.owned-badge {
 .footer.footer-with-wavecat > .footer-discord-link .footer-discord-icon {
   width: 28px;
   height: 21px;
+}
+
+.footer.footer-with-wavecat > .footer-support-link .footer-support-icon {
+  font-size: 1.55rem;
 }
 
 @media (max-width: 700px) {
@@ -8545,6 +8591,15 @@ button.owned-badge {
 
   .footer.footer-with-wavecat > .footer-discord-link {
     right: 94px;
+    bottom: 14px;
+    width: 46px;
+    height: 46px;
+    min-height: 46px;
+    border-radius: 11px;
+  }
+
+  .footer.footer-with-wavecat > .footer-support-link {
+    right: 148px;
     bottom: 14px;
     width: 46px;
     height: 46px;
