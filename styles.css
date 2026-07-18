@@ -8558,10 +8558,12 @@ button.owned-badge {
 
 .footer.footer-with-wavecat > .footer-support-link .footer-support-icon {
   flex: 0 0 auto;
-  font-size: 1.25rem;
+  order: 2;
+  font-size: 1.55rem;
 }
 
 .footer.footer-with-wavecat > .footer-support-link > span:last-child {
+  order: 1;
   white-space: nowrap;
 }
 
