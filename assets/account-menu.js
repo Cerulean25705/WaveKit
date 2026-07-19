@@ -4,6 +4,22 @@ import "./wavecat.js?v=wavecat-rest-4";
 const header = document.querySelector(".seo-topbar");
 const profileStorageKey = "wavekit-profiles-v1";
 
+if (header && !document.querySelector("[data-beta-notice]")) {
+  const feedbackUrl = new URL("../#feedback", import.meta.url).href;
+  const betaNotice = document.createElement("aside");
+  betaNotice.className = "beta-notice";
+  betaNotice.dataset.betaNotice = "";
+  betaNotice.setAttribute("role", "note");
+  betaNotice.setAttribute("aria-label", "WaveKit beta notice");
+  betaNotice.innerHTML = `
+    <div class="beta-notice-inner">
+      <span class="beta-notice-badge">Beta</span>
+      <p><strong>WaveKit is still being refined.</strong> Team and build information may need corrections. <a href="${feedbackUrl}">Report an issue</a> if something looks wrong.</p>
+    </div>
+  `;
+  header.insertAdjacentElement("afterend", betaNotice);
+}
+
 if (header && !header.querySelector("[data-shared-account]")) {
   const profileUrl = new URL("../#my-wavekit", import.meta.url).href;
   const account = document.createElement("div");
