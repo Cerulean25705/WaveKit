@@ -525,7 +525,7 @@ const characters = [
   c("yuanwu", "Yuanwu", "Electro", "Gauntlets", ["sub", "defense"], 68, ["electro"], ["coordinated", "defense"], "Set-and-forget Electro utility."),
   c("aalto", "Aalto", "Aero", "Pistols", ["sub"], 64, ["aero"], ["aero"], "Aero ranged helper with movement tools."),
   c("lumi", "Lumi", "Electro", "Broadblade", ["sub"], 64, ["electro"], ["skill"], "Electro quick-swap helper."),
-  c("iuno", "Iuno", "Aero", "Gauntlets", ["sub", "support"], 94, ["aero", "heavy"], ["utility", "heavy"], "Premium Aero support/sub-DPS."),
+  c("iuno", "Iuno", "Aero", "Gauntlets", ["main", "sub", "support"], 94, ["aero", "heavy"], ["utility", "heavy", "hypercarry"], "Flexible Aero hybrid who can support Augusta or lead a hypercarry team of her own."),
   c("lynae", "Lynae", "Spectro", "Pistols", ["sub", "support"], 94, ["spectro", "tune"], ["spectro", "tune", "rupture", "strain"], "Premium Tune sub-DPS/buffer."),
   c("denia", "Denia", "Fusion", "Rectifier", ["sub"], 90, ["fusion"], ["burst"], "Fusion Burst sub-DPS."),
   c("rebecca", "Rebecca", "Electro", "Pistols", ["sub", "support"], 86, ["electro"], ["heavy"], "Heavy Attack buffer/sub-DPS."),
@@ -599,6 +599,7 @@ const carryCeilingScores = {
   camellya: 91,
   carlotta: 91,
   phoebe: 90,
+  iuno: 94,
   zani: 90,
   lupa: 89,
   "xiangli-yao": 88,
@@ -613,60 +614,64 @@ const carryCeilingScores = {
 };
 
 const teamPreferences = {
-  phrolova: pref(["cantarella", "qiuyuan", "roccia"], ["chisa", "taoqi", "danjin"], ["shorekeeper", "verina", "chisa", "baizhi"]),
+  phrolova: pref(["lucilla", "cantarella", "sigrika", "lynae", "qiuyuan", "roccia"], ["danjin", "chisa"], ["qiuyuan", "roccia", "shorekeeper", "verina", "buling", "baizhi"]),
   "yangyang-xuanling": pref(["rebecca", "lynae", "phrolova"], ["mortefi"], ["chisa", "mornye", "verina", "shorekeeper", "baizhi"], ["chisa", "verina"]),
   cartethyia: pref(["ciaccona", "chisa", "rover", "sanhua", "aalto"], ["sanhua", "aalto", "iuno"], ["chisa", "rover", "shorekeeper", "verina", "baizhi"]),
   jinhsi: pref(["zhezhi", "yinlin", "mortefi", "yuanwu"], ["taoqi", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   zani: pref(["phoebe", "rover", "lynae"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   camellya: pref(["cantarella", "roccia", "sanhua"], ["taoqi", "danjin", "chisa"], ["shorekeeper", "verina", "chisa", "baizhi"]),
   augusta: pref(["iuno", "rebecca", "yinlin"], ["yuanwu", "lumi", "jianxin"], ["shorekeeper", "verina", "buling", "mornye", "baizhi"]),
+  iuno: pref(["lynae", "ciaccona", "yinlin", "jianxin"], ["sanhua", "yangyang"], ["mornye", "shorekeeper", "verina", "rover", "baizhi"]),
+  qiuyuan: pref(["iuno", "ciaccona", "mortefi", "rebecca"], ["jianxin", "yangyang"], ["shorekeeper", "verina", "ciaccona", "baizhi"]),
   carlotta: pref(["zhezhi", "taoqi", "lumi", "lucilla"], ["sanhua", "youhu", "baizhi"], ["shorekeeper", "verina", "baizhi", "youhu"]),
-  jiyan: pref(["mortefi", "qiuyuan", "iuno"], ["yangyang", "ciaccona", "jianxin"], ["shorekeeper", "verina", "baizhi"]),
-  "xiangli-yao": pref(["yinlin", "mornye", "lynae", "yuanwu"], ["lumi", "rebecca", "mortefi"], ["shorekeeper", "verina", "baizhi"]),
+  jiyan: pref(["iuno", "phrolova", "rebecca", "mortefi", "ciaccona"], ["yangyang", "jianxin"], ["ciaccona", "shorekeeper", "verina", "mornye", "rover", "baizhi"]),
+  "xiangli-yao": pref(["lynae", "yinlin"], ["changli", "jianxin", "yangyang", "yuanwu"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   changli: pref(["brant", "lupa", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   lupa: pref(["brant", "changli", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   encore: pref(["changli", "lupa", "brant"], ["mortefi", "denia", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
-  calcharo: pref(["lynae", "mornye", "yinlin"], ["yuanwu", "jianxin", "lumi"], ["shorekeeper", "verina", "baizhi", "mornye"]),
+  calcharo: pref(["lynae", "yinlin"], ["yuanwu", "jianxin", "lumi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   danjin: pref(["roccia", "cantarella", "taoqi"], ["chisa", "sanhua", "yangyang"], ["shorekeeper", "verina", "chisa", "baizhi"]),
   lingyang: pref(["zhezhi", "sanhua", "lucilla"], ["youhu", "baizhi", "jianxin"], ["shorekeeper", "verina", "baizhi", "youhu"]),
   chixia: pref(["changli", "brant", "lupa"], ["mortefi", "denia", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
   aemeath: pref(["denia", "lynae", "lupa"], ["changli", "brant"], ["chisa", "mornye", "shorekeeper", "verina"]),
   hiyuki: pref(["lucilla", "lynae", "chisa", "zhezhi"], ["sanhua", "youhu", "baizhi", "jianxin"], ["chisa", "mornye", "shorekeeper", "verina", "buling", "baizhi", "youhu"]),
   sigrika: pref(["lucilla", "qiuyuan", "ciaccona", "iuno"], ["yangyang", "jianxin", "aalto"], ["shorekeeper", "mornye", "verina", "buling", "chisa", "baizhi"]),
-  galbrena: pref(["lucilla", "qiuyuan", "lupa", "brant", "iuno"], ["changli", "mortefi", "denia"], ["shorekeeper", "lupa", "verina", "buling", "baizhi"]),
+  galbrena: pref(["qiuyuan", "lucilla", "lupa", "brant", "iuno"], ["changli", "mortefi", "denia"], ["shorekeeper", "lupa", "verina", "buling", "baizhi"]),
   lucy: pref(["rebecca", "lynae", "phoebe"], ["zhezhi", "sanhua"], ["mornye", "shorekeeper", "verina", "buling", "baizhi"]),
   "luuk-herssen": pref(["denia", "lynae", "sanhua", "roccia"], ["phoebe", "zhezhi"], ["mornye", "shorekeeper", "verina", "baizhi"]),
   brant: pref(["lupa", "changli", "denia"], ["mortefi", "encore", "sanhua"], ["shorekeeper", "verina", "baizhi"]),
-  phoebe: pref(["zani", "lynae", "rover"], ["shorekeeper", "verina", "mornye", "sanhua"], ["shorekeeper", "verina", "mornye", "baizhi"]),
+  phoebe: pref(["lynae", "rebecca", "phrolova", "rover", "ciaccona"], ["sanhua", "mortefi", "iuno"], ["rover", "ciaccona", "shorekeeper", "chisa", "verina", "baizhi"]),
   rover: pref(["ciaccona", "shorekeeper", "verina", "sanhua"], ["yangyang", "mortefi", "baizhi"], ["shorekeeper", "verina", "baizhi"])
 };
 
 const teamArchetypes = {
-  phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
+  phrolova: archetype("Havoc Echo Skill", [["lucilla", "qiuyuan"], ["cantarella", "qiuyuan"], ["cantarella", "roccia"], ["sigrika", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "shorekeeper"], ["danjin", "roccia"]], "Phrolova's Echo Skill routes are partner-specific: Lucilla is strongest with Qiuyuan, while Cantarella can lead a more traditional Havoc setup."),
   "yangyang-xuanling": archetype("Havoc Bane Hypercarry", [["rebecca", "chisa"], ["lynae", "mornye"], ["phrolova", "chisa"], ["lynae", "chisa"], ["rebecca", "verina"], ["phrolova", "verina"]], "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, and Phrolova are her primary helpers; Chisa is the strongest general third slot, Mornye suits the Lynae route, and Verina is the accessible fallback."),
   cartethyia: archetype("Aero Erosion", [["ciaccona", "rover"], ["ciaccona", "chisa"], ["ciaccona", "shorekeeper"], ["rover", "chisa"], ["rover", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Ciaccona plus Aero Rover is Cartethyia's strongest low-sequence Erosion core. Chisa is a real specialist option at any sequence and can overtake Rover with Kumokiri; from R2, Cartethyia no longer relies on Rover for the extra stack limit. Shorekeeper and Verina are comfort fallbacks, not higher-synergy replacements for Chisa."),
-  jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
+  jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["zhezhi", "youhu"], ["yinlin", "youhu"], ["mortefi", "verina"], ["yuanwu", "verina"]], "Jinhsi wants a coordinated attacker to feed her burst window. Youhu is a specialist sustain for Zhezhi or Yinlin because her Outro amplifies their Coordinated Attacks; she is not a generic replacement in every Jinhsi team."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
   camellya: archetype("Havoc Basic", [["roccia", "shorekeeper"], ["sanhua", "shorekeeper"], ["danjin", "verina"]], "Camellya values Basic Attack/Havoc setup and enough safety for her field time."),
   augusta: archetype("Heavy Attack Carry", [["iuno", "shorekeeper"], ["iuno", "verina"], ["iuno", "buling"], ["rebecca", "shorekeeper"]], "Augusta wants Heavy Attack/all-attribute support before generic Electro pairing."),
+  iuno: archetype("Aero Hypercarry", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["yinlin", "shorekeeper"], ["jianxin", "verina"], ["sanhua", "verina"]], "Iuno can lead her own team. Lynae plus Mornye is the premium hypercarry core; Ciaccona, Yinlin, and Jianxin are documented alternatives, while Aero Rover is the free-form utility route."),
+  qiuyuan: archetype("R3+ Heavy/Echo Carry", [["iuno", "ciaccona"], ["iuno", "shorekeeper"], ["mortefi", "shorekeeper"], ["rebecca", "verina"]], "Qiuyuan only enters the main-DPS pool at R3 or higher, when his extended Skill sequence unlocks a real carry rotation. Iuno is his strongest focused helper; Ciaccona and universal sustain are alternatives."),
   carlotta: archetype("Glacio Skill", [["zhezhi", "shorekeeper"], ["taoqi", "shorekeeper"], ["lumi", "verina"]], "Carlotta wants Skill-focused support; Taoqi and Lumi are valid fallbacks because the buff type matters."),
-  jiyan: archetype("Aero Heavy", [["mortefi", "shorekeeper"], ["mortefi", "verina"], ["yangyang", "shorekeeper"]], "Jiyan wants Heavy Attack/coordinated support, with Yangyang as an energy comfort fallback."),
-  "xiangli-yao": archetype("Electro Liberation", [["yinlin", "shorekeeper"], ["lynae", "mornye"], ["yuanwu", "verina"]], "Xiangli Yao likes Electro/Liberation support or the newer Tune shell if those pieces are owned."),
+  jiyan: archetype("Aero Heavy", [["iuno", "ciaccona"], ["iuno", "shorekeeper"], ["phrolova", "shorekeeper"], ["rebecca", "mornye"], ["mortefi", "shorekeeper"], ["mortefi", "verina"], ["yangyang", "shorekeeper"]], "Iuno is Jiyan's strongest modern Heavy Attack helper. Ciaccona completes the premium Mono Aero route under the required weapon conditions; Mortefi and Yangyang remain accessible alternatives."),
+  "xiangli-yao": archetype("Electro Liberation", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["yinlin", "shorekeeper"], ["yinlin", "verina"], ["jianxin", "verina"], ["yangyang", "verina"]], "Lynae is Xiangli Yao's strongest general buffer and enables Mornye's full Tune support. Yinlin remains the natural Electro/Liberation alternative; Changli is expert-only quickswap and is not ranked as a normal recommendation."),
   changli: archetype("Fusion Dual DPS", [["brant", "lupa"], ["brant", "shorekeeper"], ["lupa", "verina"]], "Changli works well in Fusion dual-DPS shells where field time is shared."),
   lupa: archetype("Mono Fusion", [["brant", "changli"], ["changli", "shorekeeper"], ["brant", "verina"]], "Lupa amplifies Fusion teams and can trade comfort for higher Fusion damage."),
   encore: archetype("Fusion Carry", [["changli", "shorekeeper"], ["brant", "verina"], ["sanhua", "baizhi"]], "Encore prefers Changli or Fusion helpers, with Sanhua as an accessible quick helper."),
-  calcharo: archetype("Electro Carry", [["yinlin", "shorekeeper"], ["lynae", "mornye"], ["yuanwu", "verina"]], "Calcharo wants off-field Electro/Liberation pressure or a flexible Tune shell."),
+  calcharo: archetype("Electro Carry", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["yinlin", "shorekeeper"], ["yinlin", "verina"], ["yuanwu", "verina"]], "Lynae plus Mornye is Calcharo's strongest modern buff core. Yinlin is the natural Electro alternative, while Yuanwu is the accessible fallback."),
   danjin: archetype("High-risk Havoc", [["roccia", "shorekeeper"], ["cantarella", "verina"], ["taoqi", "baizhi"]], "Danjin needs the site to protect players from stress: damage is high, safety matters."),
-  lingyang: archetype("Glacio Basic", [["zhezhi", "shorekeeper"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Lingyang likes Glacio or Basic Attack helpers, but comfort support should stay visible."),
+  lingyang: archetype("Glacio Basic", [["zhezhi", "shorekeeper"], ["zhezhi", "youhu"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Lingyang likes Glacio or Basic Attack helpers. Youhu is specifically useful with Zhezhi because she amplifies Zhezhi's Coordinated Attacks while covering healing."),
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
   aemeath: archetype("Mode-specific carry", [["denia", "chisa"], ["denia", "lupa"], ["lynae", "mornye"], ["lynae", "shorekeeper"], ["lynae", "verina"], ["lupa", "mornye"], ["lupa", "brant"], ["lupa", "changli"]], "Aemeath's modes are kept separate: Denia with Chisa or Lupa for Fusion Burst, Lynae with Mornye for Tune Rupture, and Lupa with Mornye or another Fusion partner for Mono Fusion."),
-  hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lucilla", "mornye"], ["lynae", "chisa"], ["lynae", "mornye"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"]], "Hiyuki's best owned shells should surface before generic Glacio helpers, with Lucilla/Lynae plus Chisa or Mornye treated as current-patch targets."),
+  hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lynae", "chisa"], ["lynae", "mornye"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"]], "Lucilla plus Chisa is Hiyuki's specialist Glacio Chafe route. Mornye belongs with Lynae rather than Lucilla; Shorekeeper and Verina are lower-output comfort alternatives."),
   sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["lucilla", "mornye"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["lucilla", "verina"], ["qiuyuan", "mornye"], ["lucilla", "buling"], ["lucilla", "chisa"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Lucilla hypercarry shells should stay visible when owned, while Qiuyuan remains a valid premium route and can use Moonlit Clouds as Sigrika's support setup."),
-  galbrena: archetype("Fusion Echo Skill", [["lucilla", "shorekeeper"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "lupa"], ["lucilla", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Galbrena is an Echo Skill carry, so Lucilla and Qiuyuan should surface before generic Fusion matching when owned."),
+  galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "shorekeeper"], ["lucilla", "shorekeeper"], ["qiuyuan", "lupa"], ["lucilla", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Galbrena is an Echo Skill carry. Qiuyuan is the strongest general fit; Lucilla remains a close specialist alternative, while Lupa enables Fusion-focused teams."),
   lucy: archetype("Hack-Shifting Heavy", [["rebecca", "mornye"], ["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem, with Mornye or Shorekeeper as the main comfort slots."),
   "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["sanhua", "mornye"], ["denia", "shorekeeper"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell first. Denia is treated as his strongest current helper, Lynae is a strong alternate, and Sanhua remains the accessible fallback."),
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
-  phoebe: archetype("Spectro Frazzle", [["zani", "shorekeeper"], ["zani", "verina"], ["rover", "shorekeeper"]], "Phoebe is a premium Spectro Frazzle piece, especially for Zani.")
+  phoebe: archetype("Absolution DPS", [["lynae", "rover"], ["rebecca", "rover"], ["phrolova", "rover"], ["lynae", "ciaccona"], ["lynae", "shorekeeper"], ["sanhua", "rover"], ["rover", "shorekeeper"]], "Main-DPS Phoebe uses Absolution and requires a Spectro Frazzle applier: Spectro Rover for normal single-wave play or Ciaccona for multi-wave content. Her separate Confession support route belongs in Zani teams.")
 };
 
 const dataConfidence = {
@@ -682,7 +687,10 @@ const dataConfidence = {
   sigrika: ["checked", "Guide checked"],
   galbrena: ["checked", "Guide checked"],
   "luuk-herssen": ["checked", "Guide checked"],
-  mornye: ["checked", "Guide checked"]
+  mornye: ["checked", "Guide checked"],
+  iuno: ["checked", "Main DPS and hybrid routes reviewed for version 3.5"],
+  phoebe: ["checked", "Absolution and Confession routes reviewed"],
+  qiuyuan: ["checked", "R3 main-DPS unlock reviewed"]
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -756,7 +764,19 @@ function firstElement(element) {
 function activeCharacters() {
   return characters
     .filter((character) => !upcomingCharacters.has(character.slug))
-    .map((character) => character.slug === "rover" ? activeRover() : character);
+    .map((character) => {
+      if (character.slug === "rover") return activeRover();
+      if (character.slug === "qiuyuan" && Number(state.owned.qiuyuan?.chain || 0) >= 3) {
+        return {
+          ...character,
+          roles: [...new Set(["main", ...character.roles])],
+          score: 88,
+          tags: [...new Set([...character.tags, "heavy", "chain-carry"])],
+          note: "At R3 or higher, Qiuyuan can use his extended Skill sequence as a main DPS while retaining his support route."
+        };
+      }
+      return character;
+    });
 }
 
 function isUpcomingCharacter(slug) {
@@ -1583,6 +1603,7 @@ function isSuggestibleTeam(team) {
 
   if (main.slug === "aemeath" && aemeathModeMemberPresent(sub, third) && !archetypeFit) return false;
   if (main.slug === "cartethyia" && !cartethyiaPairAllowed(sub, third)) return false;
+  if (!modeSpecificPairAllowed(main, sub, third, archetypeFit)) return false;
 
   if (archetypeFit) return true;
   if (corePreferred && (sustainPreferred || safeThird || hasNamedPartner)) return true;
@@ -1591,6 +1612,24 @@ function isSuggestibleTeam(team) {
   if (!hasOwnedPreferredHelper && roleCompleteFallback) return true;
 
   return false;
+}
+
+function modeSpecificPairAllowed(main, sub, third, archetypeFit) {
+  if (archetypeFit) return true;
+  const pair = [sub.slug, third.slug];
+
+  if (third.slug === "mornye" && !pair.some((slug) => ["lynae", "lupa", "rebecca"].includes(slug))) return false;
+
+  if (main.slug === "iuno") {
+    if (pair.includes("mornye") && !pair.includes("lynae")) return false;
+    return false;
+  }
+  if (main.slug === "phoebe") return false;
+  if (main.slug === "hiyuki") return false;
+  if (["yangyang-xuanling", "luuk-herssen", "sigrika", "galbrena", "lucy"].includes(main.slug)) return false;
+  if (main.slug === "phrolova" && pair.includes("lucilla") && !pair.includes("qiuyuan")) return false;
+  if (main.slug === "phrolova" && pair.includes("sigrika") && !pair.includes("qiuyuan")) return false;
+  return true;
 }
 
 function aemeathModeMemberPresent(...members) {
@@ -1633,6 +1672,7 @@ function helperSynergyReason(main, helper) {
 
 function requiredRoverForm(main) {
   if (main.slug === "cartethyia") return "Aero";
+  if (main.slug === "iuno") return "Aero";
   if (main.slug === "zani" || main.slug === "phoebe") return "Spectro";
   return state.roverForm;
 }
@@ -1667,6 +1707,7 @@ function idealAllowedForOwnedForms(main, ideal) {
 function roverHelperAllowed(main, helper) {
   if (helper.slug !== "rover") return true;
   if (main.slug === "cartethyia") return helper.roverForm === "Aero";
+  if (main.slug === "iuno") return helper.roverForm === "Aero";
   if (main.slug === "zani" || main.slug === "phoebe") return helper.roverForm === "Spectro";
   return true;
 }
@@ -1717,7 +1758,6 @@ function teamSpecificAdjustment(main, sub, sustain) {
 
   if (main.slug === "hiyuki") {
     if (pair.includes("lucilla") && pair.includes("chisa")) score += 42;
-    if (pair.includes("lucilla") && pair.includes("mornye")) score += 30;
     if (pair.includes("lynae") && pair.includes("chisa")) score += 24;
     if (pair.includes("lynae") && pair.includes("mornye")) score += 20;
     if (!pair.includes("lucilla") && !pair.includes("lynae")) score -= 12;
@@ -1741,12 +1781,31 @@ function teamSpecificAdjustment(main, sub, sustain) {
   }
 
   if (main.slug === "galbrena") {
-    if (pair.includes("lucilla") && pair.includes("shorekeeper")) score += 44;
-    if (pair.includes("qiuyuan") && pair.includes("shorekeeper")) score += 42;
+    if (pair.includes("qiuyuan") && pair.includes("shorekeeper")) score += 46;
+    if (pair.includes("lucilla") && pair.includes("shorekeeper")) score += 42;
     if (pair.includes("qiuyuan") && pair.includes("lupa")) score += 30;
     if (pair.includes("lucilla") && pair.includes("lupa")) score += 28;
     if (pair.includes("brant") && pair.includes("lupa")) score += 24;
     if (!pair.includes("qiuyuan") && !pair.includes("lucilla") && !pair.includes("lupa")) score -= 14;
+  }
+
+  if (main.slug === "iuno") {
+    if (pair.includes("lynae") && pair.includes("mornye")) score += 62;
+    if (pair.includes("lynae") && pair.includes("shorekeeper")) score += 42;
+    if (pair.includes("ciaccona") && pair.includes("rover")) score += 36;
+    if (pair.includes("ciaccona") && pair.includes("shorekeeper")) score += 32;
+    if (pair.includes("yinlin") && pair.includes("shorekeeper")) score += 24;
+    if (pair.includes("jianxin") && pair.includes("verina")) score += 18;
+  }
+
+  if (main.slug === "phoebe") {
+    const hasSpectroRover = [sub, sustain].some((member) => member.slug === "rover" && member.roverForm === "Spectro");
+    if (pair.includes("lynae") && hasSpectroRover) score += 56;
+    if (pair.includes("rebecca") && hasSpectroRover) score += 48;
+    if (pair.includes("phrolova") && hasSpectroRover) score += 40;
+    if (pair.includes("lynae") && pair.includes("ciaccona")) score += 36;
+    if (pair.includes("sanhua") && hasSpectroRover) score += 24;
+    if (!hasSpectroRover && !pair.includes("ciaccona") && !pair.includes("shorekeeper")) score -= 36;
   }
 
   if (main.slug === "lucy") {
@@ -1930,6 +1989,7 @@ function groupTeamsByMain(teams) {
 
 function bestTeamPanel(team) {
   const key = teamKey(team);
+  const validation = teamValidationStatus(team);
   return `
     <article class="best-team-panel element-${firstElement(team.main.element).toLowerCase()} ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
       <div class="best-team-copy">
@@ -1941,6 +2001,7 @@ function bestTeamPanel(team) {
           ${reasonPill("Safety", safetyLabel(team))}
           ${reasonPill("Confidence", teamConfidence(team).label)}
         </div>
+        ${validation.level === "unverified" ? teamValidationWarning(validation) : ""}
         <div class="team-actions">
           <button class="button primary team-build-button" type="button" data-view-builds="${key}">View builds</button>
           <button class="button ghost" type="button" data-save-team="${key}">${teamIsSaved(team) ? "Saved team" : "Save team"}</button>
@@ -2014,8 +2075,9 @@ function groupLabel(group, teams) {
 
 function teamRow(team, rank) {
   const key = teamKey(team);
+  const validation = teamValidationStatus(team);
   return `
-    <article class="team-row ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
+    <article class="team-row ${validation.level === "unverified" ? "is-unverified" : ""} ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
       <span class="rank">${rank}</span>
       <span>
         <small>${rank === 1 ? "Recommended" : teamFitLabel(team)}</small>
@@ -2054,6 +2116,7 @@ function teamChips(team) {
   if (state.weapons.has(team.main.build.weapon)) chips.push(`<span class="chip good">Weapon owned</span>`);
   if (team.members[2].roles.includes("healer")) chips.push(`<span class="chip good">Healer</span>`);
   if (teamFitLabel(team) === "Archetype fit") chips.push(`<span class="chip good">Target shell</span>`);
+  if (teamValidationStatus(team).level === "unverified") chips.push(`<span class="chip warning">Unverified fallback</span>`);
   chips.push(`<span class="chip confidence">${teamConfidence(team).label}</span>`);
   const missing = missingBestShellNames(team);
   if (missing.length) chips.push(`<span class="chip missing">Missing ${missing[0]}</span>`);
@@ -2063,6 +2126,7 @@ function teamChips(team) {
 
 function selectedTeamPreview(team) {
   if (!team) return "";
+  const validation = teamValidationStatus(team);
   return `
     <aside class="selected-team-preview" aria-label="Selected team build preview">
       <p class="kicker">Selected team</p>
@@ -2070,6 +2134,7 @@ function selectedTeamPreview(team) {
       <div class="build-mini">
         ${team.members.map((member) => selectedBuildMini(member, team)).join("")}
       </div>
+      ${validation.level === "unverified" ? teamValidationWarning(validation) : ""}
       <div class="team-actions">
         <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
         <button class="button ghost" type="button" data-tune-team="${teamKey(team)}">Tune team</button>
@@ -2197,6 +2262,7 @@ function tierTeams(teams) {
 function teamCard(team, group, index) {
   const number = group.tier === "t1" ? index + 1 : index + 1 + (group.tier === "t2" ? 6 : 12);
   const key = teamKey(team);
+  const validation = teamValidationStatus(team);
   return `
     <article class="team-card ${group.tier} ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
       <div class="team-heading">
@@ -2212,6 +2278,12 @@ function teamCard(team, group, index) {
         <span>${safetyLabel(team)}</span>
         <span>${teamConfidence(team).label}</span>
       </div>
+      ${validation.level === "unverified" ? `
+        <div class="team-validation-warning" role="note">
+          <strong>${validation.label}</strong>
+          <span>${validation.detail}</span>
+        </div>
+      ` : ""}
       ${bestShellStrip(team)}
       <div class="team-plan" aria-label="Team slots">
         <strong>Team slots</strong>
@@ -2433,6 +2505,9 @@ function teamConfidence(team) {
   if (teamFitLabel(team) === "Archetype fit") {
     return { label: "Core archetype", detail: "This matches one of WaveKit's named team shells for the main DPS." };
   }
+  if (teamValidationStatus(team).level === "unverified") {
+    return { label: "Needs testing", detail: teamValidationStatus(team).detail };
+  }
   if (team.members.some((member) => member.slug === "chisa") && teamPreferences[team.main.slug]?.core.includes("chisa")) {
     return { label: "Specialist support", detail: "Chisa is included for her kit interaction with this damage dealer, not as a generic healer." };
   }
@@ -2443,6 +2518,29 @@ function teamConfidence(team) {
     return { label: "Comfort pick", detail: "This leans toward safety and consistency over maximum damage." };
   }
   return { label: "Experimental", detail: "This can function as a role shell, but it has less protection and should be tested before relying on it." };
+}
+
+function teamValidationWarning(validation) {
+  return `<div class="team-validation-warning" role="note"><strong>${validation.label}</strong><span>${validation.detail}</span></div>`;
+}
+
+function teamValidationStatus(team) {
+  if (teamFitLabel(team) === "Archetype fit") {
+    return { level: "core", label: "Documented team", detail: "This exact composition matches a reviewed team route." };
+  }
+  const main = team.main;
+  const sub = team.members[1];
+  const third = team.members[2];
+  const preferredHelper = teamPreferences[main.slug]?.core.includes(sub.slug);
+  const stableThird = third.roles.includes("healer") || third.roles.includes("defense");
+  if (preferredHelper && stableThird) {
+    return { level: "alternative", label: "Documented alternative", detail: "The core helper is appropriate; the final slot is a safer roster substitute." };
+  }
+  return {
+    level: "unverified",
+    label: "Unverified roster fallback",
+    detail: "This fills the required roles, but WaveKit has not verified a specific kit interaction for all three members. Treat it as a temporary option and report it if it plays poorly."
+  };
 }
 
 function teamFitLabel(team) {
