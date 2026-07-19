@@ -191,6 +191,51 @@ textarea {
   text-decoration-color: currentColor;
 }
 
+.suggestion-caution {
+  width: min(100%, 1180px);
+  margin: 0 auto 18px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 215, 122, 0.25);
+  border-left: 3px solid #ffd77a;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(255, 215, 122, 0.08), rgba(120, 244, 255, 0.025)),
+    rgba(5, 17, 25, 0.76);
+}
+
+.suggestion-caution-icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(255, 215, 122, 0.42);
+  border-radius: 50%;
+  color: #ffe08b;
+  background: rgba(255, 215, 122, 0.09);
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.suggestion-caution strong {
+  color: var(--text);
+  font-size: 0.86rem;
+}
+
+.suggestion-caution p {
+  margin: 3px 0 0;
+  color: var(--soft);
+  font-size: 0.79rem;
+  line-height: 1.45;
+}
+
+.suggestion-caution .button {
+  white-space: nowrap;
+}
+
 .brand,
 .topnav,
 .account-actions,
@@ -10397,5 +10442,24 @@ button.owned-badge {
   .beta-notice p {
     font-size: 0.75rem;
     line-height: 1.45;
+  }
+
+  .suggestion-caution {
+    grid-template-columns: 27px minmax(0, 1fr);
+    align-items: start;
+    gap: 9px;
+    margin-bottom: 14px;
+    padding: 11px;
+  }
+
+  .suggestion-caution-icon {
+    width: 25px;
+    height: 25px;
+  }
+
+  .suggestion-caution .button {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 2px;
   }
 }
