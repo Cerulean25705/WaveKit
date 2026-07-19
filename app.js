@@ -644,7 +644,7 @@ const teamPreferences = {
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["cantarella", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "cantarella"]], "Phrolova wants Havoc/Echo Skill setup before she takes over."),
   "yangyang-xuanling": archetype("Havoc Bane Hypercarry", [["rebecca", "chisa"], ["lynae", "mornye"], ["phrolova", "chisa"], ["lynae", "chisa"], ["rebecca", "verina"], ["phrolova", "verina"]], "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, and Phrolova are her primary helpers; Chisa is the strongest general third slot, Mornye suits the Lynae route, and Verina is the accessible fallback."),
-  cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia is strongest when the team feeds Aero Erosion. Ciaccona is the premium enabler, while Chisa or Aero Rover handle the Erosion support slot when owned."),
+  cartethyia: archetype("Aero Erosion", [["ciaccona", "rover"], ["ciaccona", "chisa"], ["ciaccona", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "At R0-R1, Cartethyia most strongly wants Ciaccona plus Aero Rover to reach her full Aero Erosion plan. From R2, Chisa can replace Aero Rover for a more premium specialist route, while Shorekeeper remains the safer comfort option."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["mortefi", "verina"]], "Jinhsi wants coordinated or skill-friendly helpers to feed her burst window."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
   camellya: archetype("Havoc Basic", [["roccia", "shorekeeper"], ["sanhua", "shorekeeper"], ["danjin", "verina"]], "Camellya values Basic Attack/Havoc setup and enough safety for her field time."),
@@ -763,11 +763,13 @@ function isUpcomingCharacter(slug) {
   return upcomingCharacters.has(slug);
 }
 
-function activeRover() {
-  const form = roverForms[state.roverForm] || roverForms.Aero;
+function activeRover(formName = state.roverForm) {
+  const selectedForm = roverForms[formName] ? formName : "Aero";
+  const form = roverForms[selectedForm];
   return {
     ...characters.find((character) => character.slug === "rover"),
-    name: `Rover (${state.roverForm})`,
+    name: `Rover (${selectedForm})`,
+    roverForm: selectedForm,
     element: form.element,
     roles: form.roles,
     score: form.score,
@@ -1283,8 +1285,11 @@ function previewChain(slug, chain) {
 function updateChainSlider(slider) {
   if (!slider) return;
   const chain = Math.max(0, Math.min(6, Number(slider.value) || 0));
+  const character = characters.find((entry) => entry.slug === slider.dataset.chainSlider);
+  const displayName = character?.slug === "rover" ? "Rover" : character?.name;
   slider.closest(".chain-slider-shell")?.style.setProperty("--chain-progress", `${(chain / 6) * 100}%`);
   slider.setAttribute("aria-valuetext", `R${chain}`);
+  if (displayName) slider.setAttribute("aria-label", `${displayName} Resonance Chain, R${chain}`);
   const output = slider.closest(".chain-row")?.querySelector("[data-chain-output]");
   if (output) output.textContent = `R${chain}`;
 }
@@ -1398,7 +1403,10 @@ function generateTeams() {
   if (roverMain && !mains.some((character) => character.slug === "rover")) mains.push(roverMain);
   const teams = [];
   mains.forEach((main) => {
-    const helpers = ownedCharacters.filter((character) => helperCandidate(main, character));
+    const teamCharacters = ownedCharacters.map((character) =>
+      character.slug === "rover" ? roverForMain(main) : character
+    );
+    const helpers = teamCharacters.filter((character) => helperCandidate(main, character));
     const subPool = helpers.filter((character) => character.roles.includes("sub") || character.roles.includes("support") || character.roles.includes("defense"));
     const slotThreePool = helpers.filter((character) => character.roles.includes("healer") || character.roles.includes("support") || character.roles.includes("defense"));
     const candidates = [];
@@ -1522,11 +1530,12 @@ function preferredTeamScore(main, sub, sustain) {
 function archetypeTeamScore(main, sub, sustain) {
   const archetype = teamArchetypes[main.slug];
   if (!archetype) return 0;
+  const ideals = archetypeIdeals(main);
   const pair = [sub.slug, sustain.slug];
-  const idealIndex = archetype.ideal.findIndex((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.every((slug) => pair.includes(slug)));
+  const idealIndex = ideals.findIndex((ideal) => idealAllowedForOwnedForms(main, ideal) && ideal.every((slug) => pair.includes(slug)));
   if (idealIndex >= 0) return 56 - idealIndex * 7;
-  if (archetype.ideal.some((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.includes(sub.slug))) return 16;
-  if (archetype.ideal.some((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.includes(sustain.slug))) return 10;
+  if (ideals.some((ideal) => idealAllowedForOwnedForms(main, ideal) && ideal.includes(sub.slug))) return 16;
+  if (ideals.some((ideal) => idealAllowedForOwnedForms(main, ideal) && ideal.includes(sustain.slug))) return 10;
   return 0;
 }
 
@@ -1534,7 +1543,7 @@ function premiumOwnedShellScore(main, sub, sustain) {
   const archetype = teamArchetypes[main.slug];
   if (!archetype) return 0;
   const pair = [sub.slug, sustain.slug];
-  const idealIndex = archetype.ideal.findIndex((ideal) => idealAllowedForActiveForms(main, ideal) && ideal.every((slug) => pair.includes(slug)));
+  const idealIndex = archetypeIdeals(main).findIndex((ideal) => idealAllowedForOwnedForms(main, ideal) && ideal.every((slug) => pair.includes(slug)));
   if (idealIndex < 0) return 0;
   const premiumSupport = sustain.score >= 80 || sustain.roles.includes("healer");
   const premiumHelper = sub.score >= 82 || teamPreferences[main.slug]?.core.includes(sub.slug);
@@ -1556,8 +1565,8 @@ function isSuggestibleTeam(team) {
   const preferredHelpers = preferredHelperList(pref);
   const flexiblePreferred = preferredHelpers.includes(sub.slug) || preferredHelpers.includes(third.slug);
   const safeThird = third.roles.includes("healer") || third.roles.includes("defense");
-  const hasNamedPartner = hasArchetype && teamArchetypes[main.slug].ideal.some((ideal) =>
-    idealAllowedForActiveForms(main, ideal) && (ideal.includes(sub.slug) || ideal.includes(third.slug))
+  const hasNamedPartner = hasArchetype && archetypeIdeals(main).some((ideal) =>
+    idealAllowedForOwnedForms(main, ideal) && (ideal.includes(sub.slug) || ideal.includes(third.slug))
   );
   const hasSharedPlan = helperSynergyReason(main, sub) || helperSynergyReason(main, third);
   const hasOwnedPreferredHelper = ownedPreferredHelperAvailable(main);
@@ -1598,17 +1607,40 @@ function helperSynergyReason(main, helper) {
     || helper.tags.some((tag) => main.tags.includes(tag));
 }
 
-function idealAllowedForActiveForms(main, ideal) {
+function requiredRoverForm(main) {
+  if (main.slug === "cartethyia") return "Aero";
+  if (main.slug === "zani" || main.slug === "phoebe") return "Spectro";
+  return state.roverForm;
+}
+
+function ownsRoverForm(form) {
+  return Boolean(state.owned.rover && state.roverForms.has(form));
+}
+
+function roverForMain(main) {
+  const requiredForm = requiredRoverForm(main);
+  return activeRover(ownsRoverForm(requiredForm) ? requiredForm : state.roverForm);
+}
+
+function archetypeIdeals(main) {
+  const ideals = teamArchetypes[main.slug]?.ideal || [];
+  if (main.slug !== "cartethyia") return ideals;
+  const chain = Number(state.owned.cartethyia?.chain || 0);
+  const lowChainOrder = [["ciaccona", "rover"], ["ciaccona", "chisa"]];
+  const highChainOrder = [["ciaccona", "chisa"], ["ciaccona", "rover"]];
+  const order = chain >= 2 ? highChainOrder : lowChainOrder;
+  return [...order, ...ideals.filter((ideal) => !order.some((entry) => entry.every((slug) => ideal.includes(slug))))];
+}
+
+function idealAllowedForOwnedForms(main, ideal) {
   if (!ideal.includes("rover")) return true;
-  if (main.slug === "cartethyia") return state.roverForm === "Aero";
-  if (main.slug === "zani" || main.slug === "phoebe") return state.roverForm === "Spectro";
-  return true;
+  return ownsRoverForm(requiredRoverForm(main));
 }
 
 function roverHelperAllowed(main, helper) {
   if (helper.slug !== "rover") return true;
-  if (main.slug === "cartethyia") return state.roverForm === "Aero";
-  if (main.slug === "zani" || main.slug === "phoebe") return state.roverForm === "Spectro";
+  if (main.slug === "cartethyia") return helper.roverForm === "Aero";
+  if (main.slug === "zani" || main.slug === "phoebe") return helper.roverForm === "Spectro";
   return true;
 }
 
@@ -1617,11 +1649,13 @@ function teamSpecificAdjustment(main, sub, sustain) {
   let score = 0;
 
   if (main.slug === "cartethyia") {
-    if (pair.includes("ciaccona") && pair.includes("chisa")) score += 46;
-    if (pair.includes("ciaccona") && pair.includes("rover") && state.roverForm === "Aero") score += 42;
-    if (pair.includes("ciaccona") && pair.includes("shorekeeper")) score += 26;
-    if (pair.includes("chisa") && pair.includes("rover") && state.roverForm === "Aero") score += 38;
-    if (pair.includes("sanhua") && pair.includes("rover") && state.roverForm === "Aero") score += 18;
+    const cartethyiaChain = Number(state.owned.cartethyia?.chain || 0);
+    const hasAeroRover = [sub, sustain].some((member) => member.slug === "rover" && member.roverForm === "Aero");
+    if (pair.includes("ciaccona") && pair.includes("chisa")) score += cartethyiaChain >= 2 ? 46 : 34;
+    if (pair.includes("ciaccona") && hasAeroRover) score += cartethyiaChain < 2 ? 58 : 42;
+    if (pair.includes("ciaccona") && pair.includes("shorekeeper")) score += cartethyiaChain < 2 && ownsRoverForm("Aero") ? 8 : 26;
+    if (pair.includes("chisa") && hasAeroRover) score += 38;
+    if (pair.includes("sanhua") && hasAeroRover) score += 18;
     if (pair.includes("sanhua") && pair.includes("chisa")) score += 14;
     if (pair.includes("aalto") && pair.includes("shorekeeper")) score += 14;
     if (!pair.includes("ciaccona") && !pair.includes("sanhua") && !pair.includes("aalto")) score -= 18;
@@ -2170,7 +2204,11 @@ function teamCard(team, group, index) {
 }
 
 function teamKey(team) {
-  return `${state.roverForm}:${team.members.map((member) => member.slug).join("|")}`;
+  return `${teamRoverForm(team)}:${team.members.map((member) => member.slug).join("|")}`;
+}
+
+function teamRoverForm(team) {
+  return team.members.find((member) => member.slug === "rover")?.roverForm || state.roverForm;
 }
 
 function teamIsSaved(team) {
@@ -2198,7 +2236,7 @@ function openSavedOrSuggestedTeam(key) {
 }
 
 function saveTeamRecord(team) {
-  const record = { members: team.members.map((member) => member.slug), roverForm: state.roverForm, savedAt: new Date().toISOString() };
+  const record = { members: team.members.map((member) => member.slug), roverForm: teamRoverForm(team), savedAt: new Date().toISOString() };
   const key = savedTeamRecordKey(record);
   state.savedTeams = [record, ...state.savedTeams.filter((entry) => savedTeamRecordKey(entry) !== key)].slice(0, 12);
   state.selectedTeamKey = key;
@@ -2376,7 +2414,7 @@ function teamFitLabel(team) {
   const archetype = teamArchetypes[team.main.slug];
   if (!archetype) return "Flexible fit";
   const pair = [team.members[1].slug, team.members[2].slug];
-  return archetype.ideal.some((ideal) => ideal.every((slug) => pair.includes(slug))) ? "Archetype fit" : "Fallback fit";
+  return archetypeIdeals(team.main).some((ideal) => idealAllowedForOwnedForms(team.main, ideal) && ideal.every((slug) => pair.includes(slug))) ? "Archetype fit" : "Fallback fit";
 }
 
 function teamFitDetail(team) {
@@ -2446,12 +2484,13 @@ function rotationText(team) {
 function missingAlternativeNote(team) {
   const archetype = teamArchetypes[team.main.slug];
   if (!archetype) return "No fixed best shell is required; this team is using flexible role coverage from your roster.";
+  const ideals = archetypeIdeals(team.main);
   const pair = [team.members[1].slug, team.members[2].slug];
-  const ideal = archetype.ideal.find((combo) => combo.every((slug) => pair.includes(slug)));
+  const ideal = ideals.find((combo) => idealAllowedForOwnedForms(team.main, combo) && combo.every((slug) => pair.includes(slug)));
   if (ideal) return "This is one of the intended shells, so no major replacement note is needed.";
-  const bestIdeal = archetype.ideal[0] || [];
-  const missing = bestIdeal.filter((slug) => !state.owned[slug]).map(characterName);
-  const replacements = [team.members[1].name, team.members[2].name].filter((name) => !bestIdeal.map(characterName).includes(name));
+  const bestIdeal = ideals[0] || [];
+  const missing = bestIdeal.filter((slug) => !ownsShellMember(team.main, slug)).map((slug) => shellCharacterName(team.main, slug));
+  const replacements = [team.members[1].name, team.members[2].name].filter((name) => !bestIdeal.map((slug) => shellCharacterName(team.main, slug)).includes(name));
   if (missing.length && replacements.length) return `Missing ${missing.join(" and ")}. WaveKit is using ${replacements.join(" and ")} as your available replacement path.`;
   if (missing.length) return `Missing ${missing.join(" and ")} for the cleanest version of this archetype.`;
   return "You own the core pieces, but this exact pair ranked lower than another available shell.";
@@ -2464,7 +2503,7 @@ function characterName(slug) {
 function bestPartnerDetail(team) {
   const archetype = teamArchetypes[team.main.slug];
   const pref = teamPreferences[team.main.slug];
-  const bestShell = archetype?.ideal?.[0]?.map(characterName).join(" + ");
+  const bestShell = archetypeIdeals(team.main)[0]?.map((slug) => shellCharacterName(team.main, slug)).join(" + ");
   const core = pref?.core?.slice(0, 3).map(characterName).join(", ");
   const sustain = pref?.sustain?.slice(0, 3).map(characterName).join(", ");
   if (bestShell) return `Common best-shell target: ${team.main.name} + ${bestShell}. Other useful helpers: ${core || "flexible utility"}. Safer sustain picks: ${sustain || "a real healer when available"}.`;
@@ -2472,28 +2511,38 @@ function bestPartnerDetail(team) {
 }
 
 function bestShellSlugs(team) {
-  const pair = teamArchetypes[team.main.slug]?.ideal?.[0] || [];
+  const pair = archetypeIdeals(team.main)[0] || [];
   return pair.length ? [team.main.slug, ...pair] : [];
+}
+
+function shellCharacterName(main, slug) {
+  if (slug === "rover") return `Rover (${requiredRoverForm(main)})`;
+  return characterName(slug);
+}
+
+function ownsShellMember(main, slug) {
+  if (slug === "rover") return ownsRoverForm(requiredRoverForm(main));
+  return Boolean(state.owned[slug]);
 }
 
 function bestShellStatus(team) {
   const shell = bestShellSlugs(team);
   if (!shell.length) return "Flexible";
-  const missing = shell.filter((slug) => !state.owned[slug]).map(characterName);
+  const missing = shell.filter((slug) => !ownsShellMember(team.main, slug)).map((slug) => shellCharacterName(team.main, slug));
   if (!missing.length) return "Owned target";
   return `Missing ${missing.join(" / ")}`;
 }
 
 function missingBestShellNames(team) {
-  return bestShellSlugs(team).filter((slug) => !state.owned[slug]).map(characterName);
+  return bestShellSlugs(team).filter((slug) => !ownsShellMember(team.main, slug)).map((slug) => shellCharacterName(team.main, slug));
 }
 
 function bestShellDetail(team) {
   const shell = bestShellSlugs(team);
   if (!shell.length) return bestPartnerDetail(team);
-  const shellText = shell.map(characterName).join(" + ");
+  const shellText = shell.map((slug) => shellCharacterName(team.main, slug)).join(" + ");
   const currentText = team.members.map((member) => member.name).join(" + ");
-  const missing = shell.filter((slug) => !state.owned[slug]).map(characterName);
+  const missing = shell.filter((slug) => !ownsShellMember(team.main, slug)).map((slug) => shellCharacterName(team.main, slug));
   if (!missing.length) {
     return `${shellText} is WaveKit's current target shell for this DPS. It can appear as a real suggestion because you own every listed character.`;
   }
@@ -2503,8 +2552,8 @@ function bestShellDetail(team) {
 function bestShellStrip(team) {
   const shell = bestShellSlugs(team);
   if (!shell.length) return "";
-  const shellText = shell.map(characterName).join(" + ");
-  const missing = shell.filter((slug) => !state.owned[slug]).map(characterName);
+  const shellText = shell.map((slug) => shellCharacterName(team.main, slug)).join(" + ");
+  const missing = shell.filter((slug) => !ownsShellMember(team.main, slug)).map((slug) => shellCharacterName(team.main, slug));
   const currentHelpers = team.members.slice(1).map((member) => member.name).join(" + ");
   const note = missing.length
     ? `Missing ${missing.join(" and ")}. Using ${currentHelpers} from your roster.`
@@ -2529,7 +2578,7 @@ function ownedIdealPartners(team) {
   const archetype = teamArchetypes[team.main.slug];
   const preference = teamPreferences[team.main.slug];
   const slugs = new Set([
-    ...(archetype?.ideal || []).flat(),
+    ...archetypeIdeals(team.main).flat(),
     ...(preference?.core || []),
     ...(preference?.sustain || [])
   ]);
@@ -2549,7 +2598,7 @@ function teamInsight(label, value, detail) {
 function slotThreePurpose(character) {
   if (character.roles.includes("healer")) return "Healing safety";
   if (character.roles.includes("defense")) return "Defensive safety";
-  if (character.slug === "rover" && state.roverForm === "Aero") return "Aero Erosion utility";
+  if (character.slug === "rover" && character.roverForm === "Aero") return "Aero Erosion utility";
   if (character.roles.includes("support")) return "Support utility";
   return "Utility damage";
 }
@@ -3584,7 +3633,7 @@ function accountBestTeamMember(member, index) {
 }
 
 function ownedNamedPartner(main) {
-  const preferred = new Set([...(teamPreferences[main.slug]?.core || []), ...(teamArchetypes[main.slug]?.ideal || []).flat()]);
+  const preferred = new Set([...(teamPreferences[main.slug]?.core || []), ...archetypeIdeals(main).flat()]);
   if (!preferred.size) return true;
   return [...preferred].some((slug) => state.owned[slug]);
 }
@@ -3648,7 +3697,7 @@ function savedTeamRecordKey(record) {
 }
 
 function savedTeamItem(record) {
-  const names = record.members.map(characterName);
+  const names = record.members.map((slug) => slug === "rover" ? `Rover (${record.roverForm || "Aero"})` : characterName(slug));
   const members = record.members.map((slug) => characters.find((character) => character.slug === slug)).filter(Boolean);
   return `<article><button class="account-saved-team" type="button" data-open-team="${savedTeamRecordKey(record)}"><span class="mini-team" aria-hidden="true">${members.map((member) => { const file = artworkFile(member); return `<img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">`; }).join("")}</span><span><strong>${names.join(" / ")}</strong><small>${record.roverForm || "Aero"} Rover profile</small></span></button><button class="icon-button" type="button" data-remove-saved-team="${savedTeamRecordKey(record)}" aria-label="Remove saved team">×</button></article>`;
 }
