@@ -33,14 +33,14 @@
 
 html {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   padding-top: var(--topbar-offset);
   padding-bottom: 0;
   color: var(--text);
@@ -133,13 +133,16 @@ textarea {
 }
 
 .beta-notice {
-  position: relative;
-  z-index: 12;
+  position: sticky;
+  top: var(--topbar-offset);
+  z-index: 900;
   width: 100%;
   border-bottom: 1px solid rgba(255, 215, 122, 0.2);
   background:
     linear-gradient(90deg, rgba(255, 215, 122, 0.08), rgba(120, 244, 255, 0.055) 48%, rgba(255, 215, 122, 0.07)),
     rgba(4, 14, 21, 0.9);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px) saturate(1.2);
 }
 
 .beta-notice-inner {
