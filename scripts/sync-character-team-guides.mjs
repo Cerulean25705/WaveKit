@@ -60,7 +60,11 @@ for (const directory of directories) {
   );
 
   if (data.slug !== "rover" && shells.length) {
-    html = replaceTeamPanels(html, renderPanels(data.slug, panelShellsFor(data.slug, allShells)));
+    html = replaceTeamPanels(html, renderPanels(
+      data.slug,
+      panelShellsFor(data.slug, allShells),
+      compatibilityGroupsFor(data.slug, allShells)
+    ));
   }
 
   html = html
@@ -141,6 +145,14 @@ for (const directory of directories) {
     .replace(
       /<div class="seo-card">\s*<h2>Team direction<\/h2>[\s\S]*?<\/div>\s*(?=<div class="seo-card">\s*<h2>Useful teammates<\/h2>)/,
       ""
+    )
+    .replace(
+      /<div class="seo-card">\s*<h2>Useful teammates<\/h2>[\s\S]*?<\/div>\s*<\/div>\s*(?=<div class="seo-card">\s*<h2>Simple play pattern<\/h2>)/,
+      ""
+    )
+    .replace(
+      /<div class="seo-card">\s*<h2>Useful teammates<\/h2>[\s\S]*?<\/div>\s*(?=<div class="seo-card">\s*<h2>Simple play pattern<\/h2>)/,
+      ""
     );
 
   await fs.writeFile(file, html);
@@ -178,11 +190,12 @@ function replaceTeamPanels(html, panels) {
   );
 }
 
-function renderPanels(subject, shells) {
-  return `<div class="seo-team-panels">${shells.map((shell, index) => {
+function renderPanels(subject, shells, compatibilityGroups) {
+  const exactTeams = shells.map((shell, index) => {
     const label = teamRouteLabel(subject, shell, index);
     return `<div class="seo-team-panel"><header><strong>${label}</strong><span>${teamPanelBadge(subject, shell, index)}</span></header><div class="seo-team-strip">${shell.map((slug, slot) => `<span><img src="../../assets/characters/${slug}.webp" alt="" loading="lazy" decoding="async"><small>${slot === 0 ? "Main damage" : slot === 1 ? "Setup helper" : "Support slot"}</small><strong>${escapeHtml(names[slug] || slug)}</strong><em>${slot === 0 ? "Leads the damage plan" : slot === 1 ? "Sets up the damage dealer" : "Completes the team"}</em></span>`).join("")}</div><p class="seo-team-note">${escapeHtml(teamPanelNote(subject, shell))}</p></div>`;
-  }).join("")}</div>`;
+  }).join("");
+  return `<div class="seo-team-panels">${exactTeams}${renderCompatibilityPanel(subject, compatibilityGroups)}</div>`;
 }
 
 function teamRouteLabel(subject, shell, index) {
@@ -206,23 +219,110 @@ function teamRouteLabel(subject, shell, index) {
 function panelShellsFor(subject, shells) {
   const own = shells.filter((shell) => shell[0] === subject);
   const support = shells.filter((shell) => shell[0] !== subject);
-  if (subject === "aemeath") return [own[0], own[2], own[5], own[1]].filter(Boolean);
-  if (subject === "iuno") return [own[0], own[1], own[2], support.find((shell) => shell[0] === "augusta")].filter(Boolean);
+  if (subject === "aemeath") return [own[0], own[2], own[5]].filter(Boolean);
+  if (subject === "iuno") return [own[0], own[1], support.find((shell) => shell[0] === "augusta")].filter(Boolean);
   if (subject === "phoebe") return [own[0], own.find((shell) => shell.includes("ciaccona")) || own[1], support.find((shell) => shell[0] === "zani")].filter(Boolean);
   if (subject === "qiuyuan") return [own[0], support.find((shell) => shell[0] === "phrolova"), support.find((shell) => shell[0] === "galbrena")].filter(Boolean);
   if (own.length) {
-    const selected = own.slice(0, 4);
+    const selected = own.slice(0, 3);
     const easyTeam = own.find((shell) => isEasyToBuildTeam(shell));
-    if (easyTeam && !selected.includes(easyTeam)) selected[selected.length >= 4 ? 3 : selected.length] = easyTeam;
+    if (easyTeam && !selected.includes(easyTeam)) selected[selected.length >= 3 ? 2 : selected.length] = easyTeam;
     return selected.filter(Boolean);
   }
   const distinctMainTeams = [];
   for (const shell of support) {
     if (distinctMainTeams.some((team) => team[0] === shell[0])) continue;
     distinctMainTeams.push(shell);
-    if (distinctMainTeams.length === 4) break;
+    if (distinctMainTeams.length === 3) break;
   }
   return distinctMainTeams;
+}
+
+function compatibilityGroupsFor(subject, shells) {
+  const own = shells.filter((shell) => shell[0] === subject);
+  const support = shells.filter((shell) => shell[0] !== subject);
+
+  if (subject === "aemeath") {
+    return [
+      groupFromShells("Fusion Burst", "Keep Denia with the Fusion Burst route.", own.filter((shell) => shell.includes("denia")), subject),
+      groupFromShells("Tune Rupture", "Lynae enables the dedicated Tune Rupture route.", own.filter((shell) => shell.includes("lynae")), subject),
+      groupFromShells("Mono Fusion", "Use these only in the separate Fusion-focused route.", own.filter((shell) => shell.includes("lupa") && !shell.includes("denia") && !shell.includes("lynae")), subject)
+    ].filter((group) => group.members.length);
+  }
+
+  if (subject === "phoebe") {
+    return [
+      groupFromShells("Absolution DPS", "Partners for Phoebe's on-field damage mode.", own, subject),
+      groupFromShells("Confession support", "Carries and teammates for her support mode.", support, subject)
+    ].filter((group) => group.members.length);
+  }
+
+  if (subject === "iuno") {
+    return [
+      groupFromShells("Iuno main DPS", "Partners for her own hypercarry teams.", own, subject),
+      groupFromShells("Iuno as helper", "Damage dealers with reviewed Iuno routes.", support, subject)
+    ].filter((group) => group.members.length);
+  }
+
+  if (subject === "qiuyuan") {
+    return [
+      groupFromShells("R3+ main DPS", "Only use this carry route from Resonance Chain 3.", own, subject),
+      groupFromShells("Below R3 support", "Echo Skill carries Qiuyuan can support.", support, subject)
+    ].filter((group) => group.members.length);
+  }
+
+  const groups = [];
+  if (own.length) {
+    groups.push({
+      title: "Setup options",
+      note: "Choose a helper that matches the damage plan.",
+      members: uniqueMembers(own.map((shell) => shell[1]), subject)
+    });
+    groups.push({
+      title: "Support options",
+      note: "Choose the sustain or final support shown in a reviewed team.",
+      members: uniqueMembers(own.map((shell) => shell[2]), subject)
+    });
+  }
+  if (support.length) {
+    groups.push({
+      title: own.length ? "Teams they can support" : "Damage dealers",
+      note: own.length ? "These carries also have reviewed teams with this Resonator." : "Reviewed carries that can use this Resonator.",
+      members: uniqueMembers(support.map((shell) => shell[0]), subject)
+    });
+    if (!own.length) {
+      groups.push({
+        title: "Common teammates",
+        note: "The other slot used beside them in reviewed teams.",
+        members: uniqueMembers(support.flatMap((shell) => shell.slice(1).filter((slug) => slug !== subject)), subject)
+      });
+    }
+  }
+  return groups.filter((group) => group.members.length);
+}
+
+function groupFromShells(title, note, shells, subject) {
+  return {
+    title,
+    note,
+    members: uniqueMembers(shells.flatMap((shell) => shell.filter((slug) => slug !== subject)), subject)
+  };
+}
+
+function uniqueMembers(slugs, subject) {
+  return [...new Set(slugs)].filter((slug) => slug && slug !== subject && names[slug]);
+}
+
+function renderCompatibilityPanel(subject, groups) {
+  if (!groups.length) return "";
+  const modeSensitive = ["aemeath", "phoebe", "iuno", "qiuyuan"].includes(subject);
+  const intro = modeSensitive
+    ? "More reviewed options are grouped by playstyle. Keep partners inside the matching route."
+    : "Use these grouped options to understand the wider roster around the complete teams above.";
+  const warning = modeSensitive
+    ? "Do not mix specialist partners across playstyles. Start with a complete team above, then replace only the matching role."
+    : "These characters appear in reviewed teams, but every possible combination is not guaranteed. Use the complete teams above as the safest starting point.";
+  return `<div class="seo-team-panel seo-compatibility-panel"><header><strong>Other compatible teammates</strong><span>More options</span></header><p class="seo-compatibility-intro">${escapeHtml(intro)}</p><div class="seo-compatibility-groups">${groups.map((group) => `<section class="seo-compatibility-group"><div class="seo-compatibility-heading"><strong>${escapeHtml(group.title)}</strong><small>${escapeHtml(group.note)}</small></div><div class="seo-compatibility-list">${group.members.map((slug) => `<a class="seo-compatibility-person" href="../${slug}/" aria-label="Open ${escapeHtml(names[slug])} guide"><img src="../../assets/characters/${slug}.webp" alt="" loading="lazy" decoding="async"><span><strong>${escapeHtml(names[slug])}</strong><small>Open guide</small></span></a>`).join("")}</div></section>`).join("")}</div><p class="seo-team-note seo-compatibility-warning">${escapeHtml(warning)}</p></div>`;
 }
 
 function isEasyToBuildTeam(shell) {
@@ -247,6 +347,13 @@ function teamPanelNote(subject, shell) {
     .replaceAll("shell", "team")
     .replaceAll("accessible fallback", "easier-to-build option");
   if (shell[0] !== subject) return `${subjectName(subject)} supports ${main} alongside ${partnerName}. ${reviewedNote}`;
+  if (subject === "augusta") {
+    if (shell.includes("iuno")) return "Iuno is Augusta's strongest focused Heavy Attack helper, while Shorekeeper or Verina completes the team with universal sustain.";
+    if (shell.includes("mortefi")) return "Mortefi is a strong Heavy Attack amplifier for Augusta. Add a universal healer to keep her field time stable.";
+    if (shell.includes("rebecca") && shell.includes("mornye")) return "Rebecca supplies the Heavy Attack route that allows Mornye to support this team effectively.";
+    if (shell.includes("rebecca")) return "Rebecca is a strong Heavy Attack alternative when Iuno is unavailable, with the final slot covering sustain.";
+    if (shell.includes("lynae")) return "Lynae provides universal amplification and enables Mornye's stronger team contribution.";
+  }
   return `${helper} handles the main setup while ${support} completes the team. ${reviewedNote}`;
 }
 
