@@ -3540,9 +3540,6 @@ h1 {
 }
 
 .character-toolbar {
-  position: sticky;
-  z-index: 12;
-  top: calc(var(--topbar-offset) + 8px);
   display: grid;
   grid-template-columns: minmax(240px, 1fr) repeat(3, minmax(112px, 150px)) auto;
   align-items: end;
@@ -3772,9 +3769,6 @@ h1 {
 }
 
 .weapon-toolbar {
-  position: sticky;
-  z-index: 12;
-  top: calc(var(--topbar-offset) + 8px);
   display: grid;
   grid-template-columns: minmax(260px, 1fr) repeat(2, minmax(130px, 180px)) auto;
   align-items: end;
