@@ -2147,11 +2147,8 @@ function renderResults() {
   }
   if (!teams.length) state.selectedTeamKey = "";
   teamResults.innerHTML = teams.length ? `
-    ${bestTeamPanel(teams[0])}
     <section class="team-results-layout" aria-label="Grouped team suggestions">
-      <div class="team-group-list">
-        ${visibleGroups.map((group) => teamMainGroup(group, teams)).join("")}
-      </div>
+      ${teamSuggestionList(visibleGroups, teams)}
       ${selectedTeamPreview(selected)}
     </section>
     ${teamRevealButton(hiddenCount)}
@@ -2173,10 +2170,10 @@ function renderResults() {
   teamResults.querySelectorAll(".team-details").forEach((details) => {
     details.addEventListener("click", (event) => event.stopPropagation());
   });
-  teamResults.querySelectorAll("[data-view-builds]").forEach((button) => {
+  teamResults.querySelectorAll("[data-view-team-guide]").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
-      selectTeam(button.dataset.viewBuilds, true);
+      selectTeam(button.dataset.viewTeamGuide, false);
     });
   });
   teamResults.querySelectorAll("[data-report-team]").forEach((button) => {
@@ -2236,60 +2233,46 @@ function groupTeamsByMain(teams) {
   return groups.sort((a, b) => scoreCharacter(b.main) - scoreCharacter(a.main) || b.teams[0].score - a.teams[0].score);
 }
 
-function bestTeamPanel(team) {
-  const key = teamKey(team);
-  const validation = teamValidationStatus(team);
+function teamSuggestionList(groups, teams) {
+  const suggestions = groups.flatMap((group) => group.teams);
   return `
-    <article class="best-team-panel element-${firstElement(team.main.element).toLowerCase()} ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
-      <div class="best-team-copy">
-        <span class="best-label">Best from your roster</span>
-        <h3>${team.members.map((member) => member.name).join(" / ")}</h3>
-        <p>${bestTeamSummary(team)}</p>
-        <div class="reason-strip">
-          ${reasonPill("Damage", damageLabel(team))}
-          ${reasonPill("Safety", safetyLabel(team))}
-          ${reasonPill("Confidence", teamConfidence(team).label)}
-        </div>
-        ${validation.level === "unverified" || validation.label === "Needs testing" ? teamValidationWarning(validation) : ""}
-        <div class="team-actions">
-          <button class="button primary team-build-button" type="button" data-view-builds="${key}">View builds</button>
-          <button class="button ghost" type="button" data-save-team="${key}">${teamIsSaved(team) ? "Saved team" : "Save team"}</button>
-          <button class="button ghost team-report-button" type="button" data-report-team="${key}">Report this team</button>
-        </div>
+    <section class="live-team-suggestions" aria-label="Team suggestions">
+      <div class="live-team-suggestions-head">
+        <div><p class="kicker">Team suggestions</p><h3>Choose a team to inspect.</h3></div>
+        <span>${suggestions.length} shown</span>
       </div>
-      <div class="best-team-visual">
-        <div class="portrait-trio" aria-label="Featured team portraits">
-          ${team.members.map((member, index) => portraitCard(member, index === 0)).join("")}
-        </div>
-        ${bestShellStrip(team)}
+      <div class="live-team-suggestion-groups">
+        ${groups.map((group, groupIndex) => `
+          <section class="live-team-suggestion-group element-${firstElement(group.main.element).toLowerCase()}" aria-labelledby="suggestion-group-${group.main.slug}">
+            <header class="live-team-suggestion-group-head">
+              <img src="assets/wallpapers/${artworkFile(group.main)}" alt="" loading="lazy" decoding="async" style="--chip-focus: ${chipFocus(group.main)};">
+              <div>
+                <span class="live-team-suggestion-group-kicker">Teams for</span>
+                <h4 id="suggestion-group-${group.main.slug}">${group.main.name}</h4>
+              </div>
+              <span class="live-team-suggestion-group-count">${group.teams.length} ${group.teams.length === 1 ? "team" : "teams"}</span>
+            </header>
+            <div class="live-team-suggestion-rows">
+              ${group.teams.map((team, teamIndex) => liveTeamSuggestionRow(team, teams.indexOf(team) + 1, groupIndex === 0 && teamIndex === 0, teamIndex === 0)).join("")}
+            </div>
+          </section>
+        `).join("")}
       </div>
-    </article>
+      <div class="live-team-suggestions-note"><strong>How this works</strong><span>Select a team and its build guide appears beside this list. The guide uses the same reviewed weapon, Sonata, Echo, and team-flow data as the character pages.</span></div>
+    </section>
   `;
 }
 
-function bestTeamSummary(team) {
-  const investment = state.owned[team.main.slug]?.chain ? `R${state.owned[team.main.slug].chain} ` : "";
-  const weapon = state.weapons.has(team.main.build.weapon) ? ` with ${team.main.build.weapon}` : "";
-  return `${investment}${team.main.name}${weapon} is the strongest carry path WaveKit sees from your selected roster. ${team.members[1].name} supports the plan, while ${team.members[2].name} covers the third slot.`;
-}
-
-function damageLabel(team) {
-  if (state.owned[team.main.slug]?.chain >= 2 && state.weapons.has(team.main.build.weapon)) return "High invested carry";
-  if (team.main.score >= 90) return "Premium carry";
-  return "Usable carry";
-}
-
-function reasonPill(label, value) {
-  return `<span><small>${label}</small><strong>${value}</strong></span>`;
-}
-
-function portraitCard(character, isMain = false) {
-  const file = artworkFile(character);
+function liveTeamSuggestionRow(team, rank, isTop, isGroupTop) {
+  const key = teamKey(team);
+  const validation = teamValidationStatus(team);
+  const confidence = teamConfidence(team);
   return `
-    <span class="portrait-card ${isMain ? "main" : ""}" style="--chip-focus: ${chipFocus(character)};">
-      <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
-      <b>${character.name}</b>
-    </span>
+    <article class="live-team-suggestion-row ${state.selectedTeamKey === key ? "is-selected" : ""} ${validation.level === "unverified" || validation.label === "Needs testing" ? "is-unverified" : ""}" data-team-key="${key}">
+      <span class="live-team-suggestion-rank">${String(rank).padStart(2, "0")}</span>
+      <span class="live-team-suggestion-copy"><strong>${team.members.map((member) => member.name).join(" / ")}</strong><small>${isTop ? "Top overall match" : isGroupTop ? "Best match for this DPS" : teamFitLabel(team)} · ${team.members[0].name} focus</small></span>
+      <span class="live-team-suggestion-confidence ${confidence.label === "Needs review" ? "is-caution" : ""}">${confidence.label}</span>
+    </article>
   `;
 }
 
@@ -2339,7 +2322,7 @@ function teamRow(team, rank) {
         </span>
       </span>
       <span class="row-actions">
-        <button class="row-action" type="button" data-view-builds="${key}">View builds</button>
+        <button class="row-action" type="button" data-view-team-guide="${key}">View team guide</button>
         <button class="row-action" type="button" data-save-team="${key}">${teamIsSaved(team) ? "Saved" : "Save"}</button>
         <button class="row-action muted" type="button" data-plan-team="${key}">${teamIsPlanned(team) ? "Planned" : "Plan"}</button>
       </span>
@@ -2376,22 +2359,54 @@ function teamChips(team) {
 function selectedTeamPreview(team) {
   if (!team) return "";
   const validation = teamValidationStatus(team);
+  const confidence = teamConfidence(team);
   return `
-    <aside class="selected-team-preview" aria-label="Selected team build preview">
-      <p class="kicker">Selected team</p>
-      <h3>${team.members.map((member) => member.name).join(" / ")}</h3>
-      <div class="build-mini">
-        ${team.members.map((member) => selectedBuildMini(member, team)).join("")}
+    <aside class="selected-team-preview selected-team-guide" aria-label="Selected team guide">
+      <div class="selected-team-heading">
+        <div><p class="kicker">Selected team guide</p><h3>${team.members.map((member) => member.name).join(" / ")}</h3><p>Build notes, character jobs, and a simple team flow in one place.</p></div>
+        <div class="selected-team-badges"><span>${teamFitLabel(team)}</span><span class="${confidence.label === "Needs review" ? "is-caution" : ""}">${confidence.label}</span></div>
       </div>
       ${validation.level === "unverified" || validation.label === "Needs testing" ? teamValidationWarning(validation) : ""}
-      <div class="team-actions">
-        <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
+      <div class="selected-team-build-cards">
+        ${team.members.map((member, index) => selectedTeamBuildCard(member, team, index)).join("")}
+      </div>
+      <div class="selected-team-rotation"><strong>Simple flow</strong><span>${rotationText(team)}</span></div>
+      <div class="team-actions selected-team-guide-actions">
+        <button class="button primary" type="button" data-save-team="${teamKey(team)}">${teamIsSaved(team) ? "Saved team" : "Save team"}</button>
         <button class="button ghost" type="button" data-tune-team="${teamKey(team)}">Tune team</button>
-        <button class="button ghost" type="button" data-save-team="${teamKey(team)}">${teamIsSaved(team) ? "Saved team" : "Save team"}</button>
         <button class="button ghost" type="button" data-plan-team="${teamKey(team)}">${teamIsPlanned(team) ? "Team planned" : "Plan this team"}</button>
         <button class="button ghost team-report-button" type="button" data-report-team="${teamKey(team)}">Report this team</button>
       </div>
     </aside>
+  `;
+}
+
+function selectedTeamArtworkPosition(character) {
+  return chipFocus(character);
+}
+
+function selectedTeamBuildCard(character, team, index) {
+  const build = buildForTeam(character, team);
+  const confidence = confidenceFor(character);
+  const alternates = alternateWeapons(character).join(" · ") || "Flexible weapon options";
+  return `
+    <article class="selected-team-build-card ${index === 0 ? "is-main" : ""} element-${firstElement(character.element).toLowerCase()}">
+      <div class="selected-team-build-art"><img src="assets/wallpapers/${artworkFile(character)}" alt="${character.name}" loading="lazy" decoding="async" style="object-position:${selectedTeamArtworkPosition(character)}"></div>
+      <div class="selected-team-build-body">
+        <div class="selected-team-build-top"><span>Slot ${index + 1}</span><b>${roleLabel(character)}</b></div>
+        <a class="selected-team-character-link" href="${characterGuideHref(character)}"><strong>${character.name}</strong><small>${index === 0 ? "Main field time" : index === 1 ? "Helper setup" : slotThreePurpose(character)}</small></a>
+        <span class="data-badge ${confidence[0]}">${confidence[1]}</span>
+        <p>${useNote(character, team)}</p>
+        <dl class="selected-team-build-facts">
+          <div><dt>Weapon</dt><dd>${build.weapon}${state.weapons.has(build.weapon) ? " · owned" : ""}</dd></div>
+          <div><dt>Sonata</dt><dd>${sonataDisplay(build.sonata)}</dd></div>
+          <div><dt>Echo cost</dt><dd>${costPattern(character)}</dd></div>
+          <div><dt>Main Echo</dt><dd>${build.echo}</dd></div>
+        </dl>
+        <a class="button ghost compact-button selected-team-character-button" href="${characterGuideHref(character)}">Open character guide</a>
+        <details class="selected-team-build-extra"><summary>More build details</summary><div><span><b>Alternates</b>${alternates}</span><span><b>Main stats</b>${build.stats}</span><span><b>Team job</b>${character.note}</span></div></details>
+      </div>
+    </article>
   `;
 }
 
@@ -2540,7 +2555,7 @@ function teamCard(team, group, index) {
         ${teamSlot(team.members[1], "Slot 2", "Helper setup")}
         ${teamSlot(team.members[2], "Slot 3", slotThreePurpose(team.members[2]))}
       </div>
-      <button class="button primary team-build-button" type="button" data-view-builds="${key}">Open builds for this team</button>
+      <button class="button primary team-build-button" type="button" data-view-team-guide="${key}">View team guide</button>
       <details class="team-details">
         <summary>Why this suggestion?</summary>
         <div class="detail-grid">
@@ -3134,26 +3149,64 @@ function teamSlot(character, slot, purpose) {
 
 function chipFocus(character) {
   const focus = {
-    shorekeeper: "center 28%",
-    verina: "center 24%",
-    jiyan: "center 28%",
-    yangyang: "center 24%",
-    mortefi: "center 24%",
-    sanhua: "center 24%",
-    camellya: "center 22%",
-    cartethyia: "center 24%",
-    phrolova: "center 24%",
-    zani: "center 22%",
-    carlotta: "center 24%",
-    changli: "center 24%",
-    encore: "center 22%",
+    aalto: "center 24%",
+    aemeath: "center 24%",
+    augusta: "center 23%",
+    baizhi: "center 24%",
+    brant: "center 24%",
+    buling: "center 24%",
     calcharo: "center 26%",
-    rover: "center 24%"
+    camellya: "center 22%",
+    cantarella: "center 23%",
+    carlotta: "center 24%",
+    cartethyia: "center 24%",
+    changli: "center 24%",
+    chisa: "center 8%",
+    chixia: "center 24%",
+    ciaccona: "center 24%",
+    danjin: "center 24%",
+    denia: "center 24%",
+    encore: "center 22%",
+    galbrena: "center 24%",
+    hiyuki: "center 24%",
+    iuno: "center 24%",
+    jianxin: "center 24%",
+    jinhsi: "center 24%",
+    jiyan: "center 28%",
+    lingyang: "center 24%",
+    lucilla: "center 24%",
+    lucy: "center 24%",
+    lumi: "center 24%",
+    "luuk-herssen": "center 24%",
+    lynae: "center 14%",
+    mornye: "center 24%",
+    mortefi: "center 24%",
+    phoebe: "center 24%",
+    phrolova: "center 24%",
+    qiuyuan: "center 24%",
+    rebecca: "center 24%",
+    roccia: "center 24%",
+    rover: "center 10%",
+    sanhua: "center 24%",
+    shorekeeper: "center 28%",
+    sigrika: "center 23%",
+    taoqi: "center 24%",
+    verina: "center 24%",
+    yangyang: "center 24%",
+    "yangyang-xuanling": "center 24%",
+    yinlin: "center 24%",
+    youhu: "center 24%",
+    yuanwu: "center 24%",
+    zani: "center 22%",
+    zhezhi: "center 24%",
+    suisui: "center 24%",
+    "xiangli-yao": "center 24%"
   };
   return focus[character.slug] || "center 25%";
 }
 
 function renderBuilds(teams) {
+  if (!buildResults) return;
   const selected = teams.find((team) => teamKey(team) === state.selectedTeamKey);
   if (!selected) {
     $("#build-count").textContent = "0";
