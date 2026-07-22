@@ -150,6 +150,23 @@ const characterWeaponAlternates = {
   camellya: ["Emerald of Genesis", "Blazing Brilliance", "Lumingloss"]
 };
 
+// Character pages are WaveKit's reviewed source of truth. This generated layer
+// keeps helper build cards and owned-weapon choices aligned with those guides.
+const verifiedGuideData = window.WAVEKIT_VERIFIED_GUIDES || {};
+Object.entries(verifiedGuideData).forEach(([slug, guide]) => {
+  if (!builds[slug]) return;
+  const weaponOptions = Array.isArray(guide.weaponOptions) ? guide.weaponOptions.filter(Boolean) : [];
+  builds[slug] = {
+    ...builds[slug],
+    weapon: weaponOptions[0] || builds[slug].weapon,
+    sonata: guide.sonata || builds[slug].sonata,
+    echo: guide.mainEcho || builds[slug].echo,
+    stats: guide.mainStats || builds[slug].stats
+  };
+  if (guide.echoCost) echoCosts[slug] = guide.echoCost;
+  if (weaponOptions.length > 1) characterWeaponAlternates[slug] = weaponOptions.slice(1);
+});
+
 const weaponCatalog = new Map([
   ["Abyss Surges", "Gauntlets"],
   ["Ages of Harvest", "Broadblade"],
