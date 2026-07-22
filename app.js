@@ -391,17 +391,18 @@ const upcomingWeapons = new Set(["Firstlight's Herald"]);
 const roverForms = {
   Spectro: {
     element: "Spectro",
-    roles: ["main", "sub"],
+    roles: ["sub", "support"],
     score: 75,
-    synergies: ["spectro", "any"],
-    tags: ["flexible", "burst"],
-    note: "Flexible Spectro Rover setup. Good when you need a familiar account anchor or an extra Spectro body.",
+    synergies: ["spectro", "frazzle"],
+    tags: ["spectro", "frazzle", "support", "healing"],
+    weaponAlternates: ["Emerald of Genesis", "Lunar Cutter", "Endless Collapse"],
+    note: "Spectro Rover applies Spectro Frazzle for Phoebe and Zani, adds light sustain from R4, and reduces Spectro RES at R6.",
     build: {
-      build: "Spectro Rover flexible build",
-      weapon: "Emerald of Genesis",
-      sonata: "Celestial Light or Moonlit Clouds",
-      echo: "Jué, Mourning Aix, or Impermanence Heron",
-      stats: "CRIT Rate or CRIT DMG / Spectro DMG or Energy Regen / ATK%"
+      build: "Spectro Rover Frazzle support build",
+      weapon: "Blazing Brilliance",
+      sonata: "Moonlit Clouds or Rejuvenating Glow",
+      echo: "Impermanence Heron or Fallacy of No Return",
+      stats: "CRIT Rate or CRIT DMG / Spectro DMG / ATK% · Energy Regen to roughly 120-123%"
     }
   },
   Havoc: {
@@ -410,37 +411,40 @@ const roverForms = {
     score: 78,
     synergies: ["havoc"],
     tags: ["havoc", "burst"],
+    weaponAlternates: ["Blazing Brilliance", "Emerald of Genesis", "Somnoire Anchor"],
     note: "Havoc Rover is a practical damage option when you want a familiar on-field or quick-swap carry.",
     build: {
       build: "Havoc Rover damage build",
-      weapon: "Emerald of Genesis",
-      sonata: "Havoc Eclipse or Moonlit Clouds",
+      weapon: "Red Spring",
+      sonata: "Havoc Eclipse",
       echo: "Dreamless or Nightmare: Crownless",
       stats: "CRIT Rate or CRIT DMG / Havoc DMG / ATK%"
     }
   },
   Aero: {
     element: "Aero",
-    roles: ["main", "sub", "support"],
+    roles: ["support", "healer"],
     score: 84,
-    synergies: ["aero"],
-    tags: ["aero", "erosion", "flexible"],
-    note: "Aero Rover can slot into Aero Erosion teams as accessible utility. They are not a true healer like Shorekeeper, Verina, Baizhi, or Youhu.",
+    synergies: ["aero", "erosion"],
+    tags: ["aero", "erosion", "healing", "amplify"],
+    weaponAlternates: ["Emerald of Genesis"],
+    note: "Aero Rover is a real healing support for Aero teams. Bloodpact's Pledge supplies Aero amplification, with the specialist value highest beside Ciaccona.",
     build: {
-      build: "Aero Rover damage build",
-      weapon: "Emerald of Genesis",
-      sonata: "Windward Pilgrimage or Sierra Gale",
-      echo: "Reminiscence: Fleurdelys or Feilian Beringal",
-      stats: "CRIT Rate or CRIT DMG / Aero DMG / ATK%"
+      build: "Aero Rover Erosion support build",
+      weapon: "Bloodpact's Pledge",
+      sonata: "Rejuvenating Glow or Windward Pilgrimage",
+      echo: "Bell-Borne Geochelone or Reminiscence: Fleurdelys",
+      stats: "CRIT Rate or CRIT DMG / Aero DMG / ATK% · Bloodpact usually covers Energy Regen"
     }
   },
   Electro: {
     element: "Electro",
-    roles: ["sub"],
+    roles: ["main", "sub"],
     score: 80,
     synergies: ["electro", "any"],
     tags: ["electro", "flare", "skill", "flexible"],
-    note: "Electro Rover is a flexible version 3.5 sub-DPS/support with team ATK utility. Current testing is still developing, so WaveKit does not treat this form as a standalone carry.",
+    weaponAlternates: ["Blazing Brilliance", "Endless Collapse", "Commando of Conviction"],
+    note: "Electro Rover is a newly released effect-team sub-DPS with a field-heavy damage route. Current team rankings are still developing, so WaveKit labels speculative shells cautiously.",
     build: {
       build: "Electro Rover sub-DPS/support build",
       weapon: "Emerald of Genesis",
@@ -1238,7 +1242,9 @@ function weaponInitial(type) {
 function alternateWeapons(character) {
   const mode = character.roles.includes("healer") || character.roles.includes("support") || character.roles.includes("defense") ? "support" : "damage";
   const type = character.weaponType === "Unknown" ? weaponTypeFor(character.build.weapon) : character.weaponType;
-  const options = characterWeaponAlternates[character.slug]
+  const options = character.slug === "rover" && roverForms[character.roverForm]?.weaponAlternates
+    ? roverForms[character.roverForm].weaponAlternates
+    : characterWeaponAlternates[character.slug]
     || roleWeaponFallbacks[mode]?.[type]
     || weaponFallbacks[type]
     || [];
