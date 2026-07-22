@@ -821,7 +821,7 @@ const teamPreferences = {
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["lucilla", "qiuyuan"], ["cantarella", "qiuyuan"], ["cantarella", "roccia"], ["sigrika", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "shorekeeper"], ["danjin", "roccia"]], "Phrolova's Echo Skill routes are partner-specific: Lucilla is strongest with Qiuyuan, while Cantarella can lead a more traditional Havoc setup."),
   "yangyang-xuanling": archetype("Havoc Bane Hypercarry", [["rebecca", "chisa"], ["lynae", "mornye"], ["phrolova", "chisa"], ["lynae", "chisa"], ["rebecca", "verina"], ["phrolova", "verina"]], "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, and Phrolova are her primary helpers; Chisa is the strongest general third slot, Mornye suits the Lynae route, and Verina is an easy-to-build alternative."),
-  cartethyia: archetype("Aero Erosion", [["ciaccona", "rover"], ["ciaccona", "chisa"], ["ciaccona", "shorekeeper"], ["rover", "chisa"], ["rover", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Ciaccona plus Aero Rover is Cartethyia's strongest low-sequence Erosion core. Chisa is a real specialist option at any sequence and can overtake Rover with Kumokiri; from R2, Cartethyia no longer relies on Rover for the extra stack limit. Shorekeeper and Verina are safer but lower-synergy alternatives, not direct replacements for Chisa."),
+  cartethyia: archetype("Aero Erosion", [["ciaccona", "chisa"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["rover", "chisa"], ["rover", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Cartethyia's best specialist team is Ciaccona plus Chisa. Aero Rover is the accessible healing alternative; both Chisa and Aero Rover raise the Erosion stack limit, while Cartethyia's Sequence 2 reduces her dependence on a third-slot stack helper. Shorekeeper is the safer multi-wave comfort option."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["zhezhi", "youhu"], ["yinlin", "youhu"], ["mortefi", "verina"], ["yuanwu", "verina"]], "Jinhsi wants a coordinated attacker to feed her burst window. Youhu is a specialist sustain for Zhezhi or Yinlin because her Outro amplifies their Coordinated Attacks; she is not a generic replacement in every Jinhsi team."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
   camellya: archetype("Havoc Basic", [["roccia", "shorekeeper"], ["sanhua", "shorekeeper"], ["danjin", "verina"]], "Camellya values Basic Attack/Havoc setup and enough safety for her field time."),
@@ -1413,6 +1413,28 @@ function costPattern(character) {
   return echoCosts[character.slug] || "4-3-3-1-1";
 }
 
+function teamContextKey(value) {
+  const slugs = Array.isArray(value)
+    ? value.map((entry) => typeof entry === "string" ? entry : entry?.slug).filter(Boolean)
+    : value?.members?.map((member) => member.slug) || [];
+  return [...new Set(slugs)].sort().join("|");
+}
+
+function teamBuildContextFor(team) {
+  const contexts = window.WAVEKIT_TEAM_BUILD_CONTEXT || [];
+  const key = teamContextKey(team);
+  return contexts.find((context) => teamContextKey(context.members) === key) || null;
+}
+
+function costPatternForTeam(character, team) {
+  return teamBuildContextFor(team)?.builds?.[character.slug]?.echoCost
+    || costPattern(character);
+}
+
+function teamJobFor(character, team) {
+  return teamBuildContextFor(team)?.builds?.[character.slug]?.job || character.note;
+}
+
 function visual(character, mode = "wallpaper") {
   const file = artworkFile(character);
   if (mode === "character") {
@@ -1927,13 +1949,7 @@ function archetypeIdeals(main) {
   }
   const ideals = teamArchetypes[main.slug]?.ideal || [];
   if (main.slug !== "cartethyia") return ideals;
-  const chain = Number(state.owned.cartethyia?.chain || 0);
-  const chisaSignatureOwned = state.weapons.has("Kumokiri");
-  const lowChainOrder = chisaSignatureOwned
-    ? [["ciaccona", "chisa"], ["ciaccona", "rover"]]
-    : [["ciaccona", "rover"], ["ciaccona", "chisa"]];
-  const highChainOrder = [["ciaccona", "chisa"], ["ciaccona", "rover"]];
-  const order = chain >= 2 ? highChainOrder : lowChainOrder;
+  const order = [["ciaccona", "chisa"], ["ciaccona", "rover"]];
   return [...order, ...ideals.filter((ideal) => !order.some((entry) => entry.every((slug) => ideal.includes(slug))))];
 }
 
@@ -1958,8 +1974,8 @@ function teamSpecificAdjustment(main, sub, sustain) {
     const cartethyiaChain = Number(state.owned.cartethyia?.chain || 0);
     const chisaSignatureOwned = state.weapons.has("Kumokiri");
     const hasAeroRover = [sub, sustain].some((member) => member.slug === "rover" && member.roverForm === "Aero");
-    if (pair.includes("ciaccona") && pair.includes("chisa")) score += cartethyiaChain >= 2 || chisaSignatureOwned ? 54 : 38;
-    if (pair.includes("ciaccona") && hasAeroRover) score += cartethyiaChain < 2 && !chisaSignatureOwned ? 58 : 42;
+    if (pair.includes("ciaccona") && pair.includes("chisa")) score += (chisaSignatureOwned ? 64 : 54) + (cartethyiaChain >= 2 ? 6 : 0);
+    if (pair.includes("ciaccona") && hasAeroRover) score += chisaSignatureOwned ? 44 : 48;
     if (pair.includes("ciaccona") && pair.includes("shorekeeper")) score += cartethyiaChain < 2 && ownsRoverForm("Aero") ? 8 : 26;
     if (pair.includes("ciaccona") && pair.includes("verina")) score += 4;
     if (pair.includes("chisa") && hasAeroRover) score += 38;
@@ -2360,10 +2376,11 @@ function selectedTeamPreview(team) {
   if (!team) return "";
   const validation = teamValidationStatus(team);
   const confidence = teamConfidence(team);
+  const context = teamBuildContextFor(team);
   return `
     <aside class="selected-team-preview selected-team-guide" aria-label="Selected team guide">
       <div class="selected-team-heading">
-        <div><p class="kicker">Selected team guide</p><h3>${team.members.map((member) => member.name).join(" / ")}</h3><p>Build notes, character jobs, and a simple team flow in one place.</p></div>
+        <div><p class="kicker">Selected team guide</p><h3>${team.members.map((member) => member.name).join(" / ")}</h3><p>Build notes, character jobs, and a simple team flow in one place.</p>${context ? `<span class="selected-team-route-note"><strong>${context.label}</strong><span>${context.note}</span></span>` : `<span class="selected-team-route-note is-general"><strong>General character builds</strong><span>No separate team-specific exception is currently recorded for this combination.</span></span>`}</div>
         <div class="selected-team-badges"><span>${teamFitLabel(team)}</span><span class="${confidence.label === "Needs review" ? "is-caution" : ""}">${confidence.label}</span></div>
       </div>
       ${validation.level === "unverified" || validation.label === "Needs testing" ? teamValidationWarning(validation) : ""}
@@ -2388,23 +2405,26 @@ function selectedTeamArtworkPosition(character) {
 function selectedTeamBuildCard(character, team, index) {
   const build = buildForTeam(character, team);
   const confidence = confidenceFor(character);
-  const alternates = alternateWeapons(character).join(" · ") || "Flexible weapon options";
+  const context = teamBuildContextFor(team);
+  const routeBuild = context?.builds?.[character.slug];
+  const alternates = routeBuild?.alternates || alternateWeapons(character).join(" · ") || "Flexible weapon options";
   return `
     <article class="selected-team-build-card ${index === 0 ? "is-main" : ""} element-${firstElement(character.element).toLowerCase()}">
       <div class="selected-team-build-art"><img src="assets/wallpapers/${artworkFile(character)}" alt="${character.name}" loading="lazy" decoding="async" style="object-position:${selectedTeamArtworkPosition(character)}"></div>
       <div class="selected-team-build-body">
         <div class="selected-team-build-top"><span>Slot ${index + 1}</span><b>${roleLabel(character)}</b></div>
-        <a class="selected-team-character-link" href="${characterGuideHref(character)}"><strong>${character.name}</strong><small>${index === 0 ? "Main field time" : index === 1 ? "Helper setup" : slotThreePurpose(character)}</small></a>
+        <a class="selected-team-character-link" href="${characterGuideHref(character, team)}"><strong>${character.name}</strong><small>${index === 0 ? "Main field time" : index === 1 ? "Helper setup" : slotThreePurpose(character)}</small></a>
         <span class="data-badge ${confidence[0]}">${confidence[1]}</span>
+        ${routeBuild?.build ? `<span class="selected-team-build-label">${routeBuild.build}</span>` : ""}
         <p>${useNote(character, team)}</p>
         <dl class="selected-team-build-facts">
           <div><dt>Weapon</dt><dd>${build.weapon}${state.weapons.has(build.weapon) ? " · owned" : ""}</dd></div>
           <div><dt>Sonata</dt><dd>${sonataDisplay(build.sonata)}</dd></div>
-          <div><dt>Echo cost</dt><dd>${costPattern(character)}</dd></div>
+          <div><dt>Echo cost</dt><dd>${costPatternForTeam(character, team)}</dd></div>
           <div><dt>Main Echo</dt><dd>${build.echo}</dd></div>
         </dl>
-        <a class="button ghost compact-button selected-team-character-button" href="${characterGuideHref(character)}">Open character guide</a>
-        <details class="selected-team-build-extra"><summary>More build details</summary><div><span><b>Alternates</b>${alternates}</span><span><b>Main stats</b>${build.stats}</span><span><b>Team job</b>${character.note}</span></div></details>
+        <a class="button ghost compact-button selected-team-character-button" href="${characterGuideHref(character, team)}">Open character guide</a>
+        <details class="selected-team-build-extra"><summary>More build details</summary><div><span><b>Alternates</b>${alternates}</span><span><b>Main stats</b>${build.stats}</span><span><b>Team job</b>${teamJobFor(character, team)}</span></div></details>
       </div>
     </article>
   `;
@@ -2414,11 +2434,11 @@ function selectedBuildMini(character, team) {
   const build = buildForTeam(character, team);
   const file = artworkFile(character);
   return `
-    <a href="${characterGuideHref(character)}" aria-label="Open ${character.name} guide">
+    <a href="${characterGuideHref(character, team)}" aria-label="Open ${character.name} guide">
       <img src="assets/wallpapers/${file}" alt="" loading="lazy" decoding="async">
       <div>
         <strong>${character.name}</strong>
-        <span>${build.weapon} · ${build.sonata} · ${costPattern(character)}</span>
+        <span>${build.weapon} · ${build.sonata} · ${costPatternForTeam(character, team)}</span>
       </div>
     </a>
   `;
@@ -3224,25 +3244,29 @@ function renderBuilds(teams) {
     ${entries.map((character) => {
     const build = buildForTeam(character, selected);
     const ownedWeapon = state.weapons.has(build.weapon);
-    const alts = alternateWeapons(character);
+    const context = teamBuildContextFor(selected);
+    const routeBuild = context?.builds?.[character.slug];
+    const alts = routeBuild?.alternates ? routeBuild.alternates.split(/\s*\/\s*/) : alternateWeapons(character);
+    const guideHref = characterGuideHref(character, selected);
     return `
       <article class="build-card element-${firstElement(character.element).toLowerCase()}">
-        <a class="build-character-link build-portrait-link" href="${characterGuideHref(character)}" aria-label="Open ${character.name} guide">
+        <a class="build-character-link build-portrait-link" href="${guideHref}" aria-label="Open ${character.name} guide">
           ${visual(character)}
         </a>
         <div>
           <span class="mini-kicker">${roleLabel(character)}</span>
-          <h3><a href="${characterGuideHref(character)}">${character.name}</a></h3>
+          <h3><a href="${guideHref}">${character.name}</a></h3>
           <span class="data-badge ${confidenceFor(character)[0]}">${confidenceFor(character)[1]}</span>
-          <p>${character.note}</p>
+          ${routeBuild?.build ? `<span class="selected-team-build-label">${routeBuild.build}</span>` : ""}
+          <p>${teamJobFor(character, selected)}</p>
           <dl class="build-quick">
             <div><dt>Weapon</dt><dd>${build.weapon}${ownedWeapon ? " · owned" : ""}</dd></div>
             <div><dt>Sonata</dt><dd>${sonataDisplay(build.sonata)}</dd></div>
-            <div><dt>Echo cost</dt><dd>${costPattern(character)}</dd></div>
+            <div><dt>Echo cost</dt><dd>${costPatternForTeam(character, selected)}</dd></div>
             <div><dt>Main Echo</dt><dd>${build.echo}</dd></div>
           </dl>
           <div class="build-card-actions">
-            <a class="button ghost compact-button" href="${characterGuideHref(character)}">Open character guide</a>
+            <a class="button ghost compact-button" href="${guideHref}">Open character guide</a>
           </div>
           <details class="build-more">
             <summary>More build details</summary>
@@ -3259,11 +3283,17 @@ function renderBuilds(teams) {
   `;
 }
 
-function characterGuideHref(character) {
-  return `characters/${character.slug}/`;
+function characterGuideHref(character, team) {
+  const base = `characters/${character.slug}/`;
+  if (!team) return base;
+  const params = new URLSearchParams({ team: team.members.map((member) => member.slug).join("|") });
+  if (team.members.some((member) => member.slug === "rover")) params.set("form", teamRoverForm(team));
+  return `${base}?${params.toString()}`;
 }
 
 function buildForTeam(character, team) {
+  const contextualBuild = teamBuildContextFor(team)?.builds?.[character.slug];
+  if (contextualBuild) return { ...character.build, ...contextualBuild };
   if (character.slug === "lucilla") {
     if (team.main.slug === "phrolova") {
       return {

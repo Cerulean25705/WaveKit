@@ -11761,3 +11761,95 @@ button.owned-badge {
   overflow: visible;
   -webkit-line-clamp: unset;
 }
+
+.selected-team-route-note {
+  display: grid;
+  gap: 3px;
+  max-width: 780px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--gold);
+  background: linear-gradient(90deg, rgba(255, 207, 92, 0.1), rgba(120, 244, 255, 0.03));
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.selected-team-route-note strong {
+  color: var(--gold);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.selected-team-route-note.is-general {
+  border-left-color: rgba(166, 206, 221, 0.45);
+  background: rgba(120, 244, 255, 0.03);
+}
+
+.selected-team-route-note.is-general strong {
+  color: var(--muted);
+}
+
+.selected-team-build-label {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  margin: 7px 0 1px;
+  padding: 4px 7px;
+  border: 1px solid rgba(255, 207, 92, 0.3);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(255, 207, 92, 0.07);
+  font-size: 0.58rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.team-context-panel {
+  display: grid;
+  gap: 5px;
+  margin-top: 16px;
+  padding: 13px 15px;
+  border: 1px solid rgba(255, 207, 92, 0.38);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 207, 92, 0.12), rgba(120, 244, 255, 0.06));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+}
+
+.team-context-panel .kicker {
+  margin: 0;
+  color: var(--gold);
+}
+
+.team-context-panel strong {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.team-context-panel p,
+.team-context-panel small {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.team-context-panel p {
+  color: var(--text-soft);
+  font-size: 0.78rem;
+}
+
+.team-context-panel small {
+  font-size: 0.65rem;
+}
+
+@media (max-width: 620px) {
+  .selected-team-route-note {
+    font-size: 0.68rem;
+  }
+
+  .team-context-panel {
+    margin-top: 12px;
+    padding: 11px 12px;
+  }
+}
