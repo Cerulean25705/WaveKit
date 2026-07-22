@@ -186,7 +186,11 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
   if (!context) return;
 
   const build = context.builds?.[data.slug] || {};
+  const teamJob = build.job || context.note;
+  const hasRouteDetails = ["weapon", "alternates", "sonata", "echoCost", "echo", "stats"].some((key) => build[key]);
   const fieldValues = {
+    "Team route": context.label,
+    "Team job": teamJob,
     "Best weapon": build.weapon,
     "Alternate weapons": build.alternates,
     Sonata: build.sonata,
@@ -197,11 +201,19 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
 
   const replaceField = (root, label, value) => {
     if (!value || !root) return;
-    [...root.querySelectorAll("div")].forEach((row) => {
-      const term = row.querySelector("dt");
-      const description = row.querySelector("dd");
-      if (term?.textContent.trim() === label && description) description.textContent = value;
-    });
+    const rows = [...root.querySelectorAll("div")];
+    const matchingRow = rows.find((row) => row.querySelector("dt")?.textContent.trim() === label);
+    if (matchingRow?.querySelector("dd")) {
+      matchingRow.querySelector("dd").textContent = value;
+      return;
+    }
+    const row = document.createElement("div");
+    const term = document.createElement("dt");
+    const description = document.createElement("dd");
+    term.textContent = label;
+    description.textContent = value;
+    row.append(term, description);
+    root.append(row);
   };
 
   const quickBuild = document.querySelector(".seo-guide-main .character-guide-stats");
@@ -226,7 +238,7 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
   const panel = existing || document.createElement("aside");
   panel.dataset.teamContextPanel = "true";
   panel.className = "team-context-panel";
-  panel.innerHTML = `<span class="kicker">Team-specific build context</span><strong>${context.label}</strong><p>${context.note}</p><small>Showing the reviewed changes for ${data.name} in this team. Other fields stay on the general character guide.</small>`;
+  panel.innerHTML = `<span class="kicker">Team-specific build context</span><strong>${context.label}</strong><p>${context.note}</p><div class="team-context-panel-facts"><span><small>Character job</small><b>${teamJob}</b></span><span><small>Fields changed</small><b>${hasRouteDetails ? "Route-specific build details" : "Team role and rotation"}</b></span></div><small>Showing the reviewed changes for ${data.name} in this team. Other fields stay on the general character guide.</small>`;
   const anchor = document.querySelector(".seo-hero-meta") || document.querySelector(".seo-hero-copy");
   if (anchor && !existing) anchor.insertAdjacentElement("afterend", panel);
 })();

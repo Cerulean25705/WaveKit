@@ -11904,6 +11904,35 @@ button.owned-badge {
   font-size: 0.78rem;
 }
 
+.team-context-panel-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 3px;
+}
+
+.team-context-panel-facts span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid rgba(139, 232, 255, 0.13);
+  border-radius: 9px;
+  background: rgba(3, 12, 19, 0.34);
+}
+
+.team-context-panel-facts small {
+  color: var(--gold);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.team-context-panel-facts b {
+  overflow-wrap: anywhere;
+  font-size: 0.72rem;
+}
+
 .team-context-panel small {
   font-size: 0.65rem;
 }
@@ -11916,5 +11945,9 @@ button.owned-badge {
   .team-context-panel {
     margin-top: 12px;
     padding: 11px 12px;
+  }
+
+  .team-context-panel-facts {
+    grid-template-columns: 1fr;
   }
 }
