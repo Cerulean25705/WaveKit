@@ -9,12 +9,12 @@ const errors = [];
 
 const archetypes = evaluateBlock(
   "const teamArchetypes = ",
-  "\n};\n\nconst dataConfidence",
+  "\n};\n\ninitializeTeamIntelligence();\n\nconst dataConfidence",
   { archetype: (label, ideal = [], note = "") => ({ label, ideal, note }) }
 );
 const characters = evaluateBlock(
   "const characters = ",
-  "\n];\n\nconst state",
+  "\n];\n\n// Team intelligence",
   { c: (slug, name, element, weaponType, roles) => ({ slug, name, element, weaponType, roles }) }
 );
 const slugs = new Set(characters.map((character) => character.slug));
@@ -43,6 +43,16 @@ if (!app.includes('character.slug === "qiuyuan" && Number(state.owned.qiuyuan?.c
 }
 if (!app.includes('if (main.slug === "phoebe") return false;')) errors.push("Phoebe mode guard is missing");
 if (!app.includes("team-validation-warning")) errors.push("Unverified fallback warning is missing");
+if (!app.includes("function initializeTeamIntelligence()")) errors.push("Structured team intelligence layer is missing");
+for (const phrase of [
+  'label: "Fusion Burst"',
+  'label: "Tune Rupture"',
+  'label: "Mono Fusion"',
+  'formRoutes: roverTeamRoutes',
+  'label: "Needs testing"'
+]) {
+  if (!app.includes(phrase)) errors.push(`Team intelligence rule missing: ${phrase}`);
+}
 
 for (const character of characters) {
   const file = path.join(root, "characters", character.slug, "index.html");

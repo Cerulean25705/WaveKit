@@ -18,7 +18,7 @@ const verified = await loadBrowserData("assets/verified-guide-data.js", "WAVEKIT
 const material = await loadBrowserData("assets/material-data.js", "WAVEKIT_MATERIAL_DATA");
 const app = await fs.readFile(path.join(root, "app.js"), "utf8");
 const archetypeStart = app.indexOf("const teamArchetypes = ");
-const archetypeEnd = app.indexOf("\n};\n\nconst dataConfidence", archetypeStart);
+const archetypeEnd = app.indexOf("\n};\n\ninitializeTeamIntelligence();\n\nconst dataConfidence", archetypeStart);
 const finderArchetypes = vm.runInNewContext(
   `(${app.slice(archetypeStart + "const teamArchetypes = ".length, archetypeEnd + 2)})`,
   { archetype: (label, ideal = [], note = "") => ({ label, ideal, note }) }

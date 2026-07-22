@@ -563,6 +563,159 @@ const characters = [
   c("rover", "Rover", "Spectro / Havoc / Aero / Electro", "Sword", ["main", "sub", "support"], 75, ["any"], ["flexible"], "Flexible account anchor with four currently available forms.")
 ];
 
+// Team intelligence is deliberately separate from page copy. The character
+// guides remain the reviewed source of truth, while these rules tell the
+// helper which mechanics must stay together when it ranks owned teams.
+const roverTeamRoutes = {
+  Havoc: [
+    ["roccia", "shorekeeper"], ["roccia", "verina"],
+    ["danjin", "shorekeeper"], ["danjin", "verina"],
+    ["phrolova", "cantarella"]
+  ],
+  Electro: [
+    ["yangyang-xuanling", "chisa"], ["lynae", "mornye"],
+    ["sanhua", "buling"]
+  ]
+};
+
+const teamIntelligence = {};
+
+function initializeTeamIntelligence() {
+  Object.assign(teamIntelligence, Object.fromEntries(
+    Object.entries(teamArchetypes).map(([slug, entry]) => [slug, {
+    reviewedPairs: entry.ideal,
+    guideLabel: entry.label,
+    note: entry.note,
+    modeGroups: [],
+    blockedPairs: []
+    }])
+  ));
+
+  Object.assign(teamIntelligence, {
+  aemeath: {
+    ...teamIntelligence.aemeath,
+    modeGroups: [
+      {
+        label: "Fusion Burst",
+        trigger: ["denia"],
+        validPairs: [["denia", "chisa"], ["denia", "lupa"]],
+        blockedPartners: ["mornye", "lynae"],
+        note: "Denia's Fusion Burst route needs a compatible Fusion Burst or sustain partner; Mornye belongs to the Tune Strain/Lynae route instead."
+      },
+      {
+        label: "Tune Rupture",
+        trigger: ["lynae"],
+        validPairs: [["lynae", "mornye"], ["lynae", "shorekeeper"], ["lynae", "verina"]],
+        blockedPartners: ["denia", "chisa"],
+        note: "Lynae's Tune Rupture route is kept with Mornye or a real sustain option; Chisa is not being used as a substitute for the Tune partner."
+      },
+      {
+        label: "Mono Fusion",
+        trigger: ["lupa", "brant", "changli"],
+        validPairs: [["lupa", "mornye"], ["lupa", "brant"], ["lupa", "changli"]],
+        blockedPartners: ["denia", "lynae"],
+        note: "Fusion partners are kept together as a separate Aemeath route rather than mixed with Denia or Lynae's mode-specific plans."
+      }
+    ],
+    blockedPairs: [["denia", "mornye"], ["denia", "lynae"], ["lynae", "chisa"]]
+  },
+  iuno: {
+    ...teamIntelligence.iuno,
+    modeGroups: [
+      {
+        label: "Iuno hypercarry",
+        trigger: ["lynae", "ciaccona", "yinlin", "jianxin", "sanhua"],
+        validPairs: [["lynae", "mornye"], ["lynae", "shorekeeper"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["yinlin", "shorekeeper"], ["jianxin", "verina"], ["sanhua", "verina"]],
+        blockedPartners: [],
+        note: "Iuno can be the main damage dealer; Lynae plus Mornye is her premium route, while the other listed pairs are documented alternatives."
+      }
+    ],
+    blockedPairs: [["mornye", "ciaccona"], ["mornye", "yinlin"], ["mornye", "jianxin"]]
+  },
+  phoebe: {
+    ...teamIntelligence.phoebe,
+    modeGroups: [
+      {
+        label: "Absolution",
+        trigger: ["rover", "ciaccona", "lynae", "rebecca", "phrolova", "sanhua"],
+        validPairs: [["lynae", "rover"], ["rebecca", "rover"], ["phrolova", "rover"], ["lynae", "ciaccona"], ["lynae", "shorekeeper"], ["sanhua", "rover"], ["rover", "shorekeeper"]],
+        blockedPartners: [],
+        note: "Phoebe's damage route is kept with a Spectro Frazzle enabler when the team is built for Absolution."
+      },
+      {
+        label: "Confession support",
+        trigger: ["zani"],
+        validPairs: [["zani", "shorekeeper"], ["zani", "verina"]],
+        blockedPartners: [],
+        note: "Phoebe's Confession support route belongs with a Spectro Frazzle carry such as Zani, rather than replacing her own Absolution route."
+      }
+    ],
+    blockedPairs: []
+  },
+  lucy: {
+    ...teamIntelligence.lucy,
+    modeGroups: [{
+      label: "Hack-Shifting",
+      trigger: ["rebecca"],
+      validPairs: [["rebecca", "mornye"], ["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"]],
+      blockedPartners: [],
+      note: "Lucy and Rebecca are kept together because their Hack-Shifting mechanics are designed to work as a pair."
+    }],
+    blockedPairs: []
+  },
+  hiyuki: {
+    ...teamIntelligence.hiyuki,
+    modeGroups: [{
+      label: "Glacio Chafe",
+      trigger: ["lucilla", "lynae"],
+      validPairs: [["lucilla", "chisa"], ["lynae", "chisa"], ["lynae", "mornye"], ["lucilla", "shorekeeper"], ["lucilla", "verina"]],
+      blockedPartners: [],
+      note: "Hiyuki's specialist route keeps Lucilla with Chisa for Glacio Chafe, while Lynae's Mornye pairing is preserved separately."
+    }],
+    blockedPairs: []
+  },
+  sigrika: {
+    ...teamIntelligence.sigrika,
+    modeGroups: [{
+      label: "Echo Skill",
+      trigger: ["lucilla", "qiuyuan", "cantarella", "lynae"],
+      validPairs: teamIntelligence.sigrika.reviewedPairs,
+      blockedPartners: [],
+      note: "Sigrika is evaluated as an Echo Skill carry, so Lucilla and Qiuyuan routes are not treated as interchangeable generic supports."
+    }],
+    blockedPairs: []
+  },
+  galbrena: {
+    ...teamIntelligence.galbrena,
+    modeGroups: [{
+      label: "Echo Skill",
+      trigger: ["qiuyuan", "lucilla", "lupa", "brant"],
+      validPairs: teamIntelligence.galbrena.reviewedPairs,
+      blockedPartners: [],
+      note: "Galbrena's Echo Skill route prioritises Qiuyuan or Lucilla, with Lupa for the Fusion-focused alternative."
+    }],
+    blockedPairs: []
+  },
+  "luuk-herssen": {
+    ...teamIntelligence["luuk-herssen"],
+    modeGroups: [{
+      label: "Tune Strain",
+      trigger: ["denia", "lynae", "sanhua"],
+      validPairs: [["denia", "mornye"], ["lynae", "mornye"], ["sanhua", "mornye"], ["denia", "shorekeeper"], ["lynae", "shorekeeper"]],
+      blockedPartners: [],
+      note: "Luuk's Tune Strain route is kept with Denia, Lynae, or Sanhua, and Mornye is the intended sustain partner where available."
+    }],
+    blockedPairs: []
+  },
+  rover: {
+    ...teamIntelligence.rover,
+    formRoutes: roverTeamRoutes,
+    modeGroups: [],
+    blockedPairs: []
+  }
+  });
+}
+
 const state = {
   activeProfileId: "",
   editMode: true,
@@ -694,6 +847,8 @@ const teamArchetypes = {
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
   phoebe: archetype("Absolution DPS", [["lynae", "rover"], ["rebecca", "rover"], ["phrolova", "rover"], ["lynae", "ciaccona"], ["lynae", "shorekeeper"], ["sanhua", "rover"], ["rover", "shorekeeper"]], "Main-DPS Phoebe uses Absolution and requires a Spectro Frazzle applier: Spectro Rover for normal single-wave play or Ciaccona for multi-wave content. Her separate Confession support route belongs in Zani teams.")
 };
+
+initializeTeamIntelligence();
 
 const dataConfidence = {
   "yangyang-xuanling": ["checked", "Guide checked for version 3.5"],
@@ -1532,8 +1687,64 @@ function carryInvestmentTeamScore(character) {
   return 0;
 }
 
+function sameTeamPair(pair, target) {
+  return target.length === 2 && target.every((slug) => pair.includes(slug));
+}
+
+function teamRuleResult(main, sub, sustain) {
+  const pair = [sub.slug, sustain.slug];
+  const intelligence = teamIntelligence[main.slug];
+  if (!intelligence) return { allowed: true, score: 0, note: "" };
+
+  if (intelligence.blockedPairs.some((blocked) => sameTeamPair(pair, blocked))) {
+    return {
+      allowed: false,
+      score: -120,
+      note: `${main.name}'s guide separates these teammate mechanics, so this combination is not suggested.`
+    };
+  }
+
+  if (main.slug === "rover" && intelligence.formRoutes?.[main.roverForm]) {
+    const routes = intelligence.formRoutes[main.roverForm];
+    if (routes.some((route) => sameTeamPair(pair, route))) {
+      return { allowed: true, score: 48, note: `${main.roverForm} Rover route reviewed for these teammates.` };
+    }
+    return {
+      allowed: true,
+      score: -45,
+      label: "Needs testing",
+      note: `${main.roverForm} Rover has reviewed partner routes, but this owned pair is only a fallback and has not been verified as a complete team.`
+    };
+  }
+
+  for (const group of intelligence.modeGroups || []) {
+    const triggerPresent = group.trigger.some((slug) => pair.includes(slug));
+    if (!triggerPresent) continue;
+    if (group.validPairs.some((valid) => sameTeamPair(pair, valid))) {
+      return { allowed: true, score: 26, note: group.note, label: group.label };
+    }
+    if (group.blockedPartners.some((slug) => pair.includes(slug))) {
+      return {
+        allowed: false,
+        score: -110,
+        note: `${group.label} is being kept separate from this teammate because the two characters use different team mechanics.`
+      };
+    }
+    return {
+      allowed: true,
+      score: -42,
+      label: "Needs testing",
+      note: `${group.label} has no reviewed pairing for this third slot, so WaveKit is showing it only as a roster fallback.`
+    };
+  }
+
+  return { allowed: true, score: 0, note: "" };
+}
+
 function scoreTeam(main, sub, sustain) {
   let score = scoreCharacter(main) * 1.12 + sub.score * 0.55 + sustain.score * 0.62;
+  const rule = teamRuleResult(main, sub, sustain);
+  score += rule.score;
   score += teammateInvestmentScore(sub) + teammateInvestmentScore(sustain);
   score += synergyScore(main, sub) + synergyScore(main, sustain);
   score += preferredTeamScore(main, sub, sustain);
@@ -1607,6 +1818,7 @@ function isSuggestibleTeam(team) {
   const sub = team.members[1];
   const third = team.members[2];
   if (!roverHelperAllowed(main, sub) || !roverHelperAllowed(main, third)) return false;
+  if (!teamRuleResult(main, sub, third).allowed) return false;
   const pref = teamPreferences[main.slug];
   const hasArchetype = Boolean(teamArchetypes[main.slug]);
   const archetypeFit = teamFitLabel(team) === "Recommended team";
@@ -1710,6 +1922,9 @@ function roverForMain(main) {
 }
 
 function archetypeIdeals(main) {
+  if (main.slug === "rover") {
+    return teamIntelligence.rover?.formRoutes?.[main.roverForm] || [];
+  }
   const ideals = teamArchetypes[main.slug]?.ideal || [];
   if (main.slug !== "cartethyia") return ideals;
   const chain = Number(state.owned.cartethyia?.chain || 0);
@@ -1882,6 +2097,7 @@ function synergyScore(main, helper) {
 
 function reasonTeam(main, sub, sustain) {
   const reasons = [];
+  const rule = teamRuleResult(main, sub, sustain);
   const archetype = teamArchetypes[main.slug];
   if (main.slug === "aemeath") reasons.push(`${aemeathModeLabel([sub.slug, sustain.slug])} team: WaveKit keeps Aemeath's mode-specific teammates together.`);
   else if (archetype) reasons.push(archetype.note);
@@ -1892,6 +2108,7 @@ function reasonTeam(main, sub, sustain) {
   if (teamPreferences[main.slug]?.sustain.includes(sustain.slug)) reasons.push(`${sustain.name} is prioritised for the third slot in this guide.`);
   if (sustain.roles.includes("healer")) reasons.push(`${sustain.name} keeps the team stable, which makes the rotation easier to learn.`);
   if (!sustain.roles.includes("healer") && !sustain.roles.includes("defense")) reasons.push(`${sustain.name} is utility, not a true healer, so this team has less mistake protection.`);
+  if (rule.note) reasons.push(rule.note);
   if (!reasons.length) reasons.push("This team covers damage, setup help, and a third-slot support or healer.");
   return playerFacingTeamText(reasons.join(" "));
 }
@@ -2033,7 +2250,7 @@ function bestTeamPanel(team) {
           ${reasonPill("Safety", safetyLabel(team))}
           ${reasonPill("Confidence", teamConfidence(team).label)}
         </div>
-        ${validation.level === "unverified" ? teamValidationWarning(validation) : ""}
+        ${validation.level === "unverified" || validation.label === "Needs testing" ? teamValidationWarning(validation) : ""}
         <div class="team-actions">
           <button class="button primary team-build-button" type="button" data-view-builds="${key}">View builds</button>
           <button class="button ghost" type="button" data-save-team="${key}">${teamIsSaved(team) ? "Saved team" : "Save team"}</button>
@@ -2109,7 +2326,7 @@ function teamRow(team, rank) {
   const key = teamKey(team);
   const validation = teamValidationStatus(team);
   return `
-    <article class="team-row ${validation.level === "unverified" ? "is-unverified" : ""} ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
+    <article class="team-row ${validation.level === "unverified" || validation.label === "Needs testing" ? "is-unverified" : ""} ${state.selectedTeamKey === key ? "is-selected" : ""}" data-team-key="${key}">
       <span class="rank">${rank}</span>
       <span>
         <small>${rank === 1 ? "Recommended" : teamFitLabel(team)}</small>
@@ -2148,7 +2365,7 @@ function teamChips(team) {
   if (state.weapons.has(team.main.build.weapon)) chips.push(`<span class="chip good">Weapon owned</span>`);
   if (team.members[2].roles.includes("healer")) chips.push(`<span class="chip good">Healer</span>`);
   if (teamFitLabel(team) === "Recommended team") chips.push(`<span class="chip good">Verified team</span>`);
-  if (teamValidationStatus(team).level === "unverified") chips.push(`<span class="chip warning">Needs testing</span>`);
+  if (teamValidationStatus(team).label === "Needs testing") chips.push(`<span class="chip warning">Needs testing</span>`);
   chips.push(`<span class="chip confidence">${teamConfidence(team).label}</span>`);
   const missing = missingBestShellNames(team);
   if (missing.length) chips.push(`<span class="chip missing">Missing ${missing[0]}</span>`);
@@ -2166,7 +2383,7 @@ function selectedTeamPreview(team) {
       <div class="build-mini">
         ${team.members.map((member) => selectedBuildMini(member, team)).join("")}
       </div>
-      ${validation.level === "unverified" ? teamValidationWarning(validation) : ""}
+      ${validation.level === "unverified" || validation.label === "Needs testing" ? teamValidationWarning(validation) : ""}
       <div class="team-actions">
         <button class="button primary team-build-button" type="button" data-view-builds="${teamKey(team)}">Open full build cards</button>
         <button class="button ghost" type="button" data-tune-team="${teamKey(team)}">Tune team</button>
@@ -2310,7 +2527,7 @@ function teamCard(team, group, index) {
         <span>${safetyLabel(team)}</span>
         <span>${teamConfidence(team).label}</span>
       </div>
-      ${validation.level === "unverified" ? `
+      ${validation.level === "unverified" || validation.label === "Needs testing" ? `
         <div class="team-validation-warning" role="note">
           <strong>${validation.label}</strong>
           <span>${validation.detail}</span>
@@ -2531,14 +2748,15 @@ function safetyLabel(team) {
 }
 
 function teamConfidence(team) {
+  const validation = teamValidationStatus(team);
   if (team.members.some((member) => confidenceFor(member)[0] === "review")) {
     return { label: "Needs review", detail: `${team.members.filter((member) => confidenceFor(member)[0] === "review").map((member) => member.name).join(", ")} need current patch review, so treat this as provisional.` };
   }
   if (teamFitLabel(team) === "Recommended team") {
     return { label: "Verified team", detail: "This exact teammate pairing is one of the reviewed teams for this damage dealer." };
   }
-  if (teamValidationStatus(team).level === "unverified") {
-    return { label: "Needs testing", detail: teamValidationStatus(team).detail };
+  if (validation.label === "Needs testing") {
+    return { label: "Needs testing", detail: validation.detail };
   }
   if (team.members.some((member) => member.slug === "chisa") && teamPreferences[team.main.slug]?.core.includes("chisa")) {
     return { label: "Specialist support", detail: "Chisa is included for her kit interaction with this damage dealer, not as a generic healer." };
@@ -2563,6 +2781,10 @@ function teamValidationStatus(team) {
   const main = team.main;
   const sub = team.members[1];
   const third = team.members[2];
+  const rule = teamRuleResult(main, sub, third);
+  if (rule.label) {
+    return { level: "alternative", label: rule.label, detail: rule.note };
+  }
   const preferredHelper = teamPreferences[main.slug]?.core.includes(sub.slug);
   const stableThird = third.roles.includes("healer") || third.roles.includes("defense");
   if (preferredHelper && stableThird) {
@@ -2576,7 +2798,7 @@ function teamValidationStatus(team) {
 }
 
 function teamFitLabel(team) {
-  const archetype = teamArchetypes[team.main.slug];
+  const archetype = teamArchetypes[team.main.slug] || teamIntelligence[team.main.slug];
   if (!archetype) return "Flexible team";
   const pair = [team.members[1].slug, team.members[2].slug];
   return archetypeIdeals(team.main).some((ideal) => idealAllowedForOwnedForms(team.main, ideal) && ideal.every((slug) => pair.includes(slug))) ? "Recommended team" : "Alternative team";
@@ -2639,7 +2861,7 @@ function teamPlanLabel(team) {
 function aemeathModeLabel(pair) {
   if (pair.includes("denia")) return "Fusion Burst";
   if (pair.includes("lynae")) return "Tune Rupture";
-  if (pair.includes("lupa")) return "Mono Fusion";
+  if (pair.some((slug) => ["lupa", "brant", "changli"].includes(slug))) return "Mono Fusion";
   return "Fallback Fusion";
 }
 
@@ -2878,6 +3100,7 @@ function sonataIcon(name) {
 }
 
 function archetypeLabel(character) {
+  if (character.slug === "rover") return `${character.roverForm} Rover route`;
   return teamArchetypes[character.slug]?.label || "Flexible team";
 }
 
