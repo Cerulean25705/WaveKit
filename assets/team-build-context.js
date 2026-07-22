@@ -157,10 +157,32 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
   }
 
   const requested = new URLSearchParams(location.search).get("team");
-  if (!requested) return;
-  const requestedMembers = requested.split("|").filter(Boolean);
+  const requestedMembers = requested ? requested.split("|").filter(Boolean) : [];
   const keyFor = (members) => [...new Set(members)].sort().join("|");
   const context = window.WAVEKIT_TEAM_BUILD_CONTEXT.find((entry) => keyFor(entry.members) === keyFor(requestedMembers));
+  const relevantContexts = window.WAVEKIT_TEAM_BUILD_CONTEXT.filter((entry) => entry.members.includes(data.slug));
+  const teamSection = document.querySelector("#teams");
+  if (teamSection && relevantContexts.length && !teamSection.querySelector("[data-team-context-picker]")) {
+    const names = data.names || {};
+    const labelFor = (entry) => `${entry.label} · ${entry.members.map((slug) => names[slug] || (slug === "rover" ? "Rover" : slug)).join(" / ")}`;
+    const picker = document.createElement("div");
+    picker.className = "team-context-picker";
+    picker.dataset.teamContextPicker = "true";
+    picker.innerHTML = `<div><span class="kicker">Team build view</span><strong>Choose a reviewed team</strong><p>Use the general guide by default, or select a team to show its route-specific weapon, Sonata, Echo, and role notes.</p></div><label><span>Show information for</span><select aria-label="Choose a reviewed team build route"><option value="">General character guide</option>${relevantContexts.map((entry) => `<option value="${entry.id}">${labelFor(entry)}</option>`).join("")}</select></label>`;
+    const select = picker.querySelector("select");
+    const activeContext = context && relevantContexts.find((entry) => entry.id === context.id);
+    if (activeContext) select.value = activeContext.id;
+    select.addEventListener("change", () => {
+      const url = new URL(location.href);
+      const selected = relevantContexts.find((entry) => entry.id === select.value);
+      if (selected) url.searchParams.set("team", selected.members.join("|"));
+      else url.searchParams.delete("team");
+      url.hash = "teams";
+      location.assign(url.toString());
+    });
+    const panels = teamSection.querySelector(".seo-team-panels");
+    if (panels) teamSection.insertBefore(picker, panels);
+  }
   if (!context) return;
 
   const build = context.builds?.[data.slug] || {};
