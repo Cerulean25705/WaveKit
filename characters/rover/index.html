@@ -117,17 +117,10 @@
                 </div>
               </div>
             </section>
-            <script type="application/json" id="wavekit-character-guide-data">{"slug":"rover","name":"Rover","weaponOptions":["Emerald of Genesis","Blazing Brilliance","Somnoire Anchor","Commando of Conviction"],"shells":[["cartethyia","ciaccona","rover"],["cartethyia","rover","chisa"],["cartethyia","rover","shorekeeper"],["cartethyia","sanhua","rover"],["zani","rover","shorekeeper"],["iuno","ciaccona","rover"],["phoebe","lynae","rover"],["phoebe","rebecca","rover"]],"names":{"shorekeeper":"Shorekeeper","yangyang-xuanling":"Yangyang: Xuanling","verina":"Verina","phrolova":"Phrolova","cartethyia":"Cartethyia","jinhsi":"Jinhsi","zani":"Zani","camellya":"Camellya","augusta":"Augusta","carlotta":"Carlotta","jiyan":"Jiyan","xiangli-yao":"Xiangli Yao","changli":"Changli","lupa":"Lupa","encore":"Encore","calcharo":"Calcharo","danjin":"Danjin","lingyang":"Lingyang","chixia":"Chixia","aemeath":"Aemeath","hiyuki":"Hiyuki","sigrika":"Sigrika","galbrena":"Galbrena","lucy":"Lucy","luuk-herssen":"Luuk Herssen","cantarella":"Cantarella","qiuyuan":"Qiuyuan","ciaccona":"Ciaccona","yinlin":"Yinlin","zhezhi":"Zhezhi","sanhua":"Sanhua","mortefi":"Mortefi","roccia":"Roccia","jianxin":"Jianxin","yangyang":"Yangyang","yuanwu":"Yuanwu","aalto":"Aalto","lumi":"Lumi","iuno":"Iuno","lynae":"Lynae","denia":"Denia","rebecca":"Rebecca","lucilla":"Lucilla","phoebe":"Phoebe","brant":"Brant","chisa":"Chisa","mornye":"Mornye","suisui":"Suisui","baizhi":"Baizhi","youhu":"Youhu","buling":"Buling","taoqi":"Taoqi","rover":"Rover"}}</script>
+            <script type="application/json" id="wavekit-character-guide-data">{"slug":"rover","name":"Rover","weaponOptions":["Emerald of Genesis","Blazing Brilliance","Somnoire Anchor","Commando of Conviction"],"shells":[["cartethyia","ciaccona","rover"],["cartethyia","rover","chisa"],["cartethyia","rover","shorekeeper"],["cartethyia","sanhua","rover"],["zani","rover","shorekeeper"],["iuno","ciaccona","rover"],["phoebe","lynae","rover"],["phoebe","rebecca","rover"],["phoebe","phrolova","rover"],["phoebe","sanhua","rover"]],"names":{"shorekeeper":"Shorekeeper","yangyang-xuanling":"Yangyang: Xuanling","verina":"Verina","phrolova":"Phrolova","cartethyia":"Cartethyia","jinhsi":"Jinhsi","zani":"Zani","camellya":"Camellya","augusta":"Augusta","carlotta":"Carlotta","jiyan":"Jiyan","xiangli-yao":"Xiangli Yao","changli":"Changli","lupa":"Lupa","encore":"Encore","calcharo":"Calcharo","danjin":"Danjin","lingyang":"Lingyang","chixia":"Chixia","aemeath":"Aemeath","hiyuki":"Hiyuki","sigrika":"Sigrika","galbrena":"Galbrena","lucy":"Lucy","luuk-herssen":"Luuk Herssen","cantarella":"Cantarella","qiuyuan":"Qiuyuan","ciaccona":"Ciaccona","yinlin":"Yinlin","zhezhi":"Zhezhi","sanhua":"Sanhua","mortefi":"Mortefi","roccia":"Roccia","jianxin":"Jianxin","yangyang":"Yangyang","yuanwu":"Yuanwu","aalto":"Aalto","lumi":"Lumi","iuno":"Iuno","lynae":"Lynae","denia":"Denia","rebecca":"Rebecca","lucilla":"Lucilla","phoebe":"Phoebe","brant":"Brant","chisa":"Chisa","mornye":"Mornye","suisui":"Suisui","baizhi":"Baizhi","youhu":"Youhu","buling":"Buling","taoqi":"Taoqi","rover":"Rover"}}</script>
           </div>
         </section>
-        <nav class="seo-anchor-tabs" aria-label="Rover guide sections">
-          <a href="#overview">Overview</a>
-          <a href="#build">Build</a>
-          <a href="#teams">Teams</a><a href="#chains">Chains</a>
-          <a href="#materials">Materials</a>
-          <a href="#account">Account</a>
-          <a href="#faq">FAQ</a>
-        </nav>
+        <nav class="seo-anchor-tabs" aria-label="Rover guide sections"><a href="#overview">Overview</a><a href="#build">Build</a><a href="#teams">Teams</a><a href="#chains">Chains</a><a href="#materials">Materials</a><a href="#account">Account</a><a href="#faq">FAQ</a></nav>
         <section id="overview" class="seo-build-dashboard">
           <aside class="seo-dashboard-left">
             <div id="build" class="seo-module">
@@ -308,11 +301,6 @@
   </section>
   <!-- wavekit-depth-end -->
           <div class="seo-card">
-            <h2>Team direction</h2>
-            <p>Rover is best handled by matching their role with the teammates you actually own.</p>
-            <p data-rover-data-note>Build and teams reviewed against current July 2026 Rover guidance.</p>
-          </div>
-          <div class="seo-card">
             <h2>Useful teammates</h2>
             <div class="seo-mini-group"><strong>Form-specific partners</strong><div class="seo-teammate-row" data-rover-teammates></div></div>
           </div>
@@ -400,16 +388,16 @@
       if (content) content.hidden = false;
       get("[data-account-owned]").textContent = ownsCharacter ? `Yes, RC${chain}` : "Not owned yet";
       get("[data-account-weapon]").textContent = ownedWeapon || "No listed weapon selected";
-      get("[data-account-status]").textContent = buildableShell ? "Owned target shell" : ownsCharacter ? "Closest path" : "Reference only";
+      get("[data-account-status]").textContent = buildableShell ? "Complete team owned" : ownsCharacter ? "Closest owned team" : "Reference only";
       get("[data-account-team-title]").textContent = buildableShell ? "Best team you can build" : ownsCharacter ? "Closest team path" : `Save ${data.name} first`;
       get("[data-account-team-note]").textContent = buildableShell
-        ? `${shellNames.join(" / ")} is one of this guide's listed shells and every member is in your profile.`
+        ? `${shellNames.join(" / ")} is one of this guide's listed teams and every member is in your profile.`
         : ownsCharacter
-          ? `${shellNames.join(" / ")} is the closest listed shell from your saved roster. Missing pieces are shown below.`
-          : `This page is showing the reference shell until ${data.name} is marked as owned.`;
+          ? `${shellNames.join(" / ")} is the closest listed team from your saved roster. Missing pieces are shown below.`
+          : `This page is showing the reference team until ${data.name} is marked as owned.`;
       get("[data-account-missing]").textContent = missingIdeal.length
-        ? `Missing for ideal shell: ${missingIdeal.join(" / ")}.`
-        : "You own the current ideal shell shown on this guide.";
+        ? `Missing for recommended team: ${missingIdeal.join(" / ")}.`
+        : "You own the current recommended team shown on this guide.";
 
       const icons = get("[data-account-team-icons]");
       if (icons) {

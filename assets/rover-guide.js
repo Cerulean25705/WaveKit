@@ -28,7 +28,7 @@
         ["Blazing Brilliance", "Highest damage option for the current Frazzle rotation"],
         ["Emerald of Genesis", "Excellent standard 5-star with CRIT Rate and Energy Regen"],
         ["Lunar Cutter", "Strong quick-swap 4-star at higher ranks"],
-        ["Endless Collapse", "Accessible Energy Regen fallback"]
+        ["Endless Collapse", "Easy-to-build Energy Regen option"]
       ],
       sonata: "Moonlit Clouds",
       sonataSlug: "moonlit-clouds",
@@ -45,7 +45,7 @@
       pattern: ["Build Forte with Heavy Attack and Aftertune.", "Use enhanced Skills and Liberation to establish Spectro Frazzle.", "Use the main Echo immediately before handing the field to the damage dealer."],
       teams: [
         { title: "Zani Frazzle core", label: "Best established core", members: [["zani", "Main DPS"], ["phoebe", "Frazzle amplifier"], ["rover", "Frazzle support"]], note: "Phoebe supplies the amplification while Spectro Rover adds Frazzle, healing access, and R6 Spectro RES reduction." },
-        { title: "Phoebe accessible team", label: "Safe alternative", members: [["phoebe", "Main DPS"], ["rover", "Frazzle support"], ["shorekeeper", "Healer support"]], note: "Use Moonlit Clouds on Rover when Shorekeeper holds Rejuvenating Glow. Verina can fill the same sustain slot." },
+        { title: "Phoebe healer team", label: "Safer alternative", members: [["phoebe", "Main DPS"], ["rover", "Frazzle support"], ["shorekeeper", "Healer support"]], note: "Use Moonlit Clouds on Rover when Shorekeeper holds Rejuvenating Glow. Verina can fill the same sustain slot." },
         { title: "Phoebe quick-swap", label: "Advanced", members: [["phoebe", "Main DPS"], ["changli", "Quick-swap DPS"], ["rover", "Frazzle support"]], note: "A higher-input option that trades a traditional healer for faster quick-swap pressure." }
       ],
       shells: [["zani", "phoebe", "rover"], ["phoebe", "rover", "shorekeeper"], ["phoebe", "rover", "verina"], ["phoebe", "changli", "rover"]],
@@ -78,8 +78,8 @@
       overview: "Havoc Rover is the damage-oriented form. Enter Dark Surge with Devastation, spend the empowered window, then finish with Liberation and a swap-cancelled Dreamless. Forte takes priority for hypercarry play; Liberation can lead for short quick-swap rotations.",
       pattern: ["Use Resonance Skill during downtime to prepare the burst window.", "Enter Dark Surge with Heavy Attack: Devastation and spend the empowered sequence.", "Finish with Liberation, cast Dreamless, and swap-cancel the Echo."],
       teams: [
-        { title: "Havoc hypercarry", label: "Best established shell", members: [["rover", "Main DPS"], ["roccia", "Havoc amplifier"], ["shorekeeper", "Healer support"]], note: "Roccia supplies Havoc and Basic Attack amplification plus grouping. Verina is the accessible sustain replacement." },
-        { title: "Free Havoc core", label: "Accessible", members: [["rover", "Main DPS"], ["danjin", "Havoc amplifier"], ["verina", "Healer support"]], note: "Danjin is a strong free amplifier. Sanhua is the simpler alternative if Danjin is not built." },
+        { title: "Havoc hypercarry", label: "Best team", members: [["rover", "Main DPS"], ["roccia", "Havoc amplifier"], ["shorekeeper", "Healer support"]], note: "Roccia supplies Havoc and Basic Attack amplification plus grouping. Verina is the more widely available healer replacement." },
+        { title: "Easy-to-build Havoc team", label: "Easy-to-build team", members: [["rover", "Main DPS"], ["danjin", "Havoc amplifier"], ["verina", "Healer support"]], note: "Danjin is a strong free amplifier. Sanhua is the simpler alternative if Danjin is not built." },
         { title: "Phrolova dual DPS", label: "Quick-swap", members: [["phrolova", "Main DPS"], ["rover", "Burst DPS"], ["cantarella", "Havoc support"]], note: "Havoc Rover fills field time and brings front-loaded burst while Phrolova's actions cycle." }
       ],
       shells: [["rover", "roccia", "shorekeeper"], ["rover", "roccia", "verina"], ["rover", "danjin", "shorekeeper"], ["rover", "danjin", "verina"], ["phrolova", "rover", "cantarella"]],
@@ -94,7 +94,7 @@
       weapon: "Bloodpact's Pledge",
       weapons: [
         ["Bloodpact's Pledge", "Required support choice; amplifies team Aero DMG"],
-        ["Emerald of Genesis", "Personal-damage fallback, but loses the team amplification"]
+        ["Emerald of Genesis", "Personal-damage alternative, but loses the team amplification"]
       ],
       sonata: "Rejuvenating Glow",
       sonataSlug: "rejuvenating-glow",
@@ -110,9 +110,9 @@
       overview: "Aero Rover is a real healing support, not a generic DPS substitute. Their Forte route builds Concerto, their Liberation supplies a team heal, and Bloodpact's Pledge amplifies Aero DMG. The specialist value is highest beside Ciaccona in Aero Erosion teams.",
       pattern: ["Use mid-air Forte attacks to build Windstring and Concerto.", "Cast Liberation after the aerial sequence for the team heal and a fast landing.", "Use Unbound Flow, trigger Outro, and hand the field to the Aero carry."],
       teams: [
-        { title: "Cartethyia Erosion", label: "Best established shell", members: [["cartethyia", "Main DPS"], ["ciaccona", "Erosion applier"], ["rover", "Healer support"]], note: "This is the form's defining team. Without Ciaccona, general healers can be stronger because Erosion stacks are harder to maintain." },
+        { title: "Cartethyia Erosion", label: "Best team", members: [["cartethyia", "Main DPS"], ["ciaccona", "Erosion applier"], ["rover", "Healer support"]], note: "This is the form's defining team. Without Ciaccona, general healers can be stronger because Erosion stacks are harder to maintain." },
         { title: "Iuno Aero carry", label: "Strong alternative", members: [["iuno", "Main DPS"], ["ciaccona", "Aero amplifier"], ["rover", "Healer support"]], note: "Bloodpact's Pledge buffs Iuno while Rover's healing lets Ciaccona stay in the damage-support slot." },
-        { title: "Jiyan Aero team", label: "Functional alternative", members: [["jiyan", "Main DPS"], ["ciaccona", "Aero amplifier"], ["rover", "Healer support"]], note: "A functional mono-Aero route; Jiyan does not exploit Erosion directly, so this is not as specialised as the Cartethyia shell." }
+        { title: "Jiyan Aero team", label: "Other strong team", members: [["jiyan", "Main DPS"], ["ciaccona", "Aero amplifier"], ["rover", "Healer support"]], note: "A functional mono-Aero route; Jiyan does not exploit Erosion directly, so this is not as specialised as the Cartethyia team." }
       ],
       shells: [["cartethyia", "ciaccona", "rover"], ["iuno", "ciaccona", "rover"], ["jiyan", "ciaccona", "rover"]],
       teammates: [["cartethyia", "Cartethyia"], ["ciaccona", "Ciaccona"], ["iuno", "Iuno"], ["jiyan", "Jiyan"]],
@@ -127,7 +127,7 @@
       weapons: [
         ["Emerald of Genesis", "Best verified all-round option"],
         ["Blazing Brilliance", "High personal-damage alternative"],
-        ["Endless Collapse", "Energy-focused accessible fallback"],
+        ["Endless Collapse", "Energy-focused easy-to-build option"],
         ["Commando of Conviction", "General 4-star damage option"]
       ],
       sonata: "Void Thunder",
@@ -145,8 +145,8 @@
       pattern: ["Use Intro, Skill, and the Basic chain to reach Overshock.", "Cast Liberation to apply Electro Flare once R2 is available.", "Use the Echo and Outro before handing the conditional amplification to the effect DPS."],
       teams: [
         { title: "Xuanling effect team", label: "Current tested direction", members: [["yangyang-xuanling", "Main DPS"], ["rover", "Effect sub DPS"], ["chisa", "Support"]], note: "Electro Rover supplies Electro Flare and a conditional Outro for an effect-focused carry. This form is still being tested across the current patch." },
-        { title: "Electro Rover carry", label: "Developing", members: [["rover", "Main DPS"], ["lynae", "Amplifier"], ["mornye", "Healer support"]], note: "A field-heavy personal-damage route. Treat it as a developing build rather than an established best-in-slot meta shell." },
-        { title: "Accessible Electro", label: "Budget direction", members: [["rover", "Main DPS"], ["sanhua", "Quick helper"], ["buling", "Support"]], note: "A practical low-cost route while dedicated partners and later-patch Echo options are still settling." }
+        { title: "Electro Rover carry", label: "Developing team", members: [["rover", "Main DPS"], ["lynae", "Amplifier"], ["mornye", "Healer support"]], note: "A field-heavy personal-damage route. Treat it as a developing build rather than an established best-in-slot team." },
+        { title: "Easy-to-build Electro", label: "Budget direction", members: [["rover", "Main DPS"], ["sanhua", "Quick helper"], ["buling", "Support"]], note: "A practical low-cost route while dedicated partners and later-patch Echo options are still settling." }
       ],
       shells: [["yangyang-xuanling", "rover", "chisa"], ["rover", "lynae", "mornye"], ["rover", "sanhua", "buling"]],
       teammates: [["yangyang-xuanling", "Yangyang: Xuanling"], ["chisa", "Chisa"], ["lynae", "Lynae"], ["mornye", "Mornye"], ["buling", "Buling"]],
@@ -189,7 +189,7 @@
     const showcase = q("echo-showcase");
     if (showcase) showcase.innerHTML = `<div class="seo-main-echo"><img src="${echoImage(form.mainEchoSlug)}" alt="${form.mainEcho} Echo icon" loading="lazy" decoding="async"><span><small>Recommended main Echo</small><strong>${form.mainEcho}</strong><em>${form.echoNote}</em></span></div><div class="seo-main-echo is-alternate"><img src="${echoImage(form.alternateEchoSlug)}" alt="${form.alternateEcho} Echo icon" loading="lazy" decoding="async"><span><small>Alternate main Echo</small><strong>${form.alternateEcho}</strong><em>Use with ${form.alternateSonata} when that route fits the team.</em></span></div><div class="seo-sonata-focus"><img src="${sonataImage(form.sonataSlug)}" alt="${form.sonata} Sonata icon" loading="lazy" decoding="async"><span><small>Recommended Sonata</small><strong>${form.sonata}</strong><em>Alternate: ${form.alternateSonata}</em></span></div>`;
     const lanes = q("stat-lanes");
-    if (lanes) lanes.innerHTML = `<div class="seo-stat-lane"><header><span>4</span><div><strong>4-cost main stat</strong><small>Balance the two CRIT stats.</small></div></header><ol><li><b>1</b><span>${form.mainStats[0]}</span></li></ol></div><div class="seo-stat-lane"><header><span>3</span><div><strong>3-cost main stats</strong><small>The second slot may use the listed fallback.</small></div></header><ol><li><b>1</b><span>${form.mainStats[1]}</span></li><li><b>2</b><span>${form.mainStats[2]}</span></li></ol></div><div class="seo-stat-lane"><header><span>1</span><div><strong>1-cost main stats</strong><small>Use on both common Echoes.</small></div></header><ol><li><b>1</b><span>${form.mainStats[3]}</span></li></ol></div>`;
+    if (lanes) lanes.innerHTML = `<div class="seo-stat-lane"><header><span>4</span><div><strong>4-cost main stat</strong><small>Balance the two CRIT stats.</small></div></header><ol><li><b>1</b><span>${form.mainStats[0]}</span></li></ol></div><div class="seo-stat-lane"><header><span>3</span><div><strong>3-cost main stats</strong><small>The second slot may use the listed alternative.</small></div></header><ol><li><b>1</b><span>${form.mainStats[1]}</span></li><li><b>2</b><span>${form.mainStats[2]}</span></li></ol></div><div class="seo-stat-lane"><header><span>1</span><div><strong>1-cost main stats</strong><small>Use on both common Echoes.</small></div></header><ol><li><b>1</b><span>${form.mainStats[3]}</span></li></ol></div>`;
     const help = q("echo-help");
     if (help) help.innerHTML = `<strong>Why this setup?</strong> ${form.echoNote}`;
   };

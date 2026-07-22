@@ -444,7 +444,7 @@ const roverForms = {
     synergies: ["electro", "any"],
     tags: ["electro", "flare", "skill", "flexible"],
     weaponAlternates: ["Blazing Brilliance", "Endless Collapse", "Commando of Conviction"],
-    note: "Electro Rover is a newly released effect-team sub-DPS with a field-heavy damage route. Current team rankings are still developing, so WaveKit labels speculative shells cautiously.",
+    note: "Electro Rover is a newly released effect-team sub-DPS with a field-heavy damage route. Current team rankings are still developing, so WaveKit labels less-established teams cautiously.",
     build: {
       build: "Electro Rover sub-DPS/support build",
       weapon: "Emerald of Genesis",
@@ -509,7 +509,7 @@ const knownWeaponTypes = {
 
 const characters = [
   c("shorekeeper", "Shorekeeper", "Spectro", "Rectifier", ["healer", "support"], 99, ["any"], ["crit", "sustain"], "Premium sustain. Healing, Crit support, and low-stress team flow."),
-  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 100, ["havoc"], ["havoc", "heavy", "bane", "hypercarry", "current-patch"], "Version 3.5 Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, or Phrolova support her damage plan; Chisa is the premium third slot, with Mornye in Lynae teams and Verina as an accessible fallback."),
+  c("yangyang-xuanling", "Yangyang: Xuanling", "Havoc", "Sword", ["main"], 100, ["havoc"], ["havoc", "heavy", "bane", "hypercarry", "current-patch"], "Version 3.5 Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, or Phrolova support her damage plan; Chisa is the premium third slot, with Mornye in Lynae teams and Verina as an easy-to-build alternative."),
   c("verina", "Verina", "Spectro", "Rectifier", ["healer", "support"], 96, ["any"], ["atk", "sustain"], "Very forgiving healer and universal support."),
   c("phrolova", "Phrolova", "Havoc", "Rectifier", ["main", "sub"], 98, ["havoc"], ["havoc", "coordinated"], "High-value Havoc carry/sub-DPS. Likes Havoc helpers and stable sustain."),
   c("cartethyia", "Cartethyia", "Aero", "Sword", ["main"], 98, ["aero"], ["aero", "erosion", "negative"], "Aero carry with strong payoff when the team supports her Erosion mechanic."),
@@ -554,7 +554,7 @@ const characters = [
   c("phoebe", "Phoebe", "Spectro", "Rectifier", ["main", "sub", "support"], 88, ["spectro"], ["frazzle"], "Flexible Spectro/Frazzle damage or support direction."),
   c("brant", "Brant", "Fusion", "Sword", ["main", "sub"], 86, ["fusion"], ["fusion", "comfort", "sustain"], "Fusion hybrid and dual-DPS partner with shielding, healing, and team buffs."),
   c("chisa", "Chisa", "Havoc", "Broadblade", ["support"], 86, ["havoc"], ["bane", "sustain"], "Havoc support with sustain utility. She can help recovery, but WaveKit does not classify her as a dedicated healer."),
-  c("mornye", "Mornye", "Spectro", "Broadblade", ["healer", "support"], 98, ["any", "tune"], ["sustain", "def", "tune"], "Premium DEF-based healer support for Tune shells and safer rotations."),
+  c("mornye", "Mornye", "Spectro", "Broadblade", ["healer", "support"], 98, ["any", "tune"], ["sustain", "def", "tune"], "Premium DEF-based healer support for Tune teams and safer rotations."),
   c("suisui", "Suisui", "Glacio", "Rectifier", ["support", "healer"], 82, ["any"], ["sustain", "upcoming"], "Unreleased Resonator. Suisui is expected on the second half of the version 3.5 banner, July 31 to August 20, 2026, so WaveKit lists her guide info but does not use her in the team helper yet."),
   c("baizhi", "Baizhi", "Glacio", "Rectifier", ["healer", "support"], 74, ["any"], ["sustain"], "Accessible healer for early accounts."),
   c("youhu", "Youhu", "Glacio", "Gauntlets", ["healer", "support"], 70, ["any"], ["sustain"], "Support healer with more specific kit management."),
@@ -667,30 +667,30 @@ const teamPreferences = {
 
 const teamArchetypes = {
   phrolova: archetype("Havoc Echo Skill", [["lucilla", "qiuyuan"], ["cantarella", "qiuyuan"], ["cantarella", "roccia"], ["sigrika", "qiuyuan"], ["cantarella", "shorekeeper"], ["roccia", "shorekeeper"], ["danjin", "roccia"]], "Phrolova's Echo Skill routes are partner-specific: Lucilla is strongest with Qiuyuan, while Cantarella can lead a more traditional Havoc setup."),
-  "yangyang-xuanling": archetype("Havoc Bane Hypercarry", [["rebecca", "chisa"], ["lynae", "mornye"], ["phrolova", "chisa"], ["lynae", "chisa"], ["rebecca", "verina"], ["phrolova", "verina"]], "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, and Phrolova are her primary helpers; Chisa is the strongest general third slot, Mornye suits the Lynae route, and Verina is the accessible fallback."),
-  cartethyia: archetype("Aero Erosion", [["ciaccona", "rover"], ["ciaccona", "chisa"], ["ciaccona", "shorekeeper"], ["rover", "chisa"], ["rover", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Ciaccona plus Aero Rover is Cartethyia's strongest low-sequence Erosion core. Chisa is a real specialist option at any sequence and can overtake Rover with Kumokiri; from R2, Cartethyia no longer relies on Rover for the extra stack limit. Shorekeeper and Verina are comfort fallbacks, not higher-synergy replacements for Chisa."),
+  "yangyang-xuanling": archetype("Havoc Bane Hypercarry", [["rebecca", "chisa"], ["lynae", "mornye"], ["phrolova", "chisa"], ["lynae", "chisa"], ["rebecca", "verina"], ["phrolova", "verina"]], "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Rebecca, Lynae, and Phrolova are her primary helpers; Chisa is the strongest general third slot, Mornye suits the Lynae route, and Verina is an easy-to-build alternative."),
+  cartethyia: archetype("Aero Erosion", [["ciaccona", "rover"], ["ciaccona", "chisa"], ["ciaccona", "shorekeeper"], ["rover", "chisa"], ["rover", "shorekeeper"], ["sanhua", "rover"], ["aalto", "shorekeeper"], ["sanhua", "shorekeeper"]], "Ciaccona plus Aero Rover is Cartethyia's strongest low-sequence Erosion core. Chisa is a real specialist option at any sequence and can overtake Rover with Kumokiri; from R2, Cartethyia no longer relies on Rover for the extra stack limit. Shorekeeper and Verina are safer but lower-synergy alternatives, not direct replacements for Chisa."),
   jinhsi: archetype("Spectro Burst", [["zhezhi", "shorekeeper"], ["yinlin", "shorekeeper"], ["zhezhi", "youhu"], ["yinlin", "youhu"], ["mortefi", "verina"], ["yuanwu", "verina"]], "Jinhsi wants a coordinated attacker to feed her burst window. Youhu is a specialist sustain for Zhezhi or Yinlin because her Outro amplifies their Coordinated Attacks; she is not a generic replacement in every Jinhsi team."),
   zani: archetype("Spectro Frazzle", [["phoebe", "shorekeeper"], ["phoebe", "verina"], ["rover", "shorekeeper"]], "Zani needs Spectro Frazzle support before generic damage buffs."),
   camellya: archetype("Havoc Basic", [["roccia", "shorekeeper"], ["sanhua", "shorekeeper"], ["danjin", "verina"]], "Camellya values Basic Attack/Havoc setup and enough safety for her field time."),
   augusta: archetype("Heavy Attack Carry", [["iuno", "shorekeeper"], ["iuno", "verina"], ["iuno", "buling"], ["rebecca", "shorekeeper"]], "Augusta wants Heavy Attack/all-attribute support before generic Electro pairing."),
   iuno: archetype("Aero Hypercarry", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["ciaccona", "rover"], ["ciaccona", "shorekeeper"], ["yinlin", "shorekeeper"], ["jianxin", "verina"], ["sanhua", "verina"]], "Iuno can lead her own team. Lynae plus Mornye is the premium hypercarry core; Ciaccona, Yinlin, and Jianxin are documented alternatives, while Aero Rover is the free-form utility route."),
   qiuyuan: archetype("R3+ Heavy/Echo Carry", [["iuno", "ciaccona"], ["iuno", "shorekeeper"], ["mortefi", "shorekeeper"], ["rebecca", "verina"]], "Qiuyuan only enters the main-DPS pool at R3 or higher, when his extended Skill sequence unlocks a real carry rotation. Iuno is his strongest focused helper; Ciaccona and universal sustain are alternatives."),
-  carlotta: archetype("Glacio Skill", [["zhezhi", "shorekeeper"], ["taoqi", "shorekeeper"], ["lumi", "verina"]], "Carlotta wants Skill-focused support; Taoqi and Lumi are valid fallbacks because the buff type matters."),
+  carlotta: archetype("Glacio Skill", [["zhezhi", "shorekeeper"], ["taoqi", "shorekeeper"], ["lumi", "verina"]], "Carlotta wants Skill-focused support; Taoqi and Lumi are valid alternatives because the buff type matters."),
   jiyan: archetype("Aero Heavy", [["iuno", "ciaccona"], ["iuno", "shorekeeper"], ["phrolova", "shorekeeper"], ["rebecca", "mornye"], ["mortefi", "shorekeeper"], ["mortefi", "verina"], ["yangyang", "shorekeeper"]], "Iuno is Jiyan's strongest modern Heavy Attack helper. Ciaccona completes the premium Mono Aero route under the required weapon conditions; Mortefi and Yangyang remain accessible alternatives."),
   "xiangli-yao": archetype("Electro Liberation", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["yinlin", "shorekeeper"], ["yinlin", "verina"], ["jianxin", "verina"], ["yangyang", "verina"]], "Lynae is Xiangli Yao's strongest general buffer and enables Mornye's full Tune support. Yinlin remains the natural Electro/Liberation alternative; Changli is expert-only quickswap and is not ranked as a normal recommendation."),
-  changli: archetype("Fusion Dual DPS", [["brant", "lupa"], ["brant", "shorekeeper"], ["lupa", "verina"]], "Changli works well in Fusion dual-DPS shells where field time is shared."),
+  changli: archetype("Fusion Dual DPS", [["brant", "lupa"], ["brant", "shorekeeper"], ["lupa", "verina"]], "Changli works well in Fusion dual-DPS teams where field time is shared."),
   lupa: archetype("Mono Fusion", [["brant", "changli"], ["changli", "shorekeeper"], ["brant", "verina"]], "Lupa amplifies Fusion teams and can trade comfort for higher Fusion damage."),
   encore: archetype("Fusion Carry", [["changli", "shorekeeper"], ["brant", "verina"], ["sanhua", "baizhi"]], "Encore prefers Changli or Fusion helpers, with Sanhua as an accessible quick helper."),
-  calcharo: archetype("Electro Carry", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["yinlin", "shorekeeper"], ["yinlin", "verina"], ["yuanwu", "verina"]], "Lynae plus Mornye is Calcharo's strongest modern buff core. Yinlin is the natural Electro alternative, while Yuanwu is the accessible fallback."),
+  calcharo: archetype("Electro Carry", [["lynae", "mornye"], ["lynae", "shorekeeper"], ["yinlin", "shorekeeper"], ["yinlin", "verina"], ["yuanwu", "verina"]], "Lynae plus Mornye is Calcharo's strongest modern buff core. Yinlin is the natural Electro alternative, while Yuanwu is the easier-to-build option."),
   danjin: archetype("High-risk Havoc", [["roccia", "shorekeeper"], ["cantarella", "verina"], ["taoqi", "baizhi"]], "Danjin needs the site to protect players from stress: damage is high, safety matters."),
   lingyang: archetype("Glacio Basic", [["zhezhi", "shorekeeper"], ["zhezhi", "youhu"], ["sanhua", "verina"], ["lucilla", "baizhi"]], "Lingyang likes Glacio or Basic Attack helpers. Youhu is specifically useful with Zhezhi because she amplifies Zhezhi's Coordinated Attacks while covering healing."),
   chixia: archetype("Fusion Ranged", [["changli", "shorekeeper"], ["brant", "verina"], ["mortefi", "baizhi"]], "Chixia is a simple ranged carry; keep teams readable and safe."),
   aemeath: archetype("Mode-specific carry", [["denia", "chisa"], ["denia", "lupa"], ["lynae", "mornye"], ["lynae", "shorekeeper"], ["lynae", "verina"], ["lupa", "mornye"], ["lupa", "brant"], ["lupa", "changli"]], "Aemeath's modes are kept separate: Denia with Chisa or Lupa for Fusion Burst, Lynae with Mornye for Tune Rupture, and Lupa with Mornye or another Fusion partner for Mono Fusion."),
   hiyuki: archetype("Glacio Chafe", [["lucilla", "chisa"], ["lynae", "chisa"], ["lynae", "mornye"], ["lucilla", "shorekeeper"], ["lucilla", "verina"], ["zhezhi", "shorekeeper"]], "Lucilla plus Chisa is Hiyuki's specialist Glacio Chafe route. Mornye belongs with Lynae rather than Lucilla; Shorekeeper and Verina are lower-output comfort alternatives."),
-  sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["lucilla", "mornye"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["lucilla", "verina"], ["qiuyuan", "mornye"], ["lucilla", "buling"], ["lucilla", "chisa"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Lucilla hypercarry shells should stay visible when owned, while Qiuyuan remains a valid premium route and can use Moonlit Clouds as Sigrika's support setup."),
+  sigrika: archetype("Aero Echo Skill", [["lucilla", "shorekeeper"], ["lucilla", "mornye"], ["qiuyuan", "shorekeeper"], ["qiuyuan", "ciaccona"], ["lucilla", "verina"], ["qiuyuan", "mornye"], ["lucilla", "buling"], ["lucilla", "chisa"], ["lynae", "mornye"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Sigrika is an Echo Skill carry. Lucilla hypercarry teams should stay visible when owned, while Qiuyuan remains a valid premium route and can use Moonlit Clouds as Sigrika's support setup."),
   galbrena: archetype("Fusion Echo Skill", [["qiuyuan", "shorekeeper"], ["lucilla", "shorekeeper"], ["qiuyuan", "lupa"], ["lucilla", "lupa"], ["brant", "lupa"], ["qiuyuan", "verina"], ["qiuyuan", "buling"]], "Galbrena is an Echo Skill carry. Qiuyuan is the strongest general fit; Lucilla remains a close specialist alternative, while Lupa enables Fusion-focused teams."),
   lucy: archetype("Hack-Shifting Heavy", [["rebecca", "mornye"], ["rebecca", "shorekeeper"], ["rebecca", "verina"], ["rebecca", "buling"], ["lynae", "shorekeeper"]], "Lucy and Rebecca are prioritised together because their Hack-Shifting mechanics are intended to work in tandem, with Mornye or Shorekeeper as the main comfort slots."),
-  "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["sanhua", "mornye"], ["denia", "shorekeeper"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain shell first. Denia is treated as his strongest current helper, Lynae is a strong alternate, and Sanhua remains the accessible fallback."),
+  "luuk-herssen": archetype("Tune Strain", [["denia", "mornye"], ["lynae", "mornye"], ["sanhua", "mornye"], ["denia", "shorekeeper"], ["lynae", "shorekeeper"]], "Luuk Herssen wants a Tune Strain team first. Denia is treated as his strongest current helper, Lynae is a strong alternate, and Sanhua is the easier-to-build option."),
   brant: archetype("Fusion Hybrid", [["changli", "lupa"], ["changli", "shorekeeper"], ["lupa", "verina"]], "Brant can play damage or comfort utility inside Fusion teams."),
   phoebe: archetype("Absolution DPS", [["lynae", "rover"], ["rebecca", "rover"], ["phrolova", "rover"], ["lynae", "ciaccona"], ["lynae", "shorekeeper"], ["sanhua", "rover"], ["rover", "shorekeeper"]], "Main-DPS Phoebe uses Absolution and requires a Spectro Frazzle applier: Spectro Rover for normal single-wave play or Ciaccona for multi-wave content. Her separate Confession support route belongs in Zani teams.")
 };
@@ -1546,7 +1546,7 @@ function scoreTeam(main, sub, sustain) {
   if (sustain.roles.includes("healer")) score += 9;
   if (sub.roles.includes("support")) score += 4;
   if (sub.roles.includes("sub")) score += 7;
-  if (teamFitLabel({ main, members: [main, sub, sustain] }) === "Archetype fit") score += 8;
+  if (teamFitLabel({ main, members: [main, sub, sustain] }) === "Recommended team") score += 8;
   if (sub.roles.includes("healer") && sustain.roles.includes("healer")) score -= 34;
   if (sub.roles.includes("healer") && preferredRank(main, sub, "sub") < 18) score -= 12;
   if (sustain.roles.includes("support") && !sustain.roles.includes("healer") && preferredRank(main, sustain, "sustain") < 18) score -= 6;
@@ -1609,7 +1609,7 @@ function isSuggestibleTeam(team) {
   if (!roverHelperAllowed(main, sub) || !roverHelperAllowed(main, third)) return false;
   const pref = teamPreferences[main.slug];
   const hasArchetype = Boolean(teamArchetypes[main.slug]);
-  const archetypeFit = teamFitLabel(team) === "Archetype fit";
+  const archetypeFit = teamFitLabel(team) === "Recommended team";
   const corePreferred = pref?.core.includes(sub.slug) || pref?.core.includes(third.slug);
   const sustainPreferred = pref?.sustain.includes(third.slug);
   const preferredHelpers = preferredHelperList(pref);
@@ -1883,7 +1883,7 @@ function synergyScore(main, helper) {
 function reasonTeam(main, sub, sustain) {
   const reasons = [];
   const archetype = teamArchetypes[main.slug];
-  if (main.slug === "aemeath") reasons.push(`${aemeathModeLabel([sub.slug, sustain.slug])} shell: WaveKit keeps Aemeath's mode-specific teammates together.`);
+  if (main.slug === "aemeath") reasons.push(`${aemeathModeLabel([sub.slug, sustain.slug])} team: WaveKit keeps Aemeath's mode-specific teammates together.`);
   else if (archetype) reasons.push(archetype.note);
   if (state.weapons.has(main.build.weapon)) reasons.push(`${main.name} has their listed weapon, so their build path is clearer.`);
   if (teamPreferences[main.slug]?.core.includes(sub.slug)) reasons.push(`${sub.name} is one of ${main.name}'s preferred helper options in this guide.`);
@@ -1892,8 +1892,17 @@ function reasonTeam(main, sub, sustain) {
   if (teamPreferences[main.slug]?.sustain.includes(sustain.slug)) reasons.push(`${sustain.name} is prioritised for the third slot in this guide.`);
   if (sustain.roles.includes("healer")) reasons.push(`${sustain.name} keeps the team stable, which makes the rotation easier to learn.`);
   if (!sustain.roles.includes("healer") && !sustain.roles.includes("defense")) reasons.push(`${sustain.name} is utility, not a true healer, so this team has less mistake protection.`);
-  if (!reasons.length) reasons.push("This is a role-complete shell: damage, helper, and a third-slot utility or sustain pick.");
-  return reasons.join(" ");
+  if (!reasons.length) reasons.push("This team covers damage, setup help, and a third-slot support or healer.");
+  return playerFacingTeamText(reasons.join(" "));
+}
+
+function playerFacingTeamText(text) {
+  return String(text)
+    .replaceAll("best-shell", "best-team")
+    .replaceAll("Best-shell", "Best-team")
+    .replaceAll("shells", "teams")
+    .replaceAll("shell", "team")
+    .replaceAll("archetype", "team style");
 }
 
 function dedupeTeams(teams) {
@@ -2138,8 +2147,8 @@ function teamChips(team) {
   if (chain) chips.push(`<span class="chip good">R${chain} carry</span>`);
   if (state.weapons.has(team.main.build.weapon)) chips.push(`<span class="chip good">Weapon owned</span>`);
   if (team.members[2].roles.includes("healer")) chips.push(`<span class="chip good">Healer</span>`);
-  if (teamFitLabel(team) === "Archetype fit") chips.push(`<span class="chip good">Target shell</span>`);
-  if (teamValidationStatus(team).level === "unverified") chips.push(`<span class="chip warning">Unverified fallback</span>`);
+  if (teamFitLabel(team) === "Recommended team") chips.push(`<span class="chip good">Verified team</span>`);
+  if (teamValidationStatus(team).level === "unverified") chips.push(`<span class="chip warning">Needs testing</span>`);
   chips.push(`<span class="chip confidence">${teamConfidence(team).label}</span>`);
   const missing = missingBestShellNames(team);
   if (missing.length) chips.push(`<span class="chip missing">Missing ${missing[0]}</span>`);
@@ -2276,9 +2285,9 @@ function tierTeams(teams) {
   const t2 = priorityTeams.slice(6, 12);
   const t3 = [...priorityTeams.slice(12), ...extraTeams].slice(0, 8);
   return [
-    { tier: "t1", label: "T1 Best matches", badge: "Best Match", teams: t1 },
-    { tier: "t2", label: "T2 Strong alternatives", badge: "Strong Match", teams: t2 },
-    { tier: "t3", label: "T3 Situational picks", badge: "Situational", teams: t3 }
+    { tier: "t1", label: "Best matches", badge: "Best Match", teams: t1 },
+    { tier: "t2", label: "Strong alternatives", badge: "Strong Match", teams: t2 },
+    { tier: "t3", label: "More team options", badge: "More Options", teams: t3 }
   ].filter((group) => group.teams.length);
 }
 
@@ -2498,7 +2507,7 @@ function teamRevealButton(hiddenCount) {
   return `
     <div class="team-reveal">
       <button id="show-more-teams" class="button ghost" type="button">
-        ${state.showAllTeams ? "Hide situational picks" : `Show ${hiddenCount} situational picks`}
+        ${state.showAllTeams ? "Show fewer teams" : `Show all teams (${hiddenCount} more)`}
       </button>
     </div>
   `;
@@ -2510,7 +2519,7 @@ function matchFocus(team) {
   if (team.members[2].roles.includes("healer")) return "Low-stress sustain included";
   if (team.members[2].roles.includes("defense")) return "Safer defensive option";
   if (team.members[1].synergies.includes(firstElement(team.main.element).toLowerCase())) return "Element synergy helper";
-  return "Role-complete team shell";
+  return "Balanced team roles";
 }
 
 function safetyLabel(team) {
@@ -2525,8 +2534,8 @@ function teamConfidence(team) {
   if (team.members.some((member) => confidenceFor(member)[0] === "review")) {
     return { label: "Needs review", detail: `${team.members.filter((member) => confidenceFor(member)[0] === "review").map((member) => member.name).join(", ")} need current patch review, so treat this as provisional.` };
   }
-  if (teamFitLabel(team) === "Archetype fit") {
-    return { label: "Core archetype", detail: "This matches one of WaveKit's named team shells for the main DPS." };
+  if (teamFitLabel(team) === "Recommended team") {
+    return { label: "Verified team", detail: "This exact teammate pairing is one of the reviewed teams for this damage dealer." };
   }
   if (teamValidationStatus(team).level === "unverified") {
     return { label: "Needs testing", detail: teamValidationStatus(team).detail };
@@ -2535,12 +2544,12 @@ function teamConfidence(team) {
     return { label: "Specialist support", detail: "Chisa is included for her kit interaction with this damage dealer, not as a generic healer." };
   }
   if (team.members[2].roles.includes("healer") && teamPreferences[team.main.slug]?.core.includes(team.members[1].slug)) {
-    return { label: "Strong fallback", detail: "The main helper is preferred, and the third slot keeps the team stable even if it is not the perfect version." };
+    return { label: "Strong alternative", detail: "The main helper is preferred, and the third slot keeps the team stable even if it is not the strongest version." };
   }
   if (team.members[2].roles.includes("healer") || team.members[2].roles.includes("defense")) {
     return { label: "Comfort pick", detail: "This leans toward safety and consistency over maximum damage." };
   }
-  return { label: "Experimental", detail: "This can function as a role shell, but it has less protection and should be tested before relying on it." };
+  return { label: "Needs testing", detail: "The roles work on paper, but this exact trio has less evidence behind it and should be treated cautiously." };
 }
 
 function teamValidationWarning(validation) {
@@ -2548,7 +2557,7 @@ function teamValidationWarning(validation) {
 }
 
 function teamValidationStatus(team) {
-  if (teamFitLabel(team) === "Archetype fit") {
+  if (teamFitLabel(team) === "Recommended team") {
     return { level: "core", label: "Documented team", detail: "This exact composition matches a reviewed team route." };
   }
   const main = team.main;
@@ -2561,29 +2570,29 @@ function teamValidationStatus(team) {
   }
   return {
     level: "unverified",
-    label: "Unverified roster fallback",
+    label: "Needs testing",
     detail: "This fills the required roles, but WaveKit has not verified a specific kit interaction for all three members. Treat it as a temporary option and report it if it plays poorly."
   };
 }
 
 function teamFitLabel(team) {
   const archetype = teamArchetypes[team.main.slug];
-  if (!archetype) return "Flexible fit";
+  if (!archetype) return "Flexible team";
   const pair = [team.members[1].slug, team.members[2].slug];
-  return archetypeIdeals(team.main).some((ideal) => idealAllowedForOwnedForms(team.main, ideal) && ideal.every((slug) => pair.includes(slug))) ? "Archetype fit" : "Fallback fit";
+  return archetypeIdeals(team.main).some((ideal) => idealAllowedForOwnedForms(team.main, ideal) && ideal.every((slug) => pair.includes(slug))) ? "Recommended team" : "Alternative team";
 }
 
 function teamFitDetail(team) {
   const sub = team.members[1];
   const third = team.members[2];
   const main = team.main;
-  if (teamFitLabel(team) === "Archetype fit") {
+  if (teamFitLabel(team) === "Recommended team") {
     return `${sub.name} and ${third.name} match ${main.name}'s preferred ${teamPlanLabel(team)} plan.`;
   }
   if (teamPreferences[main.slug]?.core.includes(sub.slug)) {
     return `${sub.name} is a preferred helper, while ${third.name} fills the third slot from your available roster.`;
   }
-  return `${sub.name} and ${third.name} create a usable role shell, but this may be less optimal than the named archetype partners.`;
+  return `${sub.name} and ${third.name} cover the needed roles, but this may be weaker than the better-established teammate pairings.`;
 }
 
 function safetyDetail(team) {
@@ -2612,14 +2621,14 @@ function difficultyLabel(team) {
   const riskyMain = ["danjin", "calcharo", "camellya"].includes(team.main.slug);
   if (!team.members[2].roles.includes("healer")) return "Advanced";
   if (riskyMain || !team.members[2].roles.includes("healer")) return "Moderate";
-  if (teamFitLabel(team) === "Archetype fit") return "Easy to learn";
+  if (teamFitLabel(team) === "Recommended team") return "Easy to learn";
   return "Moderate";
 }
 
 function teamPurpose(team) {
   const archetype = teamPlanLabel(team);
   if (team.main.roles.includes("main")) return `${team.main.name} carries the damage while the team supports ${archetype.toLowerCase()}.`;
-  return `${team.main.name} anchors a flexible team shell with support and sustain around them.`;
+  return `${team.main.name} anchors a flexible team with support and sustain around them.`;
 }
 
 function teamPlanLabel(team) {
@@ -2652,17 +2661,17 @@ function rotationText(team) {
 
 function missingAlternativeNote(team) {
   const archetype = teamArchetypes[team.main.slug];
-  if (!archetype) return "No fixed best shell is required; this team is using flexible role coverage from your roster.";
+  if (!archetype) return "No single best team is required here; this lineup uses sensible role coverage from your roster.";
   const ideals = archetypeIdeals(team.main);
   const pair = [team.members[1].slug, team.members[2].slug];
   const ideal = ideals.find((combo) => idealAllowedForOwnedForms(team.main, combo) && combo.every((slug) => pair.includes(slug)));
-  if (ideal) return "This is one of the intended shells, so no major replacement note is needed.";
+  if (ideal) return "This is one of the reviewed teams, so no replacement note is needed.";
   const bestIdeal = ideals[0] || [];
   const missing = bestIdeal.filter((slug) => !ownsShellMember(team.main, slug)).map((slug) => shellCharacterName(team.main, slug));
   const replacements = [team.members[1].name, team.members[2].name].filter((name) => !bestIdeal.map((slug) => shellCharacterName(team.main, slug)).includes(name));
   if (missing.length && replacements.length) return `Missing ${missing.join(" and ")}. WaveKit is using ${replacements.join(" and ")} as your available replacement path.`;
-  if (missing.length) return `Missing ${missing.join(" and ")} for the cleanest version of this archetype.`;
-  return "You own the core pieces, but this exact pair ranked lower than another available shell.";
+  if (missing.length) return `Missing ${missing.join(" and ")} for the cleanest version of this team plan.`;
+  return "You own the core pieces, but this exact pair ranked below another available team.";
 }
 
 function characterName(slug) {
@@ -2675,7 +2684,7 @@ function bestPartnerDetail(team) {
   const bestShell = bestShellSlugs(team).slice(1).map((slug) => shellCharacterName(team.main, slug)).join(" + ");
   const core = pref?.core?.slice(0, 3).map(characterName).join(", ");
   const sustain = pref?.sustain?.slice(0, 3).map(characterName).join(", ");
-  if (bestShell) return `Common best-shell target: ${team.main.name} + ${bestShell}. Other useful helpers: ${core || "flexible utility"}. Safer sustain picks: ${sustain || "a real healer when available"}.`;
+  if (bestShell) return `Best-known team: ${team.main.name} + ${bestShell}. Other useful helpers: ${core || "flexible utility"}. Safer support choices: ${sustain || "a real healer when available"}.`;
   return `WaveKit treats ${team.main.name} as flexible here. Preferred helpers: ${core || "role coverage first"}. Safer sustain picks: ${sustain || "a real healer when available"}.`;
 }
 
@@ -2716,9 +2725,9 @@ function bestShellDetail(team) {
   const currentText = team.members.map((member) => member.name).join(" + ");
   const missing = shell.filter((slug) => !ownsShellMember(team.main, slug)).map((slug) => shellCharacterName(team.main, slug));
   if (!missing.length) {
-    return `${shellText} is WaveKit's current target shell for this DPS. It can appear as a real suggestion because you own every listed character.`;
+    return `${shellText} is WaveKit's current best-known team for this DPS. It can appear as a suggestion because you own every listed character.`;
   }
-  return `${shellText} is shown as reference only because you do not own ${missing.join(" and ")}. This card uses your closest owned version: ${currentText}.`;
+  return `${shellText} is shown for reference because you do not own ${missing.join(" and ")}. This suggestion uses your closest owned version: ${currentText}.`;
 }
 
 function bestShellStrip(team) {
@@ -2729,10 +2738,10 @@ function bestShellStrip(team) {
   const currentHelpers = team.members.slice(1).map((member) => member.name).join(" + ");
   const note = missing.length
     ? `Missing ${missing.join(" and ")}. Using ${currentHelpers} from your roster.`
-    : "You own the current target shell for this DPS.";
+    : "You own this complete team.";
   return `
     <div class="team-bis-strip">
-      <span>Best target</span>
+      <span>Best-known team</span>
       <strong>${shellText}</strong>
       <p>${note}</p>
     </div>
@@ -2779,7 +2788,7 @@ function buildReadiness(team) {
   const ready = team.members.filter((member) => state.weapons.has(member.build.weapon)).length;
   if (ready === team.members.length) return "All listed weapons owned";
   if (ready > 0) return `${ready}/3 listed weapons owned`;
-  return "Uses fallback weapon advice";
+  return "Uses alternative weapon advice";
 }
 
 const sonataSymbols = {
@@ -2869,7 +2878,7 @@ function sonataIcon(name) {
 }
 
 function archetypeLabel(character) {
-  return teamArchetypes[character.slug]?.label || "Flexible team shell";
+  return teamArchetypes[character.slug]?.label || "Flexible team";
 }
 
 function memberChip(character) {
@@ -3090,7 +3099,7 @@ function feedbackContext(team) {
     `Safety: ${safetyLabel(team)}`,
     `Confidence: ${teamConfidence(team).label}`,
     `Roster logic: ${missingAlternativeNote(team)}`,
-    `Best-shell reference: ${bestShellDetail(team)}`,
+    `Best team reference: ${bestShellDetail(team)}`,
     "Ranking: roster-aware best teams",
     `Owned Resonators: ${ownedCount}`,
     `Owned roster: ${ownedRoster}`,
@@ -3167,7 +3176,7 @@ function useNote(character, team) {
     "shorekeeper": "Shorekeeper is the premium safety net. Prioritise Energy Regen and uptime so her field, healing, and Crit support are ready before hard fights.",
     "sanhua": "Sanhua is a quick helper: use her fast setup, trigger her burst window, then hand field time back to the main damage dealer.",
     "yangyang": "Yangyang is comfort utility. Use her for grouping and Energy help when a team feels scattered or starved for rotations.",
-    "yangyang-xuanling": "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Set up Rebecca, Lynae, or Phrolova first, use Chisa as the premium third slot, Mornye with Lynae, or Verina as an accessible fallback, then give Xuanling the focused damage window.",
+    "yangyang-xuanling": "Yangyang: Xuanling is a Havoc Bane and Heavy Attack hypercarry. Set up Rebecca, Lynae, or Phrolova first, use Chisa as the premium third slot, Mornye with Lynae, or Verina as an easy-to-build alternative, then give Xuanling the focused damage window.",
     "jianxin": "Jianxin is a defensive comfort pick. She can smooth out rough fights with grouping, shielding, and safer pacing.",
     "taoqi": "Taoqi is here for safety more than speed. Use her when the team needs shields or a calmer defensive rhythm.",
     "yinlin": "Yinlin adds off-field Electro pressure. Set up her mark/coordinated damage, then swap back to the main field character.",
@@ -3183,7 +3192,7 @@ function useNote(character, team) {
     "phoebe": "Phoebe is strongest when her Spectro/Frazzle setup has a clear purpose. Use her before Zani or other Spectro damage windows.",
     "galbrena": "Galbrena is an Echo Skill carry. If Qiuyuan is in the team, treat him as the key setup piece rather than a generic Aero helper.",
     "sigrika": "Sigrika wants Echo Skill support. Set up Qiuyuan or another Echo Skill helper first, then spend Sigrika's damage window cleanly.",
-    "luuk-herssen": "Luuk Herssen wants a Tune Strain shell. Denia + Mornye is prioritised when owned, with Lynae treated as a strong alternate rather than the default best pair.",
+    "luuk-herssen": "Luuk Herssen wants a Tune Strain team. Denia + Mornye is prioritised when owned, with Lynae treated as a strong alternate rather than the default best pair.",
     "lucy": "Lucy wants Hack-Shifting support when available. Rebecca is prioritised as her intended partner, then the healer keeps the damage window stable.",
     "rebecca": "Rebecca is not just generic heavy support here. In Lucy teams, use her Hack-Shifting setup first so Lucy benefits from the paired mechanics before taking field time.",
     "aemeath": "Aemeath is mode-based. Keep Tune Rupture and Fusion Burst advice separate so the build does not become muddled.",
@@ -3818,7 +3827,7 @@ function accountOpportunityTitle(unsupported, healers) {
 
 function accountOpportunityDetail(unsupported, healers) {
   if (!healers.length) return "Selecting a healer such as Verina, Shorekeeper, Baizhi, Mornye, or another owned sustain unit will unlock safer recommendations.";
-  if (unsupported.length) return `${unsupported.map((character) => character.name).join(", ")} do not currently have one of their named archetype partners selected.`;
+  if (unsupported.length) return `${unsupported.map((character) => character.name).join(", ")} do not currently have one of their reviewed partners selected.`;
   return "Your selected main damage characters have at least one relevant helper and a real healer available.";
 }
 

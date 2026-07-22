@@ -36,7 +36,10 @@ for (const [main, archetype] of Object.entries(teamArchetypes)) {
   }
 }
 
-const rewrittenPanels = new Set(["iuno", "phoebe", "phrolova", "galbrena", "qiuyuan"]);
+const easyToBuildCharacters = new Set([
+  "rover", "rebecca", "aalto", "baizhi", "buling", "chixia", "danjin", "lumi",
+  "mortefi", "sanhua", "taoqi", "yangyang", "youhu", "yuanwu"
+]);
 let updated = 0;
 
 for (const directory of directories) {
@@ -44,24 +47,30 @@ for (const directory of directories) {
   let html = await fs.readFile(file, "utf8");
   const data = readGuideData(html);
   if (!data) continue;
-  html = html.replace(/"dateModified":"[^"]+"/g, '"dateModified":"2026-07-19"');
-  const hadNoShells = !Array.isArray(data.shells) || data.shells.length === 0;
-
+  html = html.replace(/"dateModified":"[^"]+"/g, '"dateModified":"2026-07-22"');
   const allShells = [...(shellsByCharacter.get(data.slug) || [])];
   if (teamArchetypes[data.slug]) {
     allShells.sort((left, right) => Number(right[0] === data.slug) - Number(left[0] === data.slug));
   }
-  const shells = allShells.slice(0, 8);
+  const shells = allShells.slice(0, 10);
   data.shells = shells;
   html = html.replace(
     /<script type="application\/json" id="wavekit-character-guide-data">[\s\S]*?<\/script>/,
     `<script type="application/json" id="wavekit-character-guide-data">${JSON.stringify(data)}</script>`
   );
 
-  const reverseGuide = !teamArchetypes[data.slug] && shells.length > 0;
-  if ((rewrittenPanels.has(data.slug) || reverseGuide || hadNoShells) && shells.length) {
+  if (data.slug !== "rover" && shells.length) {
     html = replaceTeamPanels(html, renderPanels(data.slug, panelShellsFor(data.slug, allShells)));
   }
+
+  html = html
+    .replaceAll("Owned target shell", "Complete team owned")
+    .replaceAll("Closest path", "Closest owned team");
+
+  html = html.replace(
+    /<nav class="seo-anchor-tabs" aria-label="[^\"]+">[\s\S]*?<\/nav>/,
+    `<nav class="seo-anchor-tabs" aria-label="${escapeHtml(data.name)} guide sections"><a href="#overview">Overview</a><a href="#build">Build</a><a href="#teams">Teams</a><a href="#chains">Chains</a><a href="#materials">Materials</a><a href="#account">Account</a><a href="#faq">FAQ</a></nav>`
+  );
 
   if (data.slug === "iuno") {
     html = html
@@ -103,6 +112,37 @@ for (const directory of directories) {
         `$1Below R3, Qiuyuan supports Phrolova, Galbrena, and Sigrika. At R3 or higher, he can lead teams such as Qiuyuan / Iuno / Ciaccona or Qiuyuan / Iuno / Shorekeeper.$2`);
   }
 
+  html = html
+    .replaceAll("A strong reference shell is", "A recommended team is")
+    .replaceAll("strong reference shell", "recommended team")
+    .replaceAll("listed shells", "listed teams")
+    .replaceAll("listed shell", "listed team")
+    .replaceAll("reference shell", "reference team")
+    .replaceAll("ideal shell", "recommended team")
+    .replaceAll("incompatible shell", "incompatible team")
+    .replaceAll("complete Fusion Burst shell", "complete Fusion Burst team")
+    .replaceAll("Tune Strain shell", "Tune Strain team")
+    .replaceAll("Tune shell", "Tune team")
+    .replaceAll("dual-DPS shells", "dual-DPS teams")
+    .replaceAll("hypercarry shells", "hypercarry teams")
+    .replaceAll("accessible fallback", "easy-to-build alternative")
+    .replaceAll("Accessible healer", "Easy-to-build healer")
+    .replaceAll("accessible healer", "easy-to-build healer")
+    .replaceAll("accessible quick helper", "easy-to-build quick helper")
+    .replaceAll("accessible alternatives", "easy-to-build alternatives")
+    .replaceAll("comfort fallbacks", "safer but lower-synergy options")
+    .replaceAll("valid fallbacks", "valid alternatives")
+    .replaceAll("Fallback comfort", "Safer alternatives")
+    .replaceAll("use the fallback when the rotation needs it", "use the second option when the rotation needs it")
+    .replace(
+      /<div class="seo-card">\s*<h2>Team direction<\/h2>[\s\S]*?<div class="seo-shell-list">[\s\S]*?<\/div>\s*<\/div>\s*(?=<div class="seo-card">\s*<h2>Useful teammates<\/h2>)/,
+      ""
+    )
+    .replace(
+      /<div class="seo-card">\s*<h2>Team direction<\/h2>[\s\S]*?<\/div>\s*(?=<div class="seo-card">\s*<h2>Useful teammates<\/h2>)/,
+      ""
+    );
+
   await fs.writeFile(file, html);
   updated += 1;
 }
@@ -112,7 +152,7 @@ let sitemap = await fs.readFile(sitemapFile, "utf8");
 sitemap = sitemap.replace(/<url>[\s\S]*?<\/url>/g, (entry) => {
   const location = entry.match(/<loc>([^<]+)<\/loc>/)?.[1] || "";
   if (location === "https://wavekit.net/" || location === "https://wavekit.net/characters/" || location.includes("/characters/")) {
-    return entry.replace(/<lastmod>[^<]+<\/lastmod>/, "<lastmod>2026-07-19</lastmod>");
+    return entry.replace(/<lastmod>[^<]+<\/lastmod>/, "<lastmod>2026-07-22</lastmod>");
   }
   return entry;
 });
@@ -141,30 +181,77 @@ function replaceTeamPanels(html, panels) {
 function renderPanels(subject, shells) {
   return `<div class="seo-team-panels">${shells.map((shell, index) => {
     const label = teamRouteLabel(subject, shell, index);
-    return `<div class="seo-team-panel"><header><strong>${label}</strong><span>${index === 0 ? "Recommended" : "Alternative"}</span></header><div class="seo-team-strip">${shell.map((slug, slot) => `<span><img src="../../assets/characters/${slug}.webp" alt="" loading="lazy" decoding="async"><small>${slot === 0 ? "Main damage" : slot === 1 ? "Setup helper" : "Support slot"}</small><strong>${escapeHtml(names[slug] || slug)}</strong><em>${slot === 0 ? "Leads the damage plan" : slot === 1 ? "Enables the team route" : "Completes this composition"}</em></span>`).join("")}</div><p class="seo-team-note">${escapeHtml(teamArchetypes[shell[0]]?.note || "A reviewed composition from WaveKit's current team rules.")}</p></div>`;
+    return `<div class="seo-team-panel"><header><strong>${label}</strong><span>${teamPanelBadge(subject, shell, index)}</span></header><div class="seo-team-strip">${shell.map((slug, slot) => `<span><img src="../../assets/characters/${slug}.webp" alt="" loading="lazy" decoding="async"><small>${slot === 0 ? "Main damage" : slot === 1 ? "Setup helper" : "Support slot"}</small><strong>${escapeHtml(names[slug] || slug)}</strong><em>${slot === 0 ? "Leads the damage plan" : slot === 1 ? "Sets up the damage dealer" : "Completes the team"}</em></span>`).join("")}</div><p class="seo-team-note">${escapeHtml(teamPanelNote(subject, shell))}</p></div>`;
   }).join("")}</div>`;
 }
 
 function teamRouteLabel(subject, shell, index) {
   if (subject === "aemeath") {
-    if (shell.includes("denia")) return "Fusion Burst route";
-    if (shell.includes("lynae")) return "Tune Rupture route";
-    return "Mono Fusion route";
+    if (shell.includes("denia") && shell.includes("chisa")) return "Best Fusion Burst team";
+    if (shell.includes("denia")) return "Second Fusion Burst team";
+    if (shell.includes("lynae") && shell.includes("mornye")) return "Best Tune Rupture team";
+    if (shell.includes("lynae")) return "Second Tune Rupture team";
+    return "Mono Fusion team";
   }
   if (subject === "phoebe") return shell[0] === "phoebe" ? "Absolution DPS route" : "Confession support route";
   if (subject === "iuno") return shell[0] === "iuno" ? (index === 0 ? "Iuno hypercarry" : "Iuno DPS alternative") : "Hybrid support route";
   if (subject === "qiuyuan") return shell[0] === "qiuyuan" ? "R3+ Qiuyuan carry" : "Echo Skill support route";
   if (shell[0] !== subject) return `${names[shell[0]] || shell[0]} team`;
-  return index === 0 ? "Recommended team" : "Alternative team";
+  if (index === 0) return "Best team";
+  if (index === 1) return "Second-best team";
+  if (isEasyToBuildTeam(shell)) return "Easy-to-build team";
+  return "Other strong team";
 }
 
 function panelShellsFor(subject, shells) {
   const own = shells.filter((shell) => shell[0] === subject);
   const support = shells.filter((shell) => shell[0] !== subject);
-  if (subject === "iuno") return [own[0], own[1], support.find((shell) => shell[0] === "augusta")].filter(Boolean);
+  if (subject === "aemeath") return [own[0], own[2], own[5], own[1]].filter(Boolean);
+  if (subject === "iuno") return [own[0], own[1], own[2], support.find((shell) => shell[0] === "augusta")].filter(Boolean);
   if (subject === "phoebe") return [own[0], own.find((shell) => shell.includes("ciaccona")) || own[1], support.find((shell) => shell[0] === "zani")].filter(Boolean);
   if (subject === "qiuyuan") return [own[0], support.find((shell) => shell[0] === "phrolova"), support.find((shell) => shell[0] === "galbrena")].filter(Boolean);
-  return shells.slice(0, 3);
+  if (own.length) {
+    const selected = own.slice(0, 4);
+    const easyTeam = own.find((shell) => isEasyToBuildTeam(shell));
+    if (easyTeam && !selected.includes(easyTeam)) selected[selected.length >= 4 ? 3 : selected.length] = easyTeam;
+    return selected.filter(Boolean);
+  }
+  const distinctMainTeams = [];
+  for (const shell of support) {
+    if (distinctMainTeams.some((team) => team[0] === shell[0])) continue;
+    distinctMainTeams.push(shell);
+    if (distinctMainTeams.length === 4) break;
+  }
+  return distinctMainTeams;
+}
+
+function isEasyToBuildTeam(shell) {
+  return shell.slice(1).every((slug) => easyToBuildCharacters.has(slug));
+}
+
+function teamPanelBadge(subject, shell, index) {
+  if (shell[0] !== subject) return "Useful teammate";
+  if (isEasyToBuildTeam(shell)) return "Free / low-rarity";
+  if (index === 0 || teamRouteLabel(subject, shell, index).startsWith("Best ")) return "Recommended";
+  return "Strong alternative";
+}
+
+function teamPanelNote(subject, shell) {
+  const main = names[shell[0]] || shell[0];
+  const helper = names[shell[1]] || shell[1];
+  const support = names[shell[2]] || shell[2];
+  const supportingPartner = shell.slice(1).find((slug) => slug !== subject);
+  const partnerName = names[supportingPartner] || supportingPartner;
+  const reviewedNote = String(teamArchetypes[shell[0]]?.note || "This is a reviewed team in WaveKit's current guide data.")
+    .replaceAll("shells", "teams")
+    .replaceAll("shell", "team")
+    .replaceAll("accessible fallback", "easier-to-build option");
+  if (shell[0] !== subject) return `${subjectName(subject)} supports ${main} alongside ${partnerName}. ${reviewedNote}`;
+  return `${helper} handles the main setup while ${support} completes the team. ${reviewedNote}`;
+}
+
+function subjectName(slug) {
+  return names[slug] || slug;
 }
 
 function escapeHtml(value) {
