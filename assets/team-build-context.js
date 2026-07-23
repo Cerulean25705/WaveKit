@@ -159,7 +159,8 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
   const requested = new URLSearchParams(location.search).get("team");
   const requestedMembers = requested ? requested.split("|").filter(Boolean) : [];
   const keyFor = (members) => [...new Set(members)].sort().join("|");
-  const context = window.WAVEKIT_TEAM_BUILD_CONTEXT.find((entry) => keyFor(entry.members) === keyFor(requestedMembers));
+  const contextFor = (members) => window.WAVEKIT_TEAM_BUILD_CONTEXT.find((entry) => keyFor(entry.members) === keyFor(members));
+  let context = contextFor(requestedMembers);
   const routeDetailKeys = ["weapon", "alternates", "sonata", "echoCost", "echo", "stats"];
   const hasRouteDetailsFor = (entry) => routeDetailKeys.some((key) => entry.builds?.[data.slug]?.[key]);
   const relevantContexts = window.WAVEKIT_TEAM_BUILD_CONTEXT.filter((entry) => entry.members.includes(data.slug) && hasRouteDetailsFor(entry));
@@ -180,67 +181,189 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
       if (selected) url.searchParams.set("team", selected.members.join("|"));
       else url.searchParams.delete("team");
       url.hash = "teams";
-      location.assign(url.toString());
+      history.replaceState(null, "", url.toString());
+      context = selected || null;
+      applyContext(context);
     });
     const panels = teamSection.querySelector(".seo-team-panels");
     if (panels) teamSection.insertBefore(picker, panels);
   }
-  if (!context) return;
+  let baseline;
+  const applyContext = (contextToApply) => {
 
-  const build = context.builds?.[data.slug] || {};
-  const teamJob = build.job || context.note;
-  const hasRouteDetails = hasRouteDetailsFor(context);
-  const fieldValues = {
-    "Team route": context.label,
-    "Team job": teamJob,
-    "Best weapon": build.weapon,
-    "Alternate weapons": build.alternates,
-    Sonata: build.sonata,
-    "Echo cost": build.echoCost,
-    "Main Echo": build.echo,
-    "Main stats": build.stats
-  };
+    const build = contextToApply?.builds?.[data.slug] || {};
+    const teamJob = build.job || contextToApply?.note || "";
+    const hasRouteDetails = contextToApply ? hasRouteDetailsFor(contextToApply) : false;
+    const fieldValues = {
+      "Team route": contextToApply?.label,
+      "Team job": teamJob,
+      "Best weapon": build.weapon,
+      "Alternate weapons": build.alternates,
+      Sonata: build.sonata,
+      "Echo cost": build.echoCost,
+      "Main Echo": build.echo,
+      "Main stats": build.stats
+    };
 
-  const replaceField = (root, label, value) => {
-    if (!value || !root) return;
-    const rows = [...root.querySelectorAll("div")];
-    const matchingRow = rows.find((row) => row.querySelector("dt")?.textContent.trim() === label);
-    if (matchingRow?.querySelector("dd")) {
-      matchingRow.querySelector("dd").textContent = value;
-      return;
-    }
-    const row = document.createElement("div");
-    const term = document.createElement("dt");
-    const description = document.createElement("dd");
-    term.textContent = label;
-    description.textContent = value;
-    row.append(term, description);
-    root.append(row);
-  };
-
-  const quickBuild = document.querySelector(".seo-guide-main .character-guide-stats");
-  Object.entries(fieldValues).forEach(([label, value]) => replaceField(quickBuild, label, value));
-
-  const heroMeta = document.querySelector(".seo-hero-meta");
-  Object.entries({
-    "Best weapon": build.weapon,
-    Sonata: build.sonata,
-    "Echo cost": build.echoCost
-  }).forEach(([label, value]) => {
-    if (!value || !heroMeta) return;
-    [...heroMeta.querySelectorAll("div")].forEach((row) => {
-      if (row.querySelector("span")?.textContent.trim() === label) {
-        const target = row.querySelector("strong");
-        if (target) target.textContent = value;
+    const replaceField = (root, label, value) => {
+      if (!value || !root) return;
+      const rows = [...root.querySelectorAll("div")];
+      const matchingRow = rows.find((row) => row.querySelector("dt")?.textContent.trim() === label);
+      if (matchingRow?.querySelector("dd")) {
+        matchingRow.querySelector("dd").textContent = value;
+        return;
       }
-    });
-  });
+      const row = document.createElement("div");
+      const term = document.createElement("dt");
+      const description = document.createElement("dd");
+      term.textContent = label;
+      description.textContent = value;
+      row.append(term, description);
+      root.append(row);
+    };
 
-  const existing = document.querySelector("[data-team-context-panel]");
-  const panel = existing || document.createElement("aside");
-  panel.dataset.teamContextPanel = "true";
-  panel.className = "team-context-panel";
-  panel.innerHTML = `<span class="kicker">Team-specific build context</span><strong>${context.label}</strong><p>${context.note}</p><div class="team-context-panel-facts"><span><small>Character job</small><b>${teamJob}</b></span><span><small>Fields changed</small><b>${hasRouteDetails ? "Route-specific build details" : "Team role and rotation"}</b></span></div><small>Showing the reviewed changes for ${data.name} in this team. Other fields stay on the general character guide.</small>`;
-  const anchor = document.querySelector(".seo-hero-meta") || document.querySelector(".seo-hero-copy");
-  if (anchor && !existing) anchor.insertAdjacentElement("afterend", panel);
+    const routeNote = (selector, label, value) => {
+      const root = document.querySelector(selector);
+      if (!root || !value) return;
+      let note = root.querySelector("[data-team-route-note]");
+      if (!note) {
+        note = document.createElement("p");
+        note.dataset.teamRouteNote = "true";
+        note.className = "team-route-build-note";
+        root.prepend(note);
+      }
+      note.innerHTML = `<strong>${label}</strong><span>${value}</span>`;
+    };
+
+    const assetSlug = (value) => value.toLowerCase().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const assetFor = (kind, value) => {
+      const known = {
+        "sonata:moonlit-clouds": "../../assets/sonatas/moonlit-clouds.png",
+        "sonata:dream-of-the-lost": "../../assets/sonatas/dream-of-the-lost.png",
+        "sonata:law-of-harmony": "../../assets/sonatas/law-of-harmony.png",
+        "sonata:chromatic-foam": "../../assets/sonatas/chromatic-foam.png",
+        "sonata:flaming-clawprint": "../../assets/sonatas/flaming-clawprint.png",
+        "sonata:thread-of-severed-fate": "../../assets/sonatas/thread-of-severed-fate.png",
+        "echo:impermanence-heron": "../../assets/echoes/impermanence-heron.webp",
+        "echo:lady-of-the-sea": "../../assets/echoes/lady-of-the-sea.webp",
+        "echo:lioness-of-glory": "../../assets/echoes/lioness-of-glory.webp",
+        "echo:reminiscence-denia": "../../assets/echoes/reminiscence-denia.webp",
+        "echo:reminiscence-threnodian-leviathan": "../../assets/echoes/reminiscence-threnodian-leviathan.webp"
+      };
+      const firstName = value.split("+")[0].replace(/\s+2-piece.*$/i, "").trim();
+      return known[`${kind}:${assetSlug(firstName)}`] || null;
+    };
+
+    const updateShowcase = (selector, value, kind, label) => {
+      if (!value) return;
+      const root = document.querySelector(selector);
+      if (!root) return;
+      const name = root.querySelector("strong");
+      if (name) name.textContent = value;
+      const image = root.querySelector("img");
+      const source = assetFor(kind, value);
+      if (image && source) {
+        image.src = source;
+        image.alt = `${value} ${kind} icon`;
+      }
+      const small = root.querySelector("small");
+      if (small) small.textContent = label;
+    };
+
+    const updateCost = (value) => {
+      if (!value) return;
+      const costs = value.split(/[-/]/).map((part) => part.trim()).filter(Boolean);
+      [...document.querySelectorAll(".seo-cost-grid span")].forEach((slot, index) => {
+        const number = slot.querySelector("small");
+        if (number && costs[index]) number.textContent = costs[index];
+      });
+    };
+
+    const snapshotText = (selector) => [...document.querySelectorAll(selector)].map((node) => node.textContent);
+    if (!baseline) baseline = {
+      quick: new Map([...document.querySelectorAll(".seo-guide-main .character-guide-stats div")].map((row) => [row.querySelector("dt")?.textContent.trim(), row.querySelector("dd")?.textContent || ""])),
+      hero: new Map([...document.querySelectorAll(".seo-hero-meta div")].map((row) => [row.querySelector("span")?.textContent.trim(), row.querySelector("strong")?.textContent || ""])),
+      mainEcho: { name: document.querySelector(".seo-main-echo strong")?.textContent || "", small: document.querySelector(".seo-main-echo small")?.textContent || "", image: document.querySelector(".seo-main-echo img")?.getAttribute("src") || "", alt: document.querySelector(".seo-main-echo img")?.getAttribute("alt") || "" },
+      sonata: { name: document.querySelector(".seo-sonata-focus strong")?.textContent || "", small: document.querySelector(".seo-sonata-focus small")?.textContent || "", image: document.querySelector(".seo-sonata-focus img")?.getAttribute("src") || "", alt: document.querySelector(".seo-sonata-focus img")?.getAttribute("alt") || "" },
+      costs: snapshotText(".seo-cost-grid span small")
+    };
+
+    const resetPage = () => {
+      const quickBuild = document.querySelector(".seo-guide-main .character-guide-stats");
+      [...(quickBuild?.children || [])].forEach((row) => {
+        const label = row.querySelector("dt")?.textContent.trim();
+        if (label && !baseline.quick.has(label)) row.remove();
+      });
+      baseline.quick.forEach((value, label) => replaceField(quickBuild, label, value));
+      [...document.querySelectorAll(".seo-hero-meta div")].forEach((row) => {
+        const label = row.querySelector("span")?.textContent.trim();
+        const target = row.querySelector("strong");
+        if (target && baseline.hero.has(label)) target.textContent = baseline.hero.get(label);
+      });
+      const mainEcho = document.querySelector(".seo-main-echo");
+      if (mainEcho) {
+        mainEcho.querySelector("strong")?.replaceChildren(document.createTextNode(baseline.mainEcho.name));
+        mainEcho.querySelector("small")?.replaceChildren(document.createTextNode(baseline.mainEcho.small));
+        const image = mainEcho.querySelector("img");
+        if (image) {
+          image.src = baseline.mainEcho.image;
+          image.alt = baseline.mainEcho.alt;
+        }
+      }
+      const sonata = document.querySelector(".seo-sonata-focus");
+      if (sonata) {
+        sonata.querySelector("strong")?.replaceChildren(document.createTextNode(baseline.sonata.name));
+        sonata.querySelector("small")?.replaceChildren(document.createTextNode(baseline.sonata.small));
+        const image = sonata.querySelector("img");
+        if (image) {
+          image.src = baseline.sonata.image;
+          image.alt = baseline.sonata.alt;
+        }
+      }
+      [...document.querySelectorAll(".seo-cost-grid span small")].forEach((node, index) => {
+        if (baseline.costs[index]) node.textContent = baseline.costs[index];
+      });
+      document.querySelectorAll("[data-team-route-note]").forEach((node) => node.remove());
+      document.querySelector("[data-team-context-panel]")?.remove();
+    };
+
+    resetPage();
+    if (!contextToApply) return;
+
+    const quickBuild = document.querySelector(".seo-guide-main .character-guide-stats");
+    Object.entries(fieldValues).forEach(([label, value]) => replaceField(quickBuild, label, value));
+
+    const heroMeta = document.querySelector(".seo-hero-meta");
+    Object.entries({
+      "Best weapon": build.weapon,
+      Sonata: build.sonata,
+      "Echo cost": build.echoCost
+    }).forEach(([label, value]) => {
+      if (!value || !heroMeta) return;
+      [...heroMeta.querySelectorAll("div")].forEach((row) => {
+        if (row.querySelector("span")?.textContent.trim() === label) {
+          const target = row.querySelector("strong");
+          if (target) target.textContent = value;
+        }
+      });
+    });
+
+    updateShowcase(".seo-main-echo", build.echo, "echo", "Team route Main Echo");
+    updateShowcase(".seo-sonata-focus", build.sonata, "sonata", "Team route Sonata");
+    updateCost(build.echoCost);
+    const weaponNotes = [["Team route weapon", build.weapon], ["Team route alternates", build.alternates]].filter(([, value]) => value).map(([label, value]) => `${label}: ${value}`);
+    routeNote(".seo-weapon-list", "Team route weapon", weaponNotes.join(" · "));
+    routeNote(".seo-stat-lanes", "Team route main stats", build.stats);
+    routeNote(".seo-echo-module", "Team route build", build.build);
+
+    const existing = document.querySelector("[data-team-context-panel]");
+    const panel = existing || document.createElement("aside");
+    panel.dataset.teamContextPanel = "true";
+    panel.className = "team-context-panel";
+    panel.innerHTML = `<span class="kicker">Team-specific build context</span><strong>${contextToApply.label}</strong><p>${contextToApply.note}</p><div class="team-context-panel-facts"><span><small>Character job</small><b>${teamJob}</b></span><span><small>Fields changed</small><b>${hasRouteDetails ? "Route-specific build details" : "Team role and rotation"}</b></span></div><small>Showing the reviewed changes for ${data.name} in this team. Other fields stay on the general character guide.</small>`;
+    const anchor = document.querySelector(".seo-hero-meta") || document.querySelector(".seo-hero-copy");
+    if (anchor && !existing) anchor.insertAdjacentElement("afterend", panel);
+  };
+
+  applyContext(context);
 })();

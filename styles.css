@@ -2395,6 +2395,28 @@ h1 {
   outline-offset: 2px;
 }
 
+.team-route-build-note {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 204, 92, 0.25);
+  border-radius: 10px;
+  background: rgba(255, 204, 92, 0.07);
+}
+
+.team-route-build-note strong {
+  color: var(--gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.team-route-build-note span {
+  color: var(--text);
+  line-height: 1.45;
+}
+
 .seo-module {
   overflow: hidden;
   border: 1px solid rgba(139, 232, 255, 0.16);
