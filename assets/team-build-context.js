@@ -160,7 +160,9 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
   const requestedMembers = requested ? requested.split("|").filter(Boolean) : [];
   const keyFor = (members) => [...new Set(members)].sort().join("|");
   const context = window.WAVEKIT_TEAM_BUILD_CONTEXT.find((entry) => keyFor(entry.members) === keyFor(requestedMembers));
-  const relevantContexts = window.WAVEKIT_TEAM_BUILD_CONTEXT.filter((entry) => entry.members.includes(data.slug));
+  const routeDetailKeys = ["weapon", "alternates", "sonata", "echoCost", "echo", "stats"];
+  const hasRouteDetailsFor = (entry) => routeDetailKeys.some((key) => entry.builds?.[data.slug]?.[key]);
+  const relevantContexts = window.WAVEKIT_TEAM_BUILD_CONTEXT.filter((entry) => entry.members.includes(data.slug) && hasRouteDetailsFor(entry));
   const teamSection = document.querySelector("#teams");
   if (teamSection && relevantContexts.length && !teamSection.querySelector("[data-team-context-picker]")) {
     const names = data.names || {};
@@ -168,7 +170,7 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
     const picker = document.createElement("div");
     picker.className = "team-context-picker";
     picker.dataset.teamContextPicker = "true";
-    picker.innerHTML = `<div><span class="kicker">Team build view</span><strong>Choose a reviewed team</strong><p>Use the general guide by default, or select a team to show its route-specific weapon, Sonata, Echo, and role notes.</p></div><label><span>Show information for</span><select aria-label="Choose a reviewed team build route"><option value="">General character guide</option>${relevantContexts.map((entry) => `<option value="${entry.id}">${labelFor(entry)}</option>`).join("")}</select></label>`;
+    picker.innerHTML = `<div><span class="kicker">Team build view</span><strong>Choose a reviewed team</strong><p>This character has reviewed weapon or Echo variations between these teams. Choose a route to show the exact build fields.</p></div><label><span>Show information for</span><select aria-label="Choose a reviewed team build route"><option value="">General character guide</option>${relevantContexts.map((entry) => `<option value="${entry.id}">${labelFor(entry)}</option>`).join("")}</select></label>`;
     const select = picker.querySelector("select");
     const activeContext = context && relevantContexts.find((entry) => entry.id === context.id);
     if (activeContext) select.value = activeContext.id;
@@ -187,7 +189,7 @@ window.WAVEKIT_TEAM_BUILD_CONTEXT = [
 
   const build = context.builds?.[data.slug] || {};
   const teamJob = build.job || context.note;
-  const hasRouteDetails = ["weapon", "alternates", "sonata", "echoCost", "echo", "stats"].some((key) => build[key]);
+  const hasRouteDetails = hasRouteDetailsFor(context);
   const fieldValues = {
     "Team route": context.label,
     "Team job": teamJob,
