@@ -2417,6 +2417,29 @@ h1 {
   line-height: 1.45;
 }
 
+@media (min-width: 761px) and (max-width: 1366px) {
+  html {
+    font-size: 106.25%;
+  }
+
+  .topbar {
+    padding-inline: clamp(16px, 3vw, 32px);
+  }
+
+  .section {
+    padding-top: 64px;
+  }
+
+  .section-heading p,
+  .panel p,
+  .team-card p,
+  .build-card p,
+  .footer p,
+  .feedback-preview p {
+    line-height: 1.68;
+  }
+}
+
 .seo-module {
   overflow: hidden;
   border: 1px solid rgba(139, 232, 255, 0.16);
